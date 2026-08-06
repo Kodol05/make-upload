@@ -5,6 +5,8 @@ import './styles/tokens.css';
 import './styles/global.css';
 // 화면 골격을 "인쇄된 표기" 방향으로 덮는다. global.css 뒤여야 한다.
 import './styles/identity.css';
+// 소개 화면만 담당한다. 이름이 겹치지 않아 다른 화면을 덮지 않는다.
+import './styles/intro.css';
 
 const container = document.getElementById('root');
 if (!container) throw new Error('root element not found');

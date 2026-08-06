@@ -1,81 +1,22 @@
 import { AppFooter } from '@/components/AppFooter';
 import { AppHeader } from '@/components/AppHeader';
 import { FeatureErrorBoundary } from '@/components/FeatureErrorBoundary';
-import { SortMark } from '@/components/SortMark';
-import { Wordmark } from '@/components/Wordmark';
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { CatalogSection } from '@/features/catalog/CatalogSection';
 import { ChatWidget } from '@/features/chat/ChatWidget';
 import { GamePage } from '@/features/game/GamePage';
+import { IntroPage } from '@/features/intro/IntroPage';
 import { LearnSection } from '@/features/learn/LearnSection';
 import { ui } from '@/i18n/strings';
 import { assetUrl } from '@/lib/assetUrl';
-import { categories } from '@shared/types';
 import { journey, stepIndexOf } from './journey';
 import { LocaleProvider } from './LocaleProvider';
 import { useHashRoute } from './useHashRoute';
 import { useLocale } from './useLocale';
 
-/**
- * ① 소개.
- *
- * 이 앱이 가르치는 것은 결국 "이 표시를 읽는 법"이다. 그래서 긴 소개 문장 대신
- * 네 분류를 표시로 나란히 세운다. 한 눈에 체계가 들어오고, 뒤의 도감에서 같은
- * 표시를 다시 만나면서 눈에 익는다.
- */
+/** ① 소개. 다음으로 가는 단추까지 `IntroPage`가 들고 있다. */
 function IntroRoute() {
-  const { t } = useLocale();
-
-  return (
-    <section
-      className="masthead"
-      /**
-       * 대표 이미지 경로를 CSS로 넘긴다. Vite는 CSS의 `url()`에 base를 붙이지
-       * 않으므로 배포 경로를 아는 이쪽에서 만들어 준다. 파일이 없으면 배경만
-       * 비고 나머지는 그대로 보인다.
-       */
-      style={
-        { '--intro-cover': `url(${assetUrl('/images/intro-cover.webp')})` } as CSSProperties
-      }
-    >
-      <div className="masthead__figure">
-        <Wordmark size="lg" />
-      </div>
-      <h2 className="masthead__title">{t(ui.catalog.title)}</h2>
-      <p className="masthead__intro">{t(ui.home.intro)}</p>
-
-      {/**
-       * 다음으로 넘어가는 길을 화면 가운데에 둔다. 소개는 짧게 읽고 넘어가는
-       * 화면이라 맨 아래까지 내려가게 하면 한 번 더 스크롤해야 한다.
-       * 색은 눌러야 할 것 중 가장 조용하게 둔다. 여기서 붙잡아 둘 이유가 없다.
-       */}
-      <JourneyNext index={0} tone="quiet" />
-
-      <div className="masthead__legend">
-        <p className="masthead__legend-caption">{t(ui.home.legendCaption)}</p>
-        {/**
-         * 분류마다 상자를 두고 그 안에 대표 그림을 깐다. 그림 위에 표시와 이름을
-         * 얹어 "이 그림에 있는 것들이 이 분류다"가 한 번에 읽히게 한다.
-         * 그림은 옅게 깔아 글자 대비를 지킨다.
-         */}
-        <ul className="masthead__marks">
-          {categories.map((category) => (
-            <li
-              key={category}
-              className={`category-card category-card--${category}`}
-              style={
-                {
-                  '--category-cover': `url(${assetUrl(`/images/category/${category}.webp`)})`,
-                } as CSSProperties
-              }
-            >
-              <SortMark tone={category} label={t(ui.category[category])} size="lg" />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
+  return <IntroPage />;
 }
 
 /** ② 영상으로 배우기. */

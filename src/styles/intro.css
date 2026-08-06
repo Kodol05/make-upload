@@ -1,0 +1,177 @@
+/* ══════════════════════════════════════════════════════════
+   소개 화면
+
+   이 파일은 소개 화면만 담당한다. 클래스는 전부 `intro-`로 시작하고,
+   다른 파일의 규칙을 덮어쓰지 않는다. `main.tsx`에서 identity.css 뒤에
+   불러오지만, 이름이 겹치지 않으므로 순서에 기대지도 않는다.
+
+   소개를 손볼 일이 생기면 여기만 보면 된다.
+   ══════════════════════════════════════════════════════════ */
+
+/**
+ * 영상 한 편이 화면을 가로로 꽉 채운다.
+ *
+ * 영상이 1280×720이라 판도 16:9로 잡는다. `cover`로 채우되 비율이 같아
+ * 실제로 잘리는 곳은 없다.
+ *
+ * `main`은 가운데 정렬된 좁은 판이라 그대로 두면 영상이 여백에 둘러싸인
+ * "삽입된 동영상"으로 읽힌다. `50% - 50vw`로 그 여백을 좌우로 되밀어
+ * 화면 끝까지 편다. `main` 규칙은 건드리지 않는다.
+ */
+.intro {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  /**
+   * 글을 가운데가 아니라 위쪽에 앉힌다. 영상에서 봐야 할 수거함이 아래쪽에
+   * 있어서, 글이 한가운데 있으면 정작 볼 것을 덮는다.
+   *
+   * 위 여백을 `vw`로 잡은 것은 판이 16:9라 높이도 폭을 따라 움직이기
+   * 때문이다. 11vw는 어느 폭에서든 판 높이의 약 19.6%가 된다.
+   */
+  align-items: flex-start;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  padding: clamp(24px, 11vw, 260px) var(--space-5) var(--space-6);
+  text-align: center;
+  /**
+   * `main`이 위에 두는 여백(`padding-block` 시작값)만큼 끌어올려 헤더에 붙인다.
+   * 틈이 남으면 영상이 화면의 일부가 아니라 얹힌 상자로 보인다.
+   */
+  margin-block-start: calc(-1 * var(--space-3));
+  background: var(--ink);
+}
+
+/**
+ * `100vw`는 세로 스크롤바 폭까지 세기 때문에 그대로 두면 가로 스크롤이 생긴다.
+ *
+ * 소개가 떠 있을 때만 넘치는 가로를 잘라 낸다. `hidden`이 아니라 `clip`인 것은
+ * `hidden`이 스크롤 상자를 새로 만들어 `position: sticky` 같은 것을 조용히
+ * 망가뜨리기 때문이다.
+ */
+body:has(.intro) {
+  overflow-x: clip;
+}
+
+/**
+ * 영상 둘을 같은 자리에 겹쳐 두고 보이는 쪽만 바꾼다. 넘어갈 때 서서히 겹쳐
+ * 화면이 끊기지 않는다.
+ */
+.intro__video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.intro__video--on {
+  opacity: 1;
+}
+
+/** 겹쳐 넘기는 것도 움직임이다. 줄여 달라는 설정이면 그냥 바꾼다. */
+@media (prefers-reduced-motion: reduce) {
+  .intro__video {
+    transition: none;
+  }
+}
+
+/**
+ * 덮개.
+ *
+ * 이 영상은 프레임마다 검정부터 흰색까지 다 나온다. 24장을 뽑아 재 보니 위·
+ * 가운데·아래 어느 띠에서도 가장 어두운 픽셀이 L=0.000, 가장 밝은 픽셀이
+ * L=0.95였다. 덮개 없이는 어떤 글자색도 어느 순간엔 읽히지 않는다는 뜻이다.
+ *
+ * 글이 앉는 자리를 62%까지 눌렀다. 가장 밝은 프레임이 와도 흰 글자가
+ * 4.61:1이다. 글이 위로 올라간 만큼 덮개도 함께 올렸다. 지금 글은 판 높이의
+ * 20%에서 45% 사이에 앉는다.
+ *
+ * 아래쪽은 얇게 둔다. 영상에서 봐야 할 수거함이 거기 있다.
+ */
+.intro::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgb(9 44 28 / 46%) 0%,
+    rgb(9 44 28 / 62%) 14%,
+    rgb(9 44 28 / 62%) 52%,
+    rgb(9 44 28 / 26%) 100%
+  );
+}
+
+.intro__body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(20px, 2.6vw, 52px);
+}
+
+.intro__title {
+  max-width: min(90vw, 20ch);
+  margin: 0;
+  font-size: clamp(34px, 7vw, 118px);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+  text-wrap: balance;
+}
+
+/**
+ * 다음으로 가는 단추.
+ *
+ * 이 화면에서 누를 것은 이것 하나뿐이라 글에 눌리지 않을 만큼 크게 둔다.
+ * 글자 크기를 큰 글과 같은 `vw`로 묶어, 화면이 넓어지면 둘이 함께 커진다.
+ *
+ * 짙은 덮개 위라 색을 뒤집는다. 흰 바닥에 짙은 초록 글자로 7.78:1.
+ */
+.intro__button {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 24px);
+  padding: clamp(14px, 1.4vw, 30px) clamp(28px, 3vw, 64px);
+  background: var(--paper);
+  color: var(--mark-deep);
+  font-size: clamp(24px, 4vw, 68px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border-radius: var(--radius-card);
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.intro__button:hover,
+.intro__button:focus-visible {
+  background: var(--wash);
+  transform: translateY(-2px);
+}
+
+.intro__arrow {
+  /* 글자보다 조금 작게. 화살표가 글보다 커지면 눈이 그쪽으로 먼저 간다. */
+  font-size: 0.82em;
+  line-height: 1;
+}
+
+/**
+ * 좁은 화면에서는 16:9를 놓는다. 그대로 지키면 판이 너무 낮아져 글이 잘린다.
+ * 영상은 그만큼 좌우가 잘리지만, 읽히는 쪽이 먼저다.
+ */
+@media (max-width: 640px) {
+  .intro {
+    aspect-ratio: auto;
+    min-height: 58vh;
+  }
+}
