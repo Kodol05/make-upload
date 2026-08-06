@@ -1,4 +1,6 @@
+import { useLocale } from '@/app/useLocale';
 import { usePrefersReducedMotion } from '@/app/usePrefersReducedMotion';
+import { ui } from '@/i18n/strings';
 import { assetUrl } from '@/lib/assetUrl';
 
 /**
@@ -9,9 +11,10 @@ import { assetUrl } from '@/lib/assetUrl';
  * 같은 파일 안에서 소개 규칙을 여러 번 갈아 끼웠다가, 어느 것이 이기는지 알 수
  * 없게 되면서 다른 화면까지 어긋났다.
  *
- * 지금은 영상만 있다. 글과 언어 선택은 다음 단계에서 얹는다.
+ * 언어 선택과 다음으로 가는 단추는 다음 단계에서 얹는다.
  */
 export function IntroPage() {
+  const { t } = useLocale();
   const calm = usePrefersReducedMotion();
 
   return (
@@ -34,6 +37,10 @@ export function IntroPage() {
         aria-hidden="true"
         tabIndex={-1}
       />
+
+      <div className="intro__body">
+        <h2 className="intro__title">{t(ui.home.title)}</h2>
+      </div>
     </section>
   );
 }
