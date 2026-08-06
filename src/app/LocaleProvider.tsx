@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { resolveText } from '@shared/placeholder';
 import { locales, type Locale, type LocalizedText } from '@shared/types';
 import { LocaleContext } from './localeContext';
 
@@ -36,7 +37,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, next);
   }, []);
 
-  const t = useCallback((text: LocalizedText) => text[locale], [locale]);
+  // 검수 전 문안은 (임시값) 표시로 바꿔 화면을 눈으로 확인할 수 있게 한다.
+  const t = useCallback((text: LocalizedText) => resolveText(text, locale), [locale]);
 
   const value = useMemo(() => ({ locale, setLocale, t }), [locale, setLocale, t]);
 

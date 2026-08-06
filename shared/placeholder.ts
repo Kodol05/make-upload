@@ -33,6 +33,26 @@ export function localized(
   };
 }
 
+/** 검수 전 문안임을 화면에서 알리는 표시. */
+export const PLACEHOLDER_LABEL = '(임시값)';
+
+/**
+ * 화면에 그릴 문자열을 고른다.
+ *
+ * 데이터에는 `__TODO__:clear-pet.summary.vi` 형태를 그대로 두어 `findTodos`와
+ * `git grep`, 릴리스 게이트가 계속 동작하게 하고, 사람이 보는 자리에서만 읽을 수
+ * 있는 형태로 바꾼다.
+ *
+ * 번역이 없을 때 한국어를 함께 보여 주는 이유는 실제 문안 길이로 화면이 넘치는지
+ * 판단하기 위해서다. `(임시값)`만 보이면 레이아웃이 멀쩡해 보인다.
+ */
+export function resolveText(text: LocalizedText, locale: Locale): string {
+  const value = text[locale];
+  if (!isTodo(value)) return value;
+  if (!isTodo(text.ko)) return `${text.ko} ${PLACEHOLDER_LABEL}`;
+  return PLACEHOLDER_LABEL;
+}
+
 /** 중첩된 값 안에 남아 있는 자리 표시를 모두 찾는다. */
 export function findTodos(value: unknown): string[] {
   if (typeof value === 'string') return isTodo(value) ? [value] : [];

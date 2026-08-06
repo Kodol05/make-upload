@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LocaleProvider } from '@/app/LocaleProvider';
 import { ui } from '@/i18n/strings';
+import { PLACEHOLDER_LABEL } from '@shared/placeholder';
 import { AppHeader } from './AppHeader';
 
 function renderHeader() {
@@ -44,8 +45,18 @@ describe('AppHeader', () => {
 
     await userEvent.selectOptions(screen.getByLabelText(ui.common.language.ko), 'vi');
 
-    // 베트남어 문안이 아직 없으므로 자리 표시가 그대로 보인다.
-    expect(screen.getByRole('link', { name: ui.nav.catalog.vi })).toBeInTheDocument();
+    // 베트남어 문안이 아직 없으므로 한국어와 (임시값) 표시가 함께 보인다.
+    expect(
+      screen.getByRole('link', { name: `${ui.nav.catalog.ko} ${PLACEHOLDER_LABEL}` }),
+    ).toBeInTheDocument();
+  });
+
+  it('never shows the machine readable marker', async () => {
+    renderHeader();
+
+    await userEvent.selectOptions(screen.getByLabelText(ui.common.language.ko), 'vi');
+
+    expect(screen.queryByText(/__TODO__/)).not.toBeInTheDocument();
   });
 
   it('offers a skip link to the main content', () => {
