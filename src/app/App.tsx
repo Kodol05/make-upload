@@ -1,5 +1,6 @@
 import { AppFooter } from '@/components/AppFooter';
 import { AppHeader } from '@/components/AppHeader';
+import { CatalogSection } from '@/features/catalog/CatalogSection';
 import { LearnSection } from '@/features/learn/LearnSection';
 import { ui } from '@/i18n/strings';
 import { LocaleProvider } from './LocaleProvider';
@@ -13,6 +14,7 @@ function HomeRoute() {
     <>
       <p className="home-intro">{t(ui.home.intro)}</p>
       <LearnSection />
+      <CatalogSection />
     </>
   );
 }
