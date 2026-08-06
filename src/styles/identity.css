@@ -252,567 +252,6 @@ main {
   }
 }
 
-/* ══ 여정: 진행 표시 ══════════════════════════════════════ */
-
-/** 숫자를 막대 위에 얹는다. 옆에 붙이면 막대가 짧아지고 줄이 길어 보인다. */
-.journey-progress {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  width: min(34rem, 100%);
-  margin: 0 auto;
-}
-
-.journey-progress__track {
-  width: 100%;
-}
-
-.journey-progress__track {
-  flex: 1;
-  height: 4px;
-  background: var(--rule);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.journey-progress__count {
-  order: -1;
-  font-family: var(--font-label);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--ink-muted);
-}
-
-/* ══ 여정: 다음으로 ══════════════════════════════════════ */
-
-/** 진행 표시와 다음 버튼을 한 덩어리로 묶는다. */
-.journey-foot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-5);
-  margin-top: var(--space-7);
-  padding: var(--space-6) var(--space-4) 0;
-  border-top: var(--border-hair);
-}
-
-.journey-next {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-  text-align: center;
-}
-
-.journey-next__hint {
-  margin: 0;
-  font-size: var(--text-small);
-  color: var(--ink-muted);
-}
-
-.journey-next__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--touch-target);
-  padding: var(--space-3) var(--space-6);
-  background: var(--mark);
-  color: var(--paper);
-  font-size: var(--text-body);
-  font-weight: 700;
-  text-decoration: none;
-  border-radius: var(--radius-card);
-}
-
-.journey-next__button:hover,
-.journey-next__button:focus-visible {
-  background: var(--mark-deep);
-}
-
-/* ══ 소개 ════════════════════════════════════════════════ */
-
-/**
- * 첫 화면이 하는 일은 하나다. "이 표시를 읽을 수 있으면 버릴 수 있다"를
- * 열 초 안에 보여 주는 것. 그래서 표시를 크게 세우고 설명은 짧게 둔다.
- */
-.masthead {
-  padding-block: var(--space-7) var(--space-6);
-  text-align: center;
-}
-
-.masthead__figure {
-  color: var(--mark);
-  margin-bottom: var(--space-5);
-}
-
-.sort-mark--xl svg {
-  width: clamp(96px, 22vw, 148px);
-  height: clamp(96px, 22vw, 148px);
-}
-
-.masthead__title {
-  margin: 0 0 var(--space-4);
-  font-size: var(--text-hero);
-  font-weight: 800;
-  line-height: var(--leading-tight);
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-/**
- * 글줄은 판 전체 폭을 쓰지 않는다. 한 줄이 길면 눈이 되돌아올 곳을 잃는다.
- *
- * 색은 보조색이 아니라 본문색을 쓴다. 뒤에 그림이 깔려 있어서 보조색(--ink-muted)은
- * 최악의 자리에서 3.08:1까지 떨어진다. 본문색이면 같은 자리에서 7.57:1이다.
- */
-.masthead__intro {
-  max-width: var(--measure);
-  margin: 0 auto var(--space-7);
-  font-size: clamp(16px, 2.4vw, 19px);
-  color: var(--ink);
-  text-wrap: pretty;
-}
-
-.masthead__legend {
-  /* 소개의 가운데 자리라 여백을 1.2배 키웠다. */
-  padding: calc(var(--space-6) * 1.2) calc(var(--space-5) * 1.2);
-  background: var(--paper);
-  border: var(--border-hair);
-  border-radius: var(--radius-card);
-}
-
-.masthead__legend-caption {
-  margin: 0 0 var(--space-6);
-  font-size: var(--text-label);
-  font-weight: 700;
-  letter-spacing: var(--tracking-label);
-  color: var(--ink-muted);
-}
-
-/**
- * 좁은 화면에서는 두 칸, 넓어지면 네 칸으로 편다. `flex`로 감싸면 마지막 줄만
- * 가운데로 몰려 어긋나는데, 격자로 두면 어느 폭에서든 열이 맞는다.
- */
-.masthead__marks {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-@media (min-width: 620px) {
-  .masthead__marks {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* ── 분류 상자 ──────────────────────────────────────────── */
-
-/**
- * 그림을 배경으로 깔고 표시와 이름을 그 위에 얹는다. 원본 네 장의 크기와 비율이
- * 제각각이라 같은 규격(480×300)으로 맞춰 두었고, 여기서는 비율만 잡아 준다.
- *
- * 그림은 옅게 깐다. 그대로 두면 위에 얹은 글자의 대비가 무너진다.
- */
-.category-card {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-2);
-  /* 그림과 이름이 함께 들어가야 해서 세로를 더 준다. */
-  aspect-ratio: 5 / 6;
-  /* 아래를 넉넉히 비워 표시와 이름이 바닥에 붙지 않고 조금 위에 앉는다. */
-  padding: var(--space-5) var(--space-3) calc(var(--space-6) * 1.4);
-  overflow: hidden;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-card);
-}
-
-.category-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  background-image: var(--category-cover, none);
-  /* 칸 너비를 거의 다 쓴다. 여백을 잘라 둔 그림이라 이만큼 키워도 넘치지 않는다. */
-  background-size: 92% auto;
-  background-position: center 30%;
-  background-repeat: no-repeat;
-  opacity: 0.62;
-}
-
-/**
- * 아래쪽만 덮어 글자가 앉을 자리를 만든다. 그림은 위쪽에서 온전히 보인다.
- *
- * 70% 지점의 92%는 실측해서 정한 값이다. 그 아래로 내리면 음식물 분류의 글자가
- * 4.5:1을 못 넘긴다. 그림마다 가장 어두운 픽셀을 골라 합성해 확인했다.
- */
-.category-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
-    to bottom,
-    transparent 38%,
-    rgb(255 255 255 / 92%) 60%,
-    rgb(255 255 255 / 97%) 100%
-  );
-}
-
-/** 상자마다 분류색을 아주 옅게 깔아 네 갈래임을 색으로도 알린다. */
-.category-card--recyclable { background: #f2f7fd; }
-.category-card--food { background: #f2f8f3; }
-.category-card--general { background: #f5f6f5; }
-.category-card--special { background: #fdf5f0; }
-
-.category-card .sort-mark {
-  position: relative;
-  z-index: 1;
-}
-
-.category-card .sort-mark__label {
-  font-size: clamp(18px, 2vw, 27px);
-  letter-spacing: 0.05em;
-}
-
-/* ══ 챗봇 위젯 ═══════════════════════════════════════════ */
-
-/**
- * 우하단에 떠 있는 유일한 요소다. 나머지는 전부 선으로 경계를 만들기 때문에,
- * 여기서만 그림자를 써도 "떠 있다"는 뜻이 분명해진다.
- */
-.chat-widget__launcher {
-  position: fixed;
-  right: var(--space-4);
-  bottom: var(--space-4);
-  z-index: 20;
-  min-height: 56px;
-  padding: 0 var(--space-5);
-  background: var(--mark);
-  color: var(--paper);
-  font-size: var(--text-small);
-  font-weight: 700;
-  border: none;
-  /* 네모 느낌. 완전한 원보다 인쇄된 표기 방향에 맞는다. */
-  border-radius: 14px;
-  box-shadow: var(--shadow-float);
-  cursor: pointer;
-}
-
-.chat-widget__launcher:hover,
-.chat-widget__launcher:focus-visible {
-  background: var(--mark-deep);
-}
-
-.chat-widget__panel {
-  position: fixed;
-  inset: 0;
-  z-index: 25;
-  display: flex;
-  flex-direction: column;
-  background: var(--paper);
-}
-
-.chat-widget__panel[hidden] {
-  display: none;
-}
-
-.chat-widget__bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 2px solid var(--ink);
-}
-
-.chat-widget__bar button {
-  min-height: var(--touch-target);
-  padding: 0 var(--space-4);
-  background: none;
-  border: var(--border-hair);
-  border-radius: var(--radius-pill);
-  color: var(--ink);
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.chat-widget__body {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: var(--space-4);
-}
-
-/** 패널 안에서는 대화 화면이 카드 노릇을 하지 않는다. 이미 패널이 면이다. */
-.chat-widget__body .chat {
-  border: none;
-  border-radius: 0;
-  padding: 0;
-}
-
-@media (min-width: 640px) {
-  .chat-widget__panel {
-    inset: auto var(--space-4) calc(56px + var(--space-5)) auto;
-    width: 380px;
-    height: 560px;
-    max-height: calc(100vh - 120px);
-    border: 2px solid var(--ink);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-float);
-    overflow: hidden;
-  }
-}
-
-/**
- * 챗봇 버튼이 본문 끝을 가리지 않게 바닥을 띄운다.
- * "다음" 버튼은 흐름 안에 있으므로 이 여백이 그것도 함께 지켜 준다.
- */
-main {
-  padding-bottom: calc(56px + var(--space-6));
-}
-
-/* ══ 본문 리듬 ═══════════════════════════════════════════ */
-
-/**
- * 섹션 사이 간격을 한 값으로 통일한다. 컴포넌트마다 각자 margin을 들고 있으면
- * 화면마다 리듬이 달라져 "정돈되지 않은" 인상을 준다.
- */
-main {
-  padding-block: var(--space-6) calc(56px + var(--space-6));
-}
-
-main > * + * {
-  margin-top: var(--space-7);
-}
-
-.lesson,
-.catalog,
-.scanner,
-.chat,
-.game {
-  margin-bottom: 0;
-  padding: var(--space-6) var(--space-5);
-}
-
-/** 설명 문단은 판이 아무리 넓어도 읽는 폭을 넘기지 않는다. */
-.lesson__fallback-summary,
-.lesson__principle span,
-.catalog__empty-hint,
-.scanner__intro,
-.chat__intro,
-.game__intro,
-.catalog-dialog__summary {
-  max-width: var(--measure);
-  text-wrap: pretty;
-}
-
-/* ══ 4대 원칙 ════════════════════════════════════════════ */
-
-/**
- * 원칙은 넷이고 서로 대등하다. 격자로 두면 폭이 바뀌어도 네 칸의 무게가 같다.
- */
-/** 원칙 제목은 그림 넉 장 위에 가운데로 선다. */
-.lesson__principles-title {
-  margin: var(--space-7) 0 var(--space-5);
-  font-size: var(--text-title);
-  font-weight: 800;
-  text-align: center;
-}
-
-.lesson__principles {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/**
- * 그림 안에 이미 원칙 이름이 적혀 있어 글자를 덧붙이지 않는다. 카드는 그림을
- * 담는 테두리 노릇만 한다.
- */
-.lesson__principle {
-  overflow: hidden;
-  border: var(--border-hair);
-  border-radius: var(--radius-card);
-  background: var(--paper);
-}
-
-.lesson__principle-image {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-/** 그림을 못 보는 사람에게는 이 설명이 전부다. 화면에서만 감춘다. */
-.lesson__principle-note {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-/* ══ 도감 격자 ═══════════════════════════════════════════ */
-
-/**
- * 카드가 너무 좁으면 이름이 두 줄로 접히고, 너무 넓으면 한 줄에 두 장만 남는다.
- * 160px을 하한으로 두면 360px에서 두 장, 넓은 화면에서 다섯 장이 들어간다.
- */
-.catalog__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
-  gap: var(--space-5);
-}
-
-.catalog-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-5);
-  text-align: left;
-  cursor: pointer;
-}
-
-.catalog-card__name {
-  font-size: var(--text-body);
-}
-
-.catalog__search input {
-  min-height: var(--touch-target);
-  border-radius: var(--radius-card);
-}
-
-/* ══ 영상 ════════════════════════════════════════════════ */
-
-/**
- * 영상은 이 화면의 주인공이라 판 안쪽 여백을 밀어내고 넓게 쓴다.
- * 16:9를 미리 잡아 두면 파일이 아직 없어도 자리가 흔들리지 않는다.
- */
-.lesson__video,
-.lesson__poster {
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border: var(--border-hair);
-}
-
-@media (min-width: 720px) {
-  .lesson {
-    padding-inline: var(--space-6);
-  }
-
-  .lesson__video,
-  .lesson__poster {
-    margin-inline: calc(var(--space-6) * -1);
-    width: calc(100% + var(--space-6) * 2);
-    max-width: none;
-    border-radius: 0;
-    border-inline: none;
-  }
-}
-
-.lesson__fallback {
-  border: var(--border-hair);
-  border-radius: var(--radius-card);
-  background: var(--film);
-  box-shadow: none;
-}
-
-/* ══ 스캐너·챗봇·게임 다듬기 ═════════════════════════════ */
-
-.scanner__intro,
-.chat__intro,
-.game__intro {
-  color: var(--ink-muted);
-}
-
-/** 누를 수 있는 것은 전부 48px을 넘긴다. */
-button,
-.scanner button,
-.chat button,
-.game button {
-  min-height: var(--touch-target);
-}
-
-.chat-widget__body button {
-  min-height: var(--touch-target);
-}
-
-/* ══ 소개 배경 그림 ══════════════════════════════════════ */
-
-/**
- * 대표 이미지를 배경으로 깐다.
- *
- * 글자 뒤에 사진을 그대로 깔면 실측해 둔 대비가 무너진다. 그래서 그림은
- * 별도 층에 두고 투명도를 낮춘 뒤, 글자는 그 위에서 원래 색을 그대로 쓴다.
- * 파일이 없으면 배경만 비고 나머지는 그대로 보인다. CSS 배경은 조용히 실패한다.
- */
-/**
- * 소개 화면은 **자기 배경을 불투명하게 덮는다.**
- *
- * 처음엔 그림을 14%로만 깔았는데, 화면 전체에 깔린 숲 질감과 겹쳐서 두 그림이
- * 서로를 흐리게 만들었다. 여기서는 숲을 막고 이 그림 하나만 또렷하게 둔다.
- */
-.masthead {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  border-radius: var(--radius-card);
-  background: var(--film);
-}
-
-.masthead::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  /**
-   * 경로는 React가 `--intro-cover`로 넘긴다. Vite는 CSS의 `url()`에는 base를
-   * 붙이지 않아서, 여기에 절대 경로를 직접 적으면 배포본에서 404가 난다.
-   */
-  background-image: var(--intro-cover, none);
-  background-size: cover;
-  background-position: center;
-  opacity: 0.55;
-}
-
-/**
- * 글자 뒤만 덮개를 씌운다.
- *
- * 그림을 진하게 하면 대비가 떨어지므로, 위쪽(이름과 제목이 있는 자리)은 배경색을
- * 두껍게 얹고 가운데는 얇게 둬서 그림이 드러나게 한다. 아래는 완전히 걷어 내
- * 분류 카드가 깨끗한 바탕 위에 놓이게 한다.
- */
-.masthead::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
-    to bottom,
-    rgb(244 250 246 / 82%) 0%,
-    rgb(244 250 246 / 52%) 34%,
-    rgb(244 250 246 / 70%) 62%,
-    var(--film) 88%
-  );
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .masthead::before {
-    opacity: 0.2;
-  }
-}
-
 /* ══ 로고 ═══════════════════════════════════════════════ */
 
 .wordmark {
@@ -846,18 +285,6 @@ button,
   margin: 0 auto;
 }
 
-.journey-progress__track {
-  width: 100%;
-}
-
-.journey-progress__track {
-  flex: 1;
-  height: 4px;
-  background: var(--rule);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
 .journey-progress__count {
   order: -1;
   font-family: var(--font-label);
@@ -919,7 +346,7 @@ button,
  * 열 초 안에 보여 주는 것. 그래서 표시를 크게 세우고 설명은 짧게 둔다.
  */
 .masthead {
-  padding-block: var(--space-7) var(--space-6);
+  padding-block: var(--space-4) var(--space-6);
   text-align: center;
 }
 
@@ -1157,18 +584,18 @@ button,
  * 챗봇 버튼이 본문 끝을 가리지 않게 바닥을 띄운다.
  * "다음" 버튼은 흐름 안에 있으므로 이 여백이 그것도 함께 지켜 준다.
  */
-main {
-  padding-bottom: calc(56px + var(--space-6));
-}
-
 /* ══ 본문 리듬 ═══════════════════════════════════════════ */
 
 /**
  * 섹션 사이 간격을 한 값으로 통일한다. 컴포넌트마다 각자 margin을 들고 있으면
  * 화면마다 리듬이 달라져 "정돈되지 않은" 인상을 준다.
  */
+/**
+ * 위는 바짝 붙인다. 헤더 바로 아래에서 본문이 시작해야 화면이 끊겨 보이지 않는다.
+ * 아래는 챗봇 버튼(64px)이 본문 끝을 가리지 않을 만큼 비운다.
+ */
 main {
-  padding-block: var(--space-6) calc(56px + var(--space-6));
+  padding-block: var(--space-3) calc(64px + var(--space-7));
 }
 
 main > * + * {
@@ -1512,16 +939,8 @@ button,
 }
 
 /* 챗봇 버튼이 커진 만큼 본문 바닥도 함께 내린다 */
-main {
-  padding-bottom: calc(64px + var(--space-7));
-}
-
 /* 진행 표시 */
 
-
-.journey-progress__track {
-  height: 6px;
-}
 
 .journey-progress__count {
   font-size: var(--text-small);
@@ -2041,6 +1460,13 @@ main {
  */
 .journey-progress__track {
   display: flex;
+  /**
+   * 세로 방향 flex 안에 있으므로 `flex`를 주면 안 된다. `flex-basis: 0`이
+   * 여기 적은 높이를 덮어써서 막대가 0으로 납작해지고, 테두리만 남아 채워진
+   * 칸이 아예 보이지 않는다. 한 번 그렇게 무너진 적이 있다.
+   */
+  flex: none;
+  width: 100%;
   height: 28px;
   /**
    * 남은 칸은 아주 옅게. 처음엔 구분선 색(--rule)을 썼는데 채워진 초록과 구별이
@@ -2830,10 +2256,10 @@ main {
   z-index: 21;
   display: flex;
   align-items: stretch;
-  max-width: min(300px, calc(100vw - var(--space-4) * 2));
+  max-width: min(380px, calc(100vw - var(--space-4) * 2));
   background: var(--paper);
   border: 2px solid var(--mark);
-  border-radius: 16px;
+  border-radius: 18px;
   box-shadow: var(--shadow-float);
   animation: nudge-in 220ms ease-out;
 }
@@ -2849,10 +2275,10 @@ main {
 .chat-widget__nudge::after {
   content: '';
   position: absolute;
-  right: 26px;
-  bottom: -9px;
-  width: 14px;
-  height: 14px;
+  right: 30px;
+  bottom: -10px;
+  width: 16px;
+  height: 16px;
   background: var(--paper);
   border-right: 2px solid var(--mark);
   border-bottom: 2px solid var(--mark);
@@ -2862,21 +2288,21 @@ main {
 .chat-widget__nudge-open {
   flex: 1;
   min-height: 0;
-  padding: var(--space-3) var(--space-2) var(--space-3) var(--space-4);
+  padding: var(--space-4) var(--space-3) var(--space-4) var(--space-5);
   background: none;
   border: none;
   color: var(--mark-deep);
-  font-size: var(--text-small);
+  font-size: clamp(15px, 1.2vw, 18px);
   font-weight: 700;
   text-align: left;
-  line-height: 1.4;
+  line-height: 1.45;
   cursor: pointer;
 }
 
 .chat-widget__nudge-close {
   flex: 0 0 auto;
   min-height: 0;
-  width: 38px;
+  width: 46px;
   padding: 0;
   background: none;
   border: none;
@@ -2918,12 +2344,24 @@ main {
   }
 }
 
+/**
+ * 수거함을 고르는 자리. 회색 바탕으로 본문과 갈라 놓아 "여기서 고른다"가
+ * 눈에 먼저 들어오게 한다.
+ */
+.game-play__bins {
+  margin-top: var(--space-6);
+  padding: var(--space-5);
+  background: #eef0ef;
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
+}
+
 .game-play__bin {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-2) var(--space-4);
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-3) var(--space-4);
   background: var(--paper);
   border: 2px solid var(--rule);
   border-radius: var(--radius-card);
@@ -2931,15 +2369,19 @@ main {
   transition: border-color 120ms ease, transform 120ms ease;
 }
 
+/**
+ * 원본이 149×164(약 10:11)라 그 비율로 자리를 잡는다. 칸을 정사각으로 두면
+ * 위아래에 빈 곳이 남아 그림이 실제보다 작아 보인다.
+ */
 .game-play__bin-image {
   display: block;
   width: 100%;
-  max-width: 130px;
-  height: auto;
+  aspect-ratio: 149 / 164;
+  object-fit: contain;
 }
 
 .game-play__bin-name {
-  font-size: var(--text-small);
+  font-size: clamp(15px, 1.2vw, 19px);
   font-weight: 700;
   letter-spacing: 0.06em;
 }
