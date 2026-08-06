@@ -6,7 +6,7 @@ import { sources } from '../../shared/sources';
 import type { ChatResponse, Locale } from '../../shared/types';
 import type { Env } from './env';
 import { CHAT_MODEL, callGemini, type FetchLike } from './gemini';
-import { errorResponse, jsonResponse, limitHistory } from './security';
+import { errorResponse, jsonResponse, limitHistory, logFailure } from './security';
 
 const TIMEOUT_MS = 10_000;
 
@@ -171,8 +171,9 @@ export async function handleChat(
       fetchImpl,
     });
     return jsonResponse(keepKnownIds(answer, knowledge), origin);
-  } catch {
-    // 모델 오류 내용에는 프롬프트가 섞일 수 있으므로 그대로 내보내지 않는다.
+  } catch (error) {
+    // 원인 코드만 남긴다. 프롬프트와 대화 내용은 로그에도 남기지 않는다.
+    logFailure('chat', error);
     return errorResponse('upstream_failed', 502, origin);
   }
 }

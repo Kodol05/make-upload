@@ -24,6 +24,10 @@
     }
   ],
 
+  // Gemini는 일부 지역에서 오는 요청을 막는다. Worker를 백엔드에 가까운 곳에 두어
+  // 출구 IP가 지원 지역이 되도록 한다.
+  "placement": { "mode": "smart" },
+
   "observability": {
     // 프롬프트와 사용자가 보낸 내용이 로그에 남지 않도록 본문을 기록하지 않는다.
     "enabled": true
