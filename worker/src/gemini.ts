@@ -77,6 +77,13 @@ function adapt(node: unknown): unknown {
     out.maxItems = prefixItems.length;
   }
 
+  // Gemini는 const를 모른다. 값이 하나뿐인 enum으로 바꾼다.
+  if ('const' in source) {
+    delete out.const;
+    out.enum = [source.const];
+    out.type ??= typeof source.const;
+  }
+
   return out;
 }
 

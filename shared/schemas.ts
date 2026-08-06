@@ -56,6 +56,15 @@ export const scanRequestSchema = z.object({
   }),
 });
 
+/**
+ * 스캔 결과의 품목 ID. 모델이 못 맞히면 `unknown`이다.
+ *
+ * `z.union([itemIdSchema, z.literal('unknown')])`으로 쓰면 JSON Schema가
+ * `{ anyOf: [..., { const: 'unknown' }] }`가 되는데 Gemini는 `const`를 모른다.
+ * 하나의 enum으로 두면 평평하게 나와 그대로 받는다.
+ */
+export const scanItemIdSchema = z.enum([...itemIds, 'unknown']);
+
 const boxCoordinate = z.number().min(0).max(1000);
 
 export const scanResponseSchema = z.object({
@@ -63,7 +72,7 @@ export const scanResponseSchema = z.object({
     .array(
       z.object({
         box: z.tuple([boxCoordinate, boxCoordinate, boxCoordinate, boxCoordinate]),
-        itemId: z.union([itemIdSchema, z.literal('unknown')]),
+        itemId: scanItemIdSchema,
         label: z.string().min(1).max(80),
         certainty: z.enum(['high', 'medium', 'low']),
         reason: z.string().min(1).max(240),
