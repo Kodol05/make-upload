@@ -1542,7 +1542,8 @@ button,
      */
     inset: auto var(--space-5) var(--space-5) auto;
     width: min(620px, calc(100vw - var(--space-5) * 2));
-    height: min(940px, calc(100vh - var(--space-6) * 2));
+    /* 화면이 허락하는 만큼 위로 늘린다. 대화가 길어져도 스크롤을 덜 하게 된다. */
+    height: min(1100px, calc(100vh - var(--space-5) * 2));
     padding: 10px;
     background: var(--ink);
     border: none;
@@ -2484,10 +2485,10 @@ main {
   background-image: var(--game-brief, none);
   background-size: cover;
   background-position: center;
-  opacity: 0.32;
+  opacity: 0.2;
 }
 
-/** 글이 앉는 가운데를 덮어 읽히게 한다. 위아래는 그림이 그대로 보인다. */
+/** 글이 앉는 가운데를 덮어 읽히게 한다. 위아래는 그림이 조금 더 보인다. */
 .game--brief::after {
   content: '';
   position: absolute;
@@ -2495,10 +2496,10 @@ main {
   z-index: -1;
   background: linear-gradient(
     to bottom,
-    rgb(244 250 246 / 30%) 0%,
-    rgb(244 250 246 / 88%) 30%,
-    rgb(244 250 246 / 88%) 74%,
-    rgb(244 250 246 / 30%) 100%
+    rgb(244 250 246 / 52%) 0%,
+    rgb(244 250 246 / 90%) 30%,
+    rgb(244 250 246 / 90%) 74%,
+    rgb(244 250 246 / 52%) 100%
   );
 }
 
