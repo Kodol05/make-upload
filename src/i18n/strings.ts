@@ -332,6 +332,18 @@ export const ui = {
       zh: '换个词搜索，或者问问AI。',
       vi: 'Thử từ khác, hoặc hỏi AI.',
     }),
+    /**
+     * 검색이 0건일 때 챗봇으로 넘기는 단추.
+     *
+     * 안내문은 진작부터 "AI에게 물어보세요"라고 말하고 있었는데 정작 갈 길이
+     * 없었다. 16종은 자주 헷갈리는 것을 고른 것이지 한국의 쓰레기 전부가 아니다.
+     */
+    emptyAsk: localized('ui', 'catalog.emptyAsk', {
+      ko: 'AI에게 물어보기',
+      en: 'Ask the AI',
+      zh: '问问AI',
+      vi: 'Hỏi AI',
+    }),
     /** 도감 상세에서 챗봇을 부르는 단추. 도감이 다 못 답하는 것을 이어 받는다. */
     askAboutThis: localized('ui', 'catalog.askAboutThis', {
       ko: '이 품목에 대해 물어보기',

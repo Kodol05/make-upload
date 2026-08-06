@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocale } from '@/app/useLocale';
+import { useAskChat } from '@/features/chat/askChat';
 import { FeatureErrorBoundary } from '@/components/FeatureErrorBoundary';
 import { PhotoFinder } from '@/features/scanner/PhotoFinder';
 import { ui } from '@/i18n/strings';
@@ -31,6 +32,7 @@ export function CatalogSection({
   onRequestHandled?: () => void;
 } = {}) {
   const { locale, t } = useLocale();
+  const { ask } = useAskChat();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<CategoryFilter>('all');
   const [pickedId, setPickedId] = useState<ItemId | null>(null);
@@ -123,6 +125,22 @@ export function CatalogSection({
         <div className="catalog__empty">
           <p className="catalog__empty-title">{t(ui.catalog.empty)}</p>
           <p className="catalog__empty-hint">{t(ui.catalog.emptyHint)}</p>
+          {/**
+           * 검색한 말을 그대로 들고 챗봇으로 넘긴다. 안내문이 진작부터 "AI에게
+           * 물어보세요"라고 말하고 있었는데 갈 길이 없었다.
+           *
+           * 찾던 말이 있을 때만 보여 준다. 거르기만 눌러서 비었을 때는 물어볼
+           * 것이 없다.
+           */}
+          {query.trim() && (
+            <button
+              type="button"
+              className="catalog__empty-ask"
+              onClick={() => ask({ question: query.trim() })}
+            >
+              {t(ui.catalog.emptyAsk)}
+            </button>
+          )}
         </div>
       ) : (
         <div className="catalog__grid">

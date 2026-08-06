@@ -2705,6 +2705,27 @@ main {
   border-color: var(--mark);
 }
 
+/** 검색이 비었을 때 챗봇으로 넘기는 단추. 상세의 것과 같은 모양을 쓴다. */
+.catalog__empty-ask {
+  min-height: var(--touch-target);
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  background: none;
+  color: var(--mark-deep);
+  font-size: var(--text-body);
+  font-weight: 700;
+  border: 2px solid var(--rule);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.catalog__empty-ask:hover,
+.catalog__empty-ask:focus-visible {
+  background: var(--wash);
+  border-color: var(--mark);
+}
+
 /* ── 공식 출처 ──────────────────────────────────────────── */
 
 /**

@@ -197,6 +197,24 @@ describe('App integration', () => {
     expect(window.location.hash).toBe('#/catalog');
   });
 
+  /**
+   * 16종은 자주 헷갈리는 것을 고른 것이지 한국의 쓰레기 전부가 아니다. 없는
+   * 것을 찾았을 때 안내문만 띄우고 끝내면 거기가 막다른 길이 된다.
+   */
+  it('hands an unfound search over to the chat', async () => {
+    render(<App />);
+    act(() => goTo('#/catalog'));
+
+    await userEvent.type(
+      screen.getByLabelText(ui.catalog.searchLabel.ko),
+      '고양이 모래',
+    );
+    await userEvent.click(screen.getByRole('button', { name: ui.catalog.emptyAsk.ko }));
+
+    // 찾던 말이 그대로 질문 자리에 들어와 있다.
+    expect(screen.getByLabelText(ui.chat.inputLabel.ko)).toHaveValue('고양이 모래');
+  });
+
   it('closes that dialog again', async () => {
     render(<App />);
     act(() => goTo('#/catalog'));
