@@ -968,6 +968,27 @@ main {
 .game-play__bin--general:not(:disabled) { border-color: var(--color-general); color: var(--color-general); }
 .game-play__bin--special:not(:disabled) { border-color: var(--color-special); color: var(--color-special); }
 
+/* 한 기능이 무너졌을 때. 색만으로 알리지 않고 문구를 함께 둔다. */
+.feature-error {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  border: 1px solid var(--color-special);
+  border-left-width: 4px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.feature-error__title {
+  margin: 0 0 var(--space-1);
+  font-weight: 700;
+  color: var(--color-special);
+}
+
+.feature-error__hint {
+  margin: 0 0 var(--space-2);
+  color: var(--color-muted);
+}
+
 .app-footer {
   padding: var(--space-5) var(--space-4);
   border-top: 1px solid var(--color-border);
