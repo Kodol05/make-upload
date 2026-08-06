@@ -45,12 +45,17 @@ describe('App integration', () => {
 
     await userEvent.selectOptions(languageSelect(), 'vi');
 
-    // 베트남어 문안이 아직 없으므로 한국어와 (임시값) 표시가 함께 보인다.
-    for (const title of [ui.learn.title.ko, ui.catalog.title.ko, ui.chat.title.ko]) {
+    // 한 섹션만 바뀌고 나머지가 한국어로 남는 일이 없어야 한다.
+    for (const title of [ui.learn.title, ui.catalog.title, ui.chat.title]) {
       expect(
-        screen.getByRole('heading', { name: `${title} ${PLACEHOLDER_LABEL}`, level: 2 }),
+        screen.getByRole('heading', { name: title.vi, level: 2 }),
       ).toBeInTheDocument();
+      expect(
+        screen.queryByRole('heading', { name: title.ko, level: 2 }),
+      ).not.toBeInTheDocument();
     }
+    // 번역이 빠진 곳에만 붙는 표시다. 지금은 어디에도 남아 있으면 안 된다.
+    expect(screen.queryByText(new RegExp(PLACEHOLDER_LABEL))).not.toBeInTheDocument();
   });
 
   it('never leaks the raw placeholder in any language, on either route', async () => {
