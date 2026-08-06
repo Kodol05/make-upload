@@ -63,11 +63,40 @@
   color: var(--mark);
 }
 
+/* ══ 판 ══════════════════════════════════════════════════ */
+
+/**
+ * 헤더·진행 표시·본문이 같은 폭에 선다. 하나라도 빠지면 왼쪽 끝이 어긋나
+ * 화면이 따로 노는 것처럼 보인다.
+ */
+.app-header__bar,
+.app-header__nav,
+.journey-progress,
+main {
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
 /* ══ 헤더 ════════════════════════════════════════════════ */
 
 .app-header {
   background: var(--paper);
   border-bottom: 2px solid var(--ink);
+}
+
+.app-header__bar {
+  padding-block: var(--space-4);
+}
+
+.app-header__title {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.app-header__nav {
+  gap: var(--space-1) var(--space-2);
+  padding-bottom: var(--space-3);
 }
 
 .app-header__logo {
@@ -298,34 +327,75 @@
 
 /* ══ 소개 ════════════════════════════════════════════════ */
 
+/**
+ * 첫 화면이 하는 일은 하나다. "이 표시를 읽을 수 있으면 버릴 수 있다"를
+ * 열 초 안에 보여 주는 것. 그래서 표시를 크게 세우고 설명은 짧게 둔다.
+ */
 .masthead {
-  padding: var(--space-6) var(--space-4) var(--space-5);
+  padding-block: var(--space-7) var(--space-6);
   text-align: center;
 }
 
+.masthead__figure {
+  color: var(--mark);
+  margin-bottom: var(--space-5);
+}
+
+.sort-mark--xl svg {
+  width: clamp(96px, 22vw, 148px);
+  height: clamp(96px, 22vw, 148px);
+}
+
 .masthead__title {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-4);
   font-size: var(--text-hero);
   font-weight: 800;
   line-height: var(--leading-tight);
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
+/** 글줄은 판 전체 폭을 쓰지 않는다. 한 줄이 길면 눈이 되돌아올 곳을 잃는다. */
 .masthead__intro {
-  max-width: 34rem;
-  margin: 0 auto var(--space-6);
+  max-width: var(--measure);
+  margin: 0 auto var(--space-7);
+  font-size: clamp(16px, 2.4vw, 18px);
   color: var(--ink-muted);
+  text-wrap: pretty;
 }
 
-.masthead__marks {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-5) var(--space-6);
-  padding: var(--space-5) var(--space-4);
+.masthead__legend {
+  padding: var(--space-6) var(--space-5);
   background: var(--paper);
   border: var(--border-hair);
   border-radius: var(--radius-card);
+}
+
+.masthead__legend-caption {
+  margin: 0 0 var(--space-6);
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  color: var(--ink-muted);
+}
+
+/**
+ * 좁은 화면에서는 두 칸, 넓어지면 네 칸으로 편다. `flex`로 감싸면 마지막 줄만
+ * 가운데로 몰려 어긋나는데, 격자로 두면 어느 폭에서든 열이 맞는다.
+ */
+.masthead__marks {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 620px) {
+  .masthead__marks {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 /* ══ 챗봇 위젯 ═══════════════════════════════════════════ */
@@ -422,4 +492,151 @@
  */
 main {
   padding-bottom: calc(56px + var(--space-6));
+}
+
+/* ══ 본문 리듬 ═══════════════════════════════════════════ */
+
+/**
+ * 섹션 사이 간격을 한 값으로 통일한다. 컴포넌트마다 각자 margin을 들고 있으면
+ * 화면마다 리듬이 달라져 "정돈되지 않은" 인상을 준다.
+ */
+main {
+  padding-block: var(--space-6) calc(56px + var(--space-6));
+}
+
+main > * + * {
+  margin-top: var(--space-7);
+}
+
+.lesson,
+.catalog,
+.scanner,
+.chat,
+.game {
+  margin-bottom: 0;
+  padding: var(--space-6) var(--space-5);
+}
+
+/** 설명 문단은 판이 아무리 넓어도 읽는 폭을 넘기지 않는다. */
+.lesson__fallback-summary,
+.lesson__principle span,
+.catalog__empty-hint,
+.scanner__intro,
+.chat__intro,
+.game__intro,
+.catalog-dialog__summary {
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+/* ══ 4대 원칙 ════════════════════════════════════════════ */
+
+/**
+ * 원칙은 넷이고 서로 대등하다. 격자로 두면 폭이 바뀌어도 네 칸의 무게가 같다.
+ */
+.lesson__principles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.lesson__principle {
+  padding: var(--space-5) var(--space-4);
+  background: var(--film);
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
+}
+
+.lesson__principle strong {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--text-body);
+  font-weight: 800;
+  color: var(--mark-deep);
+}
+
+.lesson__principle span {
+  font-size: var(--text-small);
+  color: var(--ink-muted);
+}
+
+/* ══ 도감 격자 ═══════════════════════════════════════════ */
+
+/**
+ * 카드가 너무 좁으면 이름이 두 줄로 접히고, 너무 넓으면 한 줄에 두 장만 남는다.
+ * 160px을 하한으로 두면 360px에서 두 장, 넓은 화면에서 다섯 장이 들어간다.
+ */
+.catalog__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-4);
+}
+
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  text-align: left;
+  cursor: pointer;
+}
+
+.catalog__search input {
+  min-height: var(--touch-target);
+  border-radius: var(--radius-card);
+}
+
+/* ══ 영상 ════════════════════════════════════════════════ */
+
+/**
+ * 영상은 이 화면의 주인공이라 판 안쪽 여백을 밀어내고 넓게 쓴다.
+ * 16:9를 미리 잡아 두면 파일이 아직 없어도 자리가 흔들리지 않는다.
+ */
+.lesson__video,
+.lesson__poster {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: var(--border-hair);
+}
+
+@media (min-width: 720px) {
+  .lesson {
+    padding-inline: var(--space-6);
+  }
+
+  .lesson__video,
+  .lesson__poster {
+    margin-inline: calc(var(--space-6) * -1);
+    width: calc(100% + var(--space-6) * 2);
+    max-width: none;
+    border-radius: 0;
+    border-inline: none;
+  }
+}
+
+.lesson__fallback {
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
+  background: var(--film);
+  box-shadow: none;
+}
+
+/* ══ 스캐너·챗봇·게임 다듬기 ═════════════════════════════ */
+
+.scanner__intro,
+.chat__intro,
+.game__intro {
+  color: var(--ink-muted);
+}
+
+/** 누를 수 있는 것은 전부 48px을 넘긴다. */
+button,
+.scanner button,
+.chat button,
+.game button {
+  min-height: var(--touch-target);
+}
+
+.chat-widget__body button {
+  min-height: var(--touch-target);
 }

@@ -29,7 +29,7 @@ export function SortMark({
   tone: Category | 'brand';
   /** 표시 아래에 찍히는 말. 비우면 기호만 보인다. */
   label?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }) {
   return (
     <span className={`sort-mark sort-mark--${size} ${TONE_CLASS[tone]}`}>

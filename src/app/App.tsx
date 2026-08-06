@@ -27,17 +27,21 @@ function IntroRoute() {
 
   return (
     <section className="masthead">
+      <div className="masthead__figure">
+        <SortMark tone="brand" size="xl" />
+      </div>
       <h2 className="masthead__title">{t(ui.catalog.title)}</h2>
       <p className="masthead__intro">{t(ui.home.intro)}</p>
-      <div className="masthead__marks">
-        {categories.map((category) => (
-          <SortMark
-            key={category}
-            tone={category}
-            label={t(ui.category[category])}
-            size="lg"
-          />
-        ))}
+
+      <div className="masthead__legend">
+        <p className="masthead__legend-caption">{t(ui.home.legendCaption)}</p>
+        <ul className="masthead__marks">
+          {categories.map((category) => (
+            <li key={category}>
+              <SortMark tone={category} label={t(ui.category[category])} size="lg" />
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

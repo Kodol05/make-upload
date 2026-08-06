@@ -170,6 +170,13 @@ export const ui = {
   },
 
   home: {
+    /** 소개 화면에서 네 분류를 세워 놓고 그 위에 붙이는 말. */
+    legendCaption: localized('ui', 'home.legendCaption', {
+      ko: '한국의 쓰레기는 네 갈래로 나뉩니다',
+      en: 'Waste in Korea is sorted into four groups',
+      zh: '韩国的垃圾分为四类',
+      vi: 'Rác ở Hàn Quốc được chia thành bốn nhóm',
+    }),
     intro: localized('ui', 'home.intro', {
       ko: '한국의 분리배출을 영상으로 배우고, 사진으로 찾고, 도감에서 확인하세요.',
       en: 'Learn how Korea sorts its waste: watch the video, snap a photo, and check the guide.',
