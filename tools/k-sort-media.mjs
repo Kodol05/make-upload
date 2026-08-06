@@ -274,7 +274,7 @@ export function narrationFilter(shots, ttsRequests, bgm) {
   const narration = `${labels}amix=inputs=${shots.length}:normalize=0[narration]`;
   if (!bgm) return [...inputFilters, narration, '[narration]anull[aout]'].join(';');
   const totalDuration = shots.reduce((total, shot) => total + shot.durationSeconds, 0);
-  return [...inputFilters, narration, `[${shots.length + 1}:a]atrim=duration=${totalDuration}[bgm]`, '[bgm][narration]sidechaincompress=threshold=0.03:ratio=8:attack=25:release=300[ducked]', '[ducked][narration]amix=inputs=2:normalize=0[aout]'].join(';');
+  return [...inputFilters, narration, '[narration]asplit=2[narrduck][narrmix]', `[${shots.length + 1}:a]atrim=duration=${totalDuration}[bgm]`, '[bgm][narrduck]sidechaincompress=threshold=0.03:ratio=8:attack=25:release=300[ducked]', '[ducked][narrmix]amix=inputs=2:normalize=0[aout]'].join(';');
 }
 
 export function buildAssemblyInputs(concatFile, narrationPaths, bgmPath) {

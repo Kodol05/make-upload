@@ -13,6 +13,7 @@ import {
   isValidMaster,
   isValidTts,
   mergeRecords,
+  narrationFilter,
   parseArgs,
   shouldSkip,
 } from './k-sort-media.mjs';
@@ -90,6 +91,13 @@ describe('K-SORT media tooling', () => {
       { clipId: 'S01', requestId: 'fal-3', outputPath: 'S01.mp4' },
       { clipId: 'S02', requestId: 'fal-2', outputPath: 'S02.mp4' },
     ]);
+  });
+
+  it('splits narration before ducking BGM so each filter input is consumed once', () => {
+    const filter = narrationFilter([{ id: 'S01', startSeconds: 0, durationSeconds: 120 }], [{ id: 'S01' }], 'bgm.mp3');
+    expect(filter).toContain('[narration]asplit=2[narrduck][narrmix]');
+    expect(filter).toContain('[bgm][narrduck]sidechaincompress=');
+    expect(filter).toContain('[ducked][narrmix]amix=inputs=2:normalize=0[aout]');
   });
 
   it('builds the required stable Seedance prompt and autodetecting tts ffmpeg command', () => {
