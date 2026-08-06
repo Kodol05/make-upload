@@ -31,13 +31,10 @@ describe('shared content structure', () => {
     }
   });
 
-  it('points every step image at the agreed path', () => {
+  it('gives every item one representative image at the agreed path', () => {
+    // 이미지는 품목당 한 장이다. 도감과 스캔 선택 목록이 같은 파일을 쓴다.
     for (const item of catalogItems) {
-      for (const step of item.steps) {
-        expect(step.image, `${item.id}/${step.id}`).toBe(
-          `/images/items/${item.id}/${step.id}.webp`,
-        );
-      }
+      expect(item.image, item.id).toBe(`/images/items/${item.id}.webp`);
     }
   });
 
@@ -72,9 +69,9 @@ describe('shared content structure', () => {
           item.commonMistake[locale].trim(),
           `${item.id}.commonMistake.${locale}`,
         ).not.toBe('');
+        expect(item.imageAlt[locale].trim(), `${item.id}.imageAlt.${locale}`).not.toBe('');
         for (const step of item.steps) {
           expect(step.text[locale].trim(), `${item.id}.${step.id}.text.${locale}`).not.toBe('');
-          expect(step.alt[locale].trim(), `${item.id}.${step.id}.alt.${locale}`).not.toBe('');
         }
       }
     }
