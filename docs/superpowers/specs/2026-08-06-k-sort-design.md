@@ -179,7 +179,11 @@ Worker는 검수 지식을 시스템 지시로 제공하고 Gemini의 구조화 
 
 ### `POST /api/scan`
 
-요청은 `multipart/form-data`이며 `locale`, `sessionId`, `image`를 포함한다. 허용 형식은 JPEG, PNG, WebP이고 최대 크기는 1.5MB다.
+요청은 JSON이며 `locale`, `sessionId`, `image`를 포함한다. `image`는 `{ mimeType, data }` 형태이고 `data`는 `data:` 접두사가 없는 base64다. 허용 형식은 JPEG, PNG, WebP이고 최대 크기는 1.5MB다.
+
+`multipart/form-data` 대신 base64를 쓰는 이유는 무료 Cloudflare Workers의 요청당 CPU가 10ms이기 때문이다. 1.5MB를 Worker에서 자바스크립트로 인코딩하면 이 시간을 넘길 수 있다. 브라우저는 네이티브 API로 처리하므로 부담이 없고, Worker는 받은 문자열을 그대로 Gemini의 `inlineData`에 넘기기만 한다. 크기 검사도 디코딩 없이 base64 길이로 어림해 모델을 부르기 전에 막는다.
+
+스캔 화면은 두 가지로 쓴다. 무엇인지 모르면 사진을 찍어 AI에게 묻고, 이미 아는 품목이면 등록된 16종에서 골라 도감으로 바로 들어간다. 두 번째 길은 AI를 부르지 않으며, 목록에 쓰는 이미지는 도감 대표 이미지를 그대로 재사용한다.
 
 응답 JSON:
 
