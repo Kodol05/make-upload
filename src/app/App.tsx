@@ -2,13 +2,14 @@ import { AppFooter } from '@/components/AppFooter';
 import { AppHeader } from '@/components/AppHeader';
 import { FeatureErrorBoundary } from '@/components/FeatureErrorBoundary';
 import { SortMark } from '@/components/SortMark';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { CatalogSection } from '@/features/catalog/CatalogSection';
 import { ChatWidget } from '@/features/chat/ChatWidget';
 import { GamePage } from '@/features/game/GamePage';
 import { LearnSection } from '@/features/learn/LearnSection';
 import { ScannerSection } from '@/features/scanner/ScannerSection';
 import { ui } from '@/i18n/strings';
+import { assetUrl } from '@/lib/assetUrl';
 import { categories, type ItemId } from '@shared/types';
 import { journey, stepIndexOf } from './journey';
 import { LocaleProvider } from './LocaleProvider';
@@ -26,7 +27,17 @@ function IntroRoute() {
   const { t } = useLocale();
 
   return (
-    <section className="masthead">
+    <section
+      className="masthead"
+      /**
+       * 대표 이미지 경로를 CSS로 넘긴다. Vite는 CSS의 `url()`에 base를 붙이지
+       * 않으므로 배포 경로를 아는 이쪽에서 만들어 준다. 파일이 없으면 배경만
+       * 비고 나머지는 그대로 보인다.
+       */
+      style={
+        { '--intro-cover': `url(${assetUrl('/images/intro-cover.webp')})` } as CSSProperties
+      }
+    >
       <div className="masthead__figure">
         <SortMark tone="brand" size="xl" />
       </div>

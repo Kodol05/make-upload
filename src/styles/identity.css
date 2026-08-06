@@ -640,3 +640,50 @@ button,
 .chat-widget__body button {
   min-height: var(--touch-target);
 }
+
+/* ══ 소개 배경 그림 ══════════════════════════════════════ */
+
+/**
+ * 대표 이미지를 배경으로 깐다.
+ *
+ * 글자 뒤에 사진을 그대로 깔면 실측해 둔 대비가 무너진다. 그래서 그림은
+ * 별도 층에 두고 투명도를 낮춘 뒤, 글자는 그 위에서 원래 색을 그대로 쓴다.
+ * 파일이 없으면 배경만 비고 나머지는 그대로 보인다. CSS 배경은 조용히 실패한다.
+ */
+.masthead {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+}
+
+.masthead::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /**
+   * 경로는 React가 `--intro-cover`로 넘긴다. Vite는 CSS의 `url()`에는 base를
+   * 붙이지 않아서, 여기에 절대 경로를 직접 적으면 배포본에서 404가 난다.
+   */
+  background-image: var(--intro-cover, none);
+  background-size: cover;
+  background-position: center;
+  /* 질감으로만 남기고 글자를 방해하지 않는 선 */
+  opacity: 0.14;
+}
+
+/** 아래로 갈수록 배경을 걷어 낸다. 분류 카드가 놓이는 자리를 깨끗하게 둔다. */
+.masthead::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom, transparent 40%, var(--film) 92%);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .masthead::before {
+    opacity: 0.06;
+  }
+}
