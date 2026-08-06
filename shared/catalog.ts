@@ -82,10 +82,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Chai PET không màu từng đựng nước hoặc nước ngọt. Chỉ cần bóc nhãn và gom riêng, nó sẽ thành nguyên liệu cho vải hoặc chai mới.',
     }),
     ...image('clear-pet', {
-      ko: '라벨을 떼고 납작하게 누른 투명 페트병. 뚜껑은 닫혀 있습니다.',
-      en: 'A clear PET bottle with the label removed and the body crushed flat, cap screwed on.',
-      zh: '撕掉标签并压扁的透明塑料瓶，盖子拧着。',
-      vi: 'Chai PET trong suốt đã bóc nhãn và bóp bẹp, nắp vẫn vặn.',
+      ko: '라벨을 뗀 빈 투명 페트병입니다.',
+      en: 'An empty clear PET bottle with the label removed.',
+      zh: '撕掉标签的空透明塑料瓶。',
+      vi: 'Chai nhựa PET trong suốt đã bóc nhãn, bên trong trống.',
     }),
     steps: steps('clear-pet', [
       {
@@ -312,10 +312,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Bao bì mỏng và dễ nhàu như vỏ bánh kẹo, vỏ mì, túi nylon. Dù không có ký hiệu tái chế vẫn gom chung vào nylon.',
     }),
     ...image('vinyl', {
-      ko: '한 봉투에 모아 담은 과자 봉지와 비닐봉투입니다.',
-      en: 'Snack wrappers and plastic bags gathered into one bag.',
-      zh: '装进同一个袋子里的零食袋和塑料袋。',
-      vi: 'Vỏ bánh kẹo và túi nylon được gom vào chung một túi.',
+      ko: '비닐 포장재를 한데 모아 담은 투명한 비닐봉투입니다.',
+      en: 'A clear plastic bag holding assorted plastic film and wrappers.',
+      zh: '把各种塑料薄膜和包装袋收在一起的透明塑料袋。',
+      vi: 'Túi nylon trong đựng gộp các loại màng nhựa và bao bì.',
     }),
     steps: steps('vinyl', [
       {
@@ -368,10 +368,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Lon nước và lon đồ hộp. Nhôm hay sắt đều bỏ chung một thùng.',
     }),
     ...image('can', {
-      ko: '물로 헹구고 납작하게 누른 음료수 캔과 통조림 캔입니다.',
-      en: 'Rinsed and flattened drink cans and food cans.',
-      zh: '冲洗过并压扁的饮料罐和罐头。',
-      vi: 'Lon nước và lon đồ hộp đã tráng nước và bóp bẹp.',
+      ko: '뚜껑을 따서 비운 알루미늄 음료수 캔입니다.',
+      en: 'An opened and emptied aluminium drink can.',
+      zh: '已开启并倒空的铝制饮料罐。',
+      vi: 'Lon nước bằng nhôm đã mở và đổ hết.',
     }),
     steps: steps('can', [
       {
@@ -424,10 +424,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Chai nước và chai rượu. Chai soju và chai bia mang trả cửa hàng sẽ được hoàn tiền đặt cọc.',
     }),
     ...image('glass-bottle', {
-      ko: '뚜껑을 열어 따로 놓은 유리병 여러 개입니다.',
-      en: 'Several glass bottles with their caps removed and set aside.',
-      zh: '几个已取下盖子并单独放置的玻璃瓶。',
-      vi: 'Vài chai thủy tinh đã tháo nắp và để riêng.',
+      ko: '뚜껑을 뺀 투명 유리병과 초록 유리병이 나란히 서 있습니다.',
+      en: 'A clear glass bottle and a green one standing side by side, caps removed.',
+      zh: '取下瓶盖的透明玻璃瓶和绿色玻璃瓶并排立着。',
+      vi: 'Một chai thủy tinh trong và một chai màu xanh đứng cạnh nhau, đã tháo nắp.',
     }),
     steps: steps('glass-bottle', [
       {
@@ -486,10 +486,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Thùng giao hàng và giấy các loại. Quan trọng nhất là bóc hết băng keo và phiếu giao hàng.',
     }),
     ...image('paper-box', {
-      ko: '테이프와 송장을 떼고 납작하게 접어 묶은 택배 상자입니다.',
-      en: 'Delivery boxes with tape and labels removed, folded flat and tied together.',
-      zh: '撕掉胶带和面单后压平捆好的快递箱。',
-      vi: 'Thùng giao hàng đã bóc băng keo và phiếu, gấp phẳng và buộc lại.',
+      ko: '종이와 봉투, 납작하게 편 골판지를 함께 쌓아 둔 더미입니다.',
+      en: 'A stack of paper, envelopes and flattened cardboard piled together.',
+      zh: '把纸张、信封和压平的瓦楞纸板堆放在一起。',
+      vi: 'Chồng giấy, phong bì và bìa carton đã ép phẳng xếp chung.',
     }),
     steps: steps('paper-box', [
       {
@@ -654,10 +654,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Pin chứa kim loại nặng như thủy ngân và cadimi. Không được lẫn vào rác thường mà phải bỏ vào thùng thu gom chuyên dụng.',
     }),
     ...image('battery', {
-      ko: '양 끝을 테이프로 감싸 폐건전지 전용 수거함에 넣는 건전지입니다.',
-      en: 'Batteries with both ends taped over, being placed into a dedicated battery collection box.',
-      zh: '两端用胶带包好后投入废电池专用回收箱的电池。',
-      vi: 'Pin đã dán băng keo hai đầu, đang được bỏ vào thùng thu gom pin cũ.',
+      ko: '나란히 놓인 알카라인 건전지 두 개입니다.',
+      en: 'Two alkaline batteries lying side by side.',
+      zh: '并排放着的两节碱性电池。',
+      vi: 'Hai viên pin kiềm đặt cạnh nhau.',
     }),
     steps: steps('battery', [
       {
@@ -710,10 +710,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Thủy tinh vỡ và đồ sứ không được tái chế. Điều quan trọng là bọc kỹ để người thu gom không bị thương.',
     }),
     ...image('broken-glass', {
-      ko: '신문지로 감싸고 테이프로 고정해 "유리"라고 적어 둔 유리 조각입니다.',
-      en: 'Glass shards wrapped in newspaper, taped shut and labelled "유리" (glass).',
-      zh: '用报纸包好、胶带固定并写上"유리"(玻璃)字样的玻璃碎片。',
-      vi: 'Mảnh thủy tinh được bọc giấy báo, dán băng keo và ghi chữ "유리" (thủy tinh).',
+      ko: '여러 조각으로 깨진 유리 파편입니다.',
+      en: 'Shards of broken glass.',
+      zh: '碎成多块的玻璃碎片。',
+      vi: 'Những mảnh thủy tinh vỡ.',
     }),
     steps: steps('broken-glass', [
       {
@@ -766,10 +766,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Quần áo và vải không mặc nữa thì bỏ vào thùng thu gom đồ cũ. Nếu còn tốt, chúng sẽ được bán lại hoặc xuất khẩu.',
     }),
     ...image('clothing', {
-      ko: '봉투에 담아 헌 옷 수거함에 넣는 옷가지입니다.',
-      en: 'Clothes bagged up and being placed into a used clothing bin.',
-      zh: '装进袋子后投入旧衣回收箱的衣物。',
-      vi: 'Quần áo cho vào túi và đang được bỏ vào thùng thu gom đồ cũ.',
+      ko: '개어 둔 흰 티셔츠와 청바지입니다.',
+      en: 'A folded white T-shirt and a pair of folded jeans.',
+      zh: '叠好的白色T恤和牛仔裤。',
+      vi: 'Áo thun trắng và quần jean đã gấp gọn.',
     }),
     steps: steps('clothing', [
       {
@@ -822,10 +822,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Đồ điện nhỏ như máy sấy tóc, quạt, nồi cơm điện. Đăng ký dịch vụ thu gom tận nhà miễn phí là họ đến lấy không mất tiền.',
     }),
     ...image('small-electronics', {
-      ko: '무상 방문 수거를 기다리며 모아 둔 드라이기와 선풍기 등 소형가전입니다.',
-      en: 'Small appliances such as a hair dryer and a fan, gathered together awaiting free pickup.',
-      zh: '为等待免费上门回收而集中放置的吹风机、电风扇等小型家电。',
-      vi: 'Đồ điện nhỏ như máy sấy tóc và quạt được gom lại chờ thu gom miễn phí.',
+      ko: '나란히 놓은 스마트폰과 계산기입니다.',
+      en: 'A smartphone and a calculator placed side by side.',
+      zh: '并排放着的智能手机和计算器。',
+      vi: 'Điện thoại thông minh và máy tính bỏ túi đặt cạnh nhau.',
     }),
     steps: steps('small-electronics', [
       {
@@ -934,10 +934,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Thùng xốp giữ lạnh khi giao hàng và lớp đệm bọc đồ điện tử. Chỉ loại trắng và sạch mới được tái chế.',
     }),
     ...image('styrofoam', {
-      ko: '테이프와 송장을 떼어 깨끗해진 하얀 스티로폼 상자입니다.',
-      en: 'A clean white styrofoam box with the tape and shipping label removed.',
-      zh: '撕掉胶带和面单后变干净的白色泡沫箱。',
-      vi: 'Thùng xốp trắng đã bóc băng keo và phiếu giao hàng nên sạch sẽ.',
+      ko: '깨끗한 흰 스티로폼 상자입니다.',
+      en: 'A clean white styrofoam box.',
+      zh: '干净的白色泡沫塑料箱。',
+      vi: 'Hộp xốp trắng sạch.',
     }),
     steps: steps('styrofoam', [
       {
