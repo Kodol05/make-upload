@@ -82,9 +82,9 @@ burned captions; the delivery master burns `public/subtitles/ko.vtt` using the
 Korean-capable system font directory.
 
 ```powershell
-npm.cmd run media:validate
 npm.cmd run media:assemble
 npm.cmd run media:assemble -- --bgm public/media/audio/bgm.mp3
+npm.cmd run media:validate
 ```
 
 Outputs are `public/media/k-sort-guide-clean.mp4` and

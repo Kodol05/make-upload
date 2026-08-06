@@ -83,9 +83,9 @@
       "editorialShot": "S06",
       "duration": 7,
       "camera_fixed": true,
-      "seed": 1206,
+      "seed": 2206,
       "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S06.png" },
-      "motionPrompt": "Mina peels the single blue label away from the bottle in one smooth continuous strip. End with the bare bottle on the right and the removed label held separately on the left.",
+      "motionPrompt": "Mina peels the single blue label completely away from the bottle in one smooth continuous strip. The label leaves the bottle entirely and never duplicates. End with one fully bare clear bottle on the right with no blue material anywhere on it, and the one removed blue label held separately on the left.",
       "allowSecondCandidate": true,
       "outputFile": "public/media/generated/S06.mp4"
     },
@@ -171,9 +171,9 @@
       "editorialShot": "S12",
       "duration": 4,
       "camera_fixed": true,
-      "seed": 1214,
+      "seed": 2214,
       "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S12.png" },
-      "motionPrompt": "Mina picks up exactly the three batteries together from the small tray and places them into the small top opening. The intact lamp and hair dryer remain stationary on the bench.",
+      "motionPrompt": "Mina picks up exactly the three batteries together from the small tray, raises them to the narrow black battery slot at the very top, and inserts all three only through that top slot. The wide lower compartment stays empty. End with no batteries visible outside. The intact lamp and hair dryer remain stationary on the bench.",
       "allowSecondCandidate": false,
       "outputFile": "public/media/generated/S12a.mp4"
     },
