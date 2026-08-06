@@ -17,3 +17,5 @@
 - 2026-08-06 (현민) [docs] 재웅 콘텐츠 요청서. UI 문자열 88개 선제 작성, 이미지 50→16장, 작업 단위를 품목으로 → PR #13
 - 2026-08-06 (현민) [feat] Task 5: 도감 검색·필터·상세 모달. 이미지 품목당 1장으로 모델 변경 → PR #14
 - 2026-08-06 (현민) [feat] Task 6: Worker 보안·Gemini 공통 호출. toGeminiSchema로 Zod→Gemini 스키마 비호환(prefixItems 등) 해결, worker/ 타입 검사 누락 수정 → PR #16
+- 2026-08-06 (현민) [feat] Task 7: 근거 기반 챗봇. 자리 표시가 남은 문안은 지식에서 제외, 쓸 지식 없으면 모델 호출 안 함 → PR #18
+- 2026-08-06 (현민) [feat] Task 8: AI Sort Scan 두 경로. Workers CPU 10ms 때문에 multipart 대신 base64 JSON으로 변경 → PR #19
