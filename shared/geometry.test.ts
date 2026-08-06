@@ -1,4 +1,4 @@
-import { isValidBox } from './geometry';
+import { isValidBox } from './geometry.js';
 
 describe('isValidBox', () => {
   it('accepts a normal box', () => {

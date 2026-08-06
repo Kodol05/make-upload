@@ -1,5 +1,5 @@
-import { localized } from './placeholder';
-import type { CatalogItem, CatalogStep, ItemId } from './types';
+import { localized } from './placeholder.js';
+import type { CatalogItem, CatalogStep, ItemId } from './types.js';
 
 /**
  * 품목별 처리 단계를 만든다.

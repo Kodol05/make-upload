@@ -1,7 +1,7 @@
-import { catalogItems } from './catalog';
-import { faqs } from './faqs';
-import { sources } from './sources';
-import { categories, itemIds, locales } from './types';
+import { catalogItems } from './catalog.js';
+import { faqs } from './faqs.js';
+import { sources } from './sources.js';
+import { categories, itemIds, locales } from './types.js';
 
 /**
  * 콘텐츠의 *구조*만 검사한다. 완성도는 `content-progress.test.ts`가 본다.

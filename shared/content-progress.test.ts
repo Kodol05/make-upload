@@ -1,7 +1,7 @@
-import { catalogItems } from './catalog';
-import { faqs } from './faqs';
-import { countTodos, findTodos } from './placeholder';
-import { sources } from './sources';
+import { catalogItems } from './catalog.js';
+import { faqs } from './faqs.js';
+import { countTodos, findTodos } from './placeholder.js';
+import { sources } from './sources.js';
 
 /**
  * 콘텐츠 완성도를 본다.

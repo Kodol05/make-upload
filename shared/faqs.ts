@@ -1,5 +1,5 @@
-import { localized } from './placeholder';
-import type { Faq, ItemId } from './types';
+import { localized } from './placeholder.js';
+import type { Faq, ItemId } from './types.js';
 
 /**
  * FAQ 20개의 주제와 연결 품목.
