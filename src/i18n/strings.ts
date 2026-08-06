@@ -14,6 +14,12 @@ import { localized } from '@shared/placeholder';
  */
 export const ui = {
   nav: {
+    home: localized('ui', 'nav.home', {
+      ko: '소개',
+      en: 'Start',
+      zh: '介绍',
+      vi: 'Giới thiệu',
+    }),
     learn: localized('ui', 'nav.learn', {
       ko: '배우기',
       en: 'Learn',
@@ -115,6 +121,51 @@ export const ui = {
       en: 'Special',
       zh: '特殊',
       vi: 'Đặc biệt',
+    }),
+  },
+
+  /**
+   * 네 페이지를 순서대로 지나가는 흐름의 문구.
+   *
+   * 다음 버튼은 "다음"처럼 뭉뚱그리지 않고 **어디로 가는지**를 적는다. 누르기 전에
+   * 무엇이 나올지 알 수 있어야 머물지 넘어갈지 스스로 정할 수 있다.
+   */
+  journey: {
+    begin: localized('ui', 'journey.begin', {
+      ko: '영상으로 배우기',
+      en: 'Learn by video',
+      zh: '通过视频学习',
+      vi: 'Học qua video',
+    }),
+    toCatalog: localized('ui', 'journey.toCatalog', {
+      ko: '도감 보러 가기',
+      en: 'Open the guide',
+      zh: '前往图鉴',
+      vi: 'Mở cẩm nang',
+    }),
+    toGame: localized('ui', 'journey.toGame', {
+      ko: '게임으로 확인하기',
+      en: 'Check with a game',
+      zh: '用游戏检验',
+      vi: 'Kiểm tra bằng trò chơi',
+    }),
+    restart: localized('ui', 'journey.restart', {
+      ko: '처음으로 돌아가기',
+      en: 'Back to the start',
+      zh: '回到开头',
+      vi: 'Quay lại từ đầu',
+    }),
+    stayHint: localized('ui', 'journey.stayHint', {
+      ko: '천천히 봐도 됩니다. 준비되면 넘어가세요.',
+      en: 'Take your time. Move on when you are ready.',
+      zh: '可以慢慢看，准备好了再继续。',
+      vi: 'Cứ xem từ từ. Khi nào sẵn sàng thì đi tiếp.',
+    }),
+    progressLabel: localized('ui', 'journey.progressLabel', {
+      ko: '진행 단계',
+      en: 'Progress',
+      zh: '进度',
+      vi: 'Tiến độ',
     }),
   },
 

@@ -6,18 +6,29 @@
 
 body {
   margin: 0;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family:
-    'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR',
-    'Noto Sans SC', sans-serif;
-  line-height: 1.6;
+  background: var(--film);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
   /* 가로 스크롤이 생기면 360px에서 여정을 완료할 수 없다. */
   overflow-x: hidden;
 }
 
+/**
+ * 베트남어는 성조 기호가 글자 위아래로 나가서 한국어에 맞춘 행간이 좁다.
+ * 중국어는 반대로 짧아 여백이 뜨므로 자간을 조금 준다.
+ */
+:lang(vi) {
+  line-height: 1.75;
+}
+
+:lang(zh) {
+  letter-spacing: 0.01em;
+}
+
 :focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid var(--mark);
   outline-offset: 2px;
 }
 

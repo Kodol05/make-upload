@@ -1,0 +1,425 @@
+/**
+ * K-SORT 시각 정체성.
+ *
+ * `global.css` 뒤에 불러 화면 골격을 "인쇄된 표기" 방향으로 덮는다.
+ * 규칙은 셋이다. 잉크는 납작하게, 경계는 그림자가 아니라 선으로, 라벨은 작고
+ * 굵고 자간을 벌려서.
+ */
+
+/* ══ 시그니처: 분리배출 표시 ══════════════════════════════ */
+
+.sort-mark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  line-height: 1;
+}
+
+.sort-mark svg {
+  display: block;
+  fill: currentcolor;
+  stroke: currentcolor;
+}
+
+.sort-mark--sm svg {
+  width: 20px;
+  height: 20px;
+}
+.sort-mark--md svg {
+  width: 30px;
+  height: 30px;
+}
+.sort-mark--lg svg {
+  width: 56px;
+  height: 56px;
+}
+
+/** 표시 아래 재질 라벨. 실제 포장재의 조판을 따른다. */
+.sort-mark__label {
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  white-space: nowrap;
+}
+
+.sort-mark--lg .sort-mark__label {
+  font-size: var(--text-small);
+}
+
+.sort-mark--recyclable {
+  color: var(--cat-recyclable);
+}
+.sort-mark--food {
+  color: var(--cat-food);
+}
+.sort-mark--general {
+  color: var(--cat-general);
+}
+.sort-mark--special {
+  color: var(--cat-special);
+}
+.sort-mark--brand {
+  color: var(--mark);
+}
+
+/* ══ 헤더 ════════════════════════════════════════════════ */
+
+.app-header {
+  background: var(--paper);
+  border-bottom: 2px solid var(--ink);
+}
+
+.app-header__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.app-header__nav a {
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+}
+
+.app-header__nav a:hover,
+.app-header__nav a:focus-visible {
+  color: var(--mark-deep);
+  background: var(--wash);
+}
+
+/* ══ 공통: 카드와 면 ══════════════════════════════════════ */
+
+.lesson,
+.catalog,
+.scanner,
+.chat,
+.game {
+  background: var(--paper);
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
+  box-shadow: none;
+}
+
+/**
+ * 섹션 제목에 짧은 굵은 선을 앞세운다. 인쇄물의 항목 표시를 옮긴 것이고,
+ * 번호가 아니라 선인 이유는 이 화면들이 순서가 정해진 절차가 아니기 때문이다.
+ */
+.lesson h2,
+.catalog h2,
+.scanner h2,
+.chat h2,
+.game h2 {
+  font-size: var(--text-title);
+  font-weight: 800;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
+}
+
+.lesson h2::before,
+.catalog h2::before,
+.scanner h2::before,
+.chat h2::before,
+.game h2::before {
+  content: '';
+  display: block;
+  width: 34px;
+  height: 4px;
+  margin-bottom: var(--space-3);
+  background: var(--mark);
+  border-radius: 2px;
+}
+
+/* ══ 도감 카드 ═══════════════════════════════════════════ */
+
+.catalog-card {
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
+  box-shadow: none;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.catalog-card:hover,
+.catalog-card:focus-visible {
+  border-color: var(--mark);
+  background: var(--wash);
+}
+
+.catalog-card__name {
+  font-weight: 700;
+}
+
+/** 분류는 색만으로 알리지 않는다. 표시와 글자를 함께 둔다. */
+.catalog-card__category {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+}
+
+/* ══ 칩과 버튼 ═══════════════════════════════════════════ */
+
+.catalog__filter {
+  min-height: var(--touch-target);
+  border: var(--border-hair);
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.catalog__filter[aria-pressed='true'] {
+  background: var(--mark);
+  border-color: var(--mark);
+  color: var(--paper);
+}
+
+/* ══ 처리 순서 ═══════════════════════════════════════════ */
+
+/**
+ * 여기서만 번호를 쓴다. 처리 단계는 실제로 순서가 있는 절차라서
+ * 번호가 정보를 담는다. 다른 곳에서는 쓰지 않는다.
+ */
+.catalog-dialog__steps {
+  counter-reset: step;
+  list-style: none;
+  padding: 0;
+}
+
+.catalog-dialog__steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.catalog-dialog__steps li::before {
+  content: counter(step, decimal-leading-zero);
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--mark);
+  padding-top: 2px;
+}
+
+/* ══ 움직임 ══════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ══ 여정: 진행 표시 ══════════════════════════════════════ */
+
+.journey-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-4) 0;
+}
+
+.journey-progress__track {
+  flex: 1;
+  height: 4px;
+  background: var(--rule);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.journey-progress__track span {
+  display: block;
+  height: 100%;
+  background: var(--mark);
+  transition: width 240ms ease;
+}
+
+.journey-progress__count {
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+/* ══ 여정: 다음으로 ══════════════════════════════════════ */
+
+.journey-next {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+  padding: var(--space-6) var(--space-4);
+  border-top: var(--border-hair);
+  text-align: center;
+}
+
+.journey-next__hint {
+  margin: 0;
+  font-size: var(--text-small);
+  color: var(--ink-muted);
+}
+
+.journey-next__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target);
+  padding: var(--space-3) var(--space-6);
+  background: var(--mark);
+  color: var(--paper);
+  font-size: var(--text-body);
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: var(--radius-card);
+}
+
+.journey-next__button:hover,
+.journey-next__button:focus-visible {
+  background: var(--mark-deep);
+}
+
+/* ══ 소개 ════════════════════════════════════════════════ */
+
+.masthead {
+  padding: var(--space-6) var(--space-4) var(--space-5);
+  text-align: center;
+}
+
+.masthead__title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-hero);
+  font-weight: 800;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.02em;
+}
+
+.masthead__intro {
+  max-width: 34rem;
+  margin: 0 auto var(--space-6);
+  color: var(--ink-muted);
+}
+
+.masthead__marks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-5) var(--space-6);
+  padding: var(--space-5) var(--space-4);
+  background: var(--paper);
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
+}
+
+/* ══ 챗봇 위젯 ═══════════════════════════════════════════ */
+
+/**
+ * 우하단에 떠 있는 유일한 요소다. 나머지는 전부 선으로 경계를 만들기 때문에,
+ * 여기서만 그림자를 써도 "떠 있다"는 뜻이 분명해진다.
+ */
+.chat-widget__launcher {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 20;
+  min-height: 56px;
+  padding: 0 var(--space-5);
+  background: var(--mark);
+  color: var(--paper);
+  font-size: var(--text-small);
+  font-weight: 700;
+  border: none;
+  /* 네모 느낌. 완전한 원보다 인쇄된 표기 방향에 맞는다. */
+  border-radius: 14px;
+  box-shadow: var(--shadow-float);
+  cursor: pointer;
+}
+
+.chat-widget__launcher:hover,
+.chat-widget__launcher:focus-visible {
+  background: var(--mark-deep);
+}
+
+.chat-widget__panel {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+}
+
+.chat-widget__panel[hidden] {
+  display: none;
+}
+
+.chat-widget__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 2px solid var(--ink);
+}
+
+.chat-widget__bar button {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-4);
+  background: none;
+  border: var(--border-hair);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chat-widget__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+}
+
+/** 패널 안에서는 대화 화면이 카드 노릇을 하지 않는다. 이미 패널이 면이다. */
+.chat-widget__body .chat {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .chat-widget__panel {
+    inset: auto var(--space-4) calc(56px + var(--space-5)) auto;
+    width: 380px;
+    height: 560px;
+    max-height: calc(100vh - 120px);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-float);
+    overflow: hidden;
+  }
+}
+
+/**
+ * 챗봇 버튼이 본문 끝을 가리지 않게 바닥을 띄운다.
+ * "다음" 버튼은 흐름 안에 있으므로 이 여백이 그것도 함께 지켜 준다.
+ */
+main {
+  padding-bottom: calc(56px + var(--space-6));
+}

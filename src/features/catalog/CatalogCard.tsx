@@ -1,5 +1,6 @@
 import { useLocale } from '@/app/useLocale';
 import { ItemImage } from '@/components/ItemImage';
+import { SortMark } from '@/components/SortMark';
 import { ui } from '@/i18n/strings';
 import type { CatalogItem } from '@shared/types';
 
@@ -22,6 +23,7 @@ export function CatalogCard({
       <ItemImage item={item} className="catalog-card__image" />
       <span className="catalog-card__name">{t(item.name)}</span>
       <span className={`catalog-card__category catalog-card__category--${item.category}`}>
+        <SortMark tone={item.category} size="sm" />
         {t(ui.category[item.category])}
       </span>
     </button>

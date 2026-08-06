@@ -1,21 +1,16 @@
+import { journey } from '@/app/journey';
 import { useLocale } from '@/app/useLocale';
 import { ui } from '@/i18n/strings';
 import { LanguageSelect } from './LanguageSelect';
+import { SortMark } from './SortMark';
 
 /**
- * 홈의 섹션은 anchor로, 게임은 해시 라우트로 이동한다.
- * 게임에서 홈 섹션을 누르면 라우트가 함께 바뀌도록 `#/` 를 앞에 붙이지 않고
- * 섹션 anchor만 쓴다. 홈이 기본 라우트이므로 그대로 동작한다.
+ * 상단 메뉴는 네 페이지로 직접 갈 수 있게 열어 두되 강조하지 않는다.
+ * 권하는 길은 각 페이지 아래의 "다음" 버튼이고, 이건 필요한 사람을 위한 지름길이다.
+ *
+ * 로고는 언제나 첫 페이지로 돌아간다.
  */
-const NAV_ITEMS = [
-  { href: '#learn', label: ui.nav.learn },
-  { href: '#scan', label: ui.nav.scan },
-  { href: '#catalog', label: ui.nav.catalog },
-  { href: '#chat', label: ui.nav.chat },
-  { href: '#/game', label: ui.nav.game },
-];
-
-export function AppHeader() {
+export function AppHeader({ currentRoute }: { currentRoute: string }) {
   const { t } = useLocale();
 
   return (
@@ -25,14 +20,23 @@ export function AppHeader() {
       </a>
 
       <div className="app-header__bar">
-        <h1 className="app-header__logo">K-SORT</h1>
+        <h1 className="app-header__title">
+          <a className="app-header__logo" href="#/">
+            <SortMark tone="brand" size="sm" />
+            K-SORT
+          </a>
+        </h1>
         <LanguageSelect />
       </div>
 
       <nav className="app-header__nav" aria-label="K-SORT">
-        {NAV_ITEMS.map((item) => (
-          <a key={item.href} href={item.href}>
-            {t(item.label)}
+        {journey.map((step) => (
+          <a
+            key={step.route}
+            href={`#${step.route}`}
+            aria-current={step.route === currentRoute ? 'page' : undefined}
+          >
+            {t(step.navLabel)}
           </a>
         ))}
       </nav>

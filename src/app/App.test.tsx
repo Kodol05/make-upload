@@ -22,10 +22,11 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: 'K-SORT' })).toBeInTheDocument();
   });
 
-  it('shows the home route by default', () => {
+  it('opens on the first step of the journey', () => {
     render(<App />);
+    // 첫 페이지는 소개다. 네 분류를 표시로 보여 주고 나머지 화면은 아직 없다.
     expect(
-      screen.getByRole('heading', { name: ui.learn.title.ko, level: 2 }),
+      screen.getByRole('heading', { name: ui.catalog.title.ko, level: 2 }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole('heading', { name: ui.game.title.ko }),

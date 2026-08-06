@@ -1,28 +1,92 @@
+/**
+ * K-SORT 디자인 토큰.
+ *
+ * 방향은 "에코 브랜딩"이 아니라 **인쇄된 표기**다. 초록 + 둥근 카드 + 부드러운
+ * 그림자는 환경 앱의 기본값이라 첫 화면에서 흔한 앱으로 분류된다. 대신 이 주제의
+ * 실제 물건 — 포장재에 찍힌 분리배출 표시와 종량제 봉투의 인쇄 — 에서 형태를 가져온다.
+ * 잉크는 납작하고, 경계는 그림자가 아니라 선이며, 라벨은 작고 굵고 자간이 넓다.
+ *
+ * 색은 두 층으로 나눈다. 겹치면 의미가 무너지기 때문이다.
+ *   표기 층(--mark*) : 헤더·버튼·포커스 등 화면 골격에만
+ *   분류 층(--cat-*) : 카테고리 배지·수거함 등 콘텐츠 안에서만
+ *
+ * 대비는 흰 글자 기준으로 실측했다. 값 옆의 비율은 그 결과다.
+ */
 :root {
-  --color-primary: #0b6b4f;
-  --color-primary-strong: #07523e;
-  --color-accent: #1769aa;
-  --color-bg: #f7faf8;
-  --color-surface: #ffffff;
-  --color-text: #14231d;
-  --color-muted: #5d6d65;
-  --color-border: #d7e2dc;
-  --radius-card: 18px;
-  --shadow-card: 0 12px 30px rgb(20 35 29 / 8%);
+  /* ── 표기 층 ─────────────────────────────────────────── */
+  --ink: #0d2b1d; /* 본문 15.21:1 */
+  --ink-muted: #51665a; /* 보조 6.18:1 — 초록기 도는 회색 */
+  --mark: #0c7a42; /* 브랜드·버튼 5.42:1 AA */
+  --mark-deep: #095f34; /* 눌림·강조 7.78:1 AAA */
+  --mark-bright: #16a75c; /* 3.13:1 — 큰 글자와 도형 전용. 작은 글자 배경 금지 */
+  --film: #f4faf6; /* 페이지 배경. 반투명 봉투의 색 */
+  --paper: #ffffff; /* 카드 면 */
+  --wash: #e3f4e9; /* 선택된 칩 */
+  --rule: #bee5cd; /* 구분선 */
 
-  /* 분류별 기능 색. 색만으로 구분하지 않고 항상 텍스트를 함께 쓴다. */
-  --color-recyclable: #1769aa;
-  --color-food: #0b6b4f;
-  --color-general: #5d6d65;
-  --color-special: #a4531b;
+  /* ── 분류 층 (전부 흰 글자 AA 통과) ───────────────────── */
+  --cat-recyclable: #1565c0; /* 5.75:1 */
+  --cat-food: #2e7d32; /* 5.13:1 */
+  --cat-general: #4e5a54; /* 7.21:1 */
+  --cat-special: #a8480f; /* 5.84:1 */
 
+  /* ── 글자 ───────────────────────────────────────────── */
+  /**
+   * 웹폰트를 받지 않는다. 발표는 노트북 로컬 시연이라 네트워크가 끊기면 폰트도
+   * 함께 사라진다. 게다가 네 언어를 덮으려면 한국어·중국어·베트남어 폰트를 각각
+   * 받아야 해서 무겁다. 개성은 서체가 아니라 **조판**에서 낸다.
+   */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic',
+    'Apple SD Gothic Neo', 'Noto Sans KR', 'Microsoft YaHei', 'PingFang SC',
+    sans-serif;
+  /** 표시 아래 재질 라벨(PET·HDPE)과 단계 번호처럼 찍힌 데이터에만 쓴다. */
+  --font-label: 'Cascadia Mono', 'SF Mono', Consolas, 'Liberation Mono', monospace;
+
+  --text-hero: clamp(30px, 7.5vw, 46px);
+  --text-title: clamp(20px, 4.5vw, 27px);
+  --text-body: 16px;
+  --text-small: 14px;
+  --text-label: 12px;
+
+  --leading-tight: 1.15; /* 큰 제목 */
+  --leading-body: 1.65;
+  --tracking-label: 0.14em; /* 라벨은 자간을 벌려 찍힌 느낌을 낸다 */
+
+  /* ── 간격 ───────────────────────────────────────────── */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
   --space-5: 24px;
   --space-6: 32px;
+  --space-7: 48px; /* 섹션 사이 */
+
+  /* ── 형태 ───────────────────────────────────────────── */
+  /**
+   * 모서리를 줄이고 그림자를 걷어낸다. 표시는 종이와 필름에 인쇄된 것이지
+   * 공중에 떠 있는 카드가 아니다. 경계는 선으로 만든다.
+   */
+  --radius-card: 10px;
+  --radius-pill: 999px;
+  --border-hair: 1px solid var(--rule);
+  --shadow-card: none;
+  --shadow-float: 0 6px 20px rgb(13 43 29 / 18%); /* 떠 있는 것은 챗봇 버튼뿐 */
 
   /* 손가락으로 누를 수 있는 최소 크기 */
-  --touch-target: 44px;
+  --touch-target: 48px;
+
+  /* ── 이전 이름 (기존 CSS가 아직 참조한다) ─────────────── */
+  --color-primary: var(--mark);
+  --color-primary-strong: var(--mark-deep);
+  --color-accent: var(--cat-recyclable);
+  --color-bg: var(--film);
+  --color-surface: var(--paper);
+  --color-text: var(--ink);
+  --color-muted: var(--ink-muted);
+  --color-border: var(--rule);
+  --color-recyclable: var(--cat-recyclable);
+  --color-food: var(--cat-food);
+  --color-general: var(--cat-general);
+  --color-special: var(--cat-special);
 }

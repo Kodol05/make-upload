@@ -3,12 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { LocaleProvider } from '@/app/LocaleProvider';
 import { ui } from '@/i18n/strings';
 import { PLACEHOLDER_LABEL } from '@shared/placeholder';
+import { journey } from '@/app/journey';
 import { AppHeader } from './AppHeader';
 
-function renderHeader() {
+function renderHeader(currentRoute = '/') {
   return render(
     <LocaleProvider>
-      <AppHeader />
+      <AppHeader currentRoute={currentRoute} />
     </LocaleProvider>,
   );
 }
@@ -21,22 +22,37 @@ describe('AppHeader', () => {
 
   it('shows the product name as the top heading', () => {
     renderHeader();
-    expect(screen.getByRole('heading', { name: 'K-SORT' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /K-SORT/ })).toBeInTheDocument();
   });
 
-  it('links to every section and to the game route', () => {
-    renderHeader();
-    const nav = screen.getByRole('navigation');
+  it('sends the logo back to the first step', () => {
+    renderHeader('/game');
+    expect(screen.getByRole('link', { name: /K-SORT/ })).toHaveAttribute('href', '#/');
+  });
 
-    expect(within(nav).getByRole('link', { name: ui.nav.learn.ko })).toHaveAttribute(
-      'href',
-      '#learn',
-    );
-    expect(within(nav).getByRole('link', { name: ui.nav.game.ko })).toHaveAttribute(
-      'href',
-      '#/game',
-    );
-    expect(within(nav).getAllByRole('link')).toHaveLength(5);
+  it('offers a shortcut to every step of the journey', () => {
+    renderHeader();
+    const nav = screen.getByRole('navigation', { name: 'K-SORT' });
+
+    for (const step of journey) {
+      expect(
+        within(nav).getByRole('link', { name: step.navLabel.ko }),
+        step.route,
+      ).toHaveAttribute('href', `#${step.route}`);
+    }
+    expect(within(nav).getAllByRole('link')).toHaveLength(journey.length);
+  });
+
+  it('marks which step the reader is on', () => {
+    renderHeader('/catalog');
+    const nav = screen.getByRole('navigation', { name: 'K-SORT' });
+
+    expect(
+      within(nav).getByRole('link', { name: ui.nav.catalog.ko }),
+    ).toHaveAttribute('aria-current', 'page');
+    expect(
+      within(nav).getByRole('link', { name: ui.nav.home.ko }),
+    ).not.toHaveAttribute('aria-current');
   });
 
   it('switches every label when the language changes', async () => {
