@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocale } from '@/app/useLocale';
 import { ui } from '@/i18n/strings';
 import { assetUrl } from '@/lib/assetUrl';
-import { useSubtitleTrack } from './useSubtitleTrack';
+import { showSubtitles, useSubtitleTrack } from './useSubtitleTrack';
 
 const VIDEO_SRC = assetUrl('/media/k-sort-guide.mp4');
 const POSTER_SRC = assetUrl('/media/poster.webp');
@@ -76,7 +76,18 @@ export function LearnSection() {
   const [ended, setEnded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const subtitleSrc = useSubtitleTrack(locale);
+  const trackRef = useRef<HTMLTrackElement>(null);
   const restarting = useRef(false);
+
+  /**
+   * 새로 붙은 자막을 켠다.
+   *
+   * `default`는 재생기가 처음 뜰 때 한 번만 먹는다. 언어를 바꾸면 track이 새로
+   * 붙는데 그때는 꺼진 채로 들어와서, 켜 주지 않으면 자막이 사라진 것처럼 보인다.
+   */
+  useEffect(() => {
+    showSubtitles(trackRef.current);
+  }, [subtitleSrc]);
 
   /**
    * 다시 보기. 멈춘 뒤 처음으로 되돌리고 한 번만 재생한다.
@@ -137,6 +148,7 @@ export function LearnSection() {
             {subtitleSrc && (
               <track
                 key={subtitleSrc}
+                ref={trackRef}
                 kind="subtitles"
                 src={subtitleSrc}
                 srcLang={locale}

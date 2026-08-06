@@ -4,6 +4,22 @@ import type { Locale } from '@shared/types';
 import { needsConversion, srtToVtt } from './srtToVtt';
 
 /**
+ * 자막을 화면에 켠다.
+ *
+ * `default`는 재생기가 처음 뜰 때 한 번만 먹는다. 언어를 바꾸면 track이 새로
+ * 붙는데 그때는 꺼진 채로 들어와서, 켜 주지 않으면 자막이 사라진 것처럼 보인다.
+ *
+ * 컴포넌트에서 떼어 둔 이유는 jsdom이 `HTMLTrackElement.track`을 만들지 않아
+ * 화면 테스트로는 이 동작을 확인할 수 없기 때문이다. 여기서는 직접 검사한다.
+ */
+export function showSubtitles(element: Pick<HTMLTrackElement, 'track'> | null): boolean {
+  const track = element?.track;
+  if (!track) return false;
+  track.mode = 'showing';
+  return true;
+}
+
+/**
  * 자막 파일을 찾아 `<track>`이 읽을 수 있는 주소로 돌려준다.
  *
  * 언어마다 `.vtt`를 먼저 찾고 없으면 `.srt`를 찾는다. 가져온 내용이 SRT면

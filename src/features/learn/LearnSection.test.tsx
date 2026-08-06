@@ -168,6 +168,25 @@ describe('LearnSection', () => {
     });
   });
 
+  /**
+   * `default`는 재생기가 처음 뜰 때 한 번만 먹는다. 언어를 바꾸면 track이 새로
+   * 붙는데 그때는 꺼진 채로 들어와서, 켜 주지 않으면 자막이 사라진 것처럼 보인다.
+   */
+  it('turns the new subtitle on after a language change', async () => {
+    stubSubtitles({ 'ko.vtt': VTT_SAMPLE, 'vi.srt': SRT_SAMPLE });
+    renderLearn();
+    await waitFor(() => expect(video().querySelector('track')).not.toBeNull());
+
+    await switchTo('vi');
+
+    await waitFor(() => {
+      const track = video().querySelector('track') as HTMLTrackElement;
+      expect(track.getAttribute('srclang')).toBe('vi');
+    });
+    // 켜는 동작 자체는 jsdom이 TextTrack을 안 만들어 여기서 볼 수 없다.
+    // `showSubtitles`를 따로 검사한다(useSubtitleTrack.test.ts).
+  });
+
   /** 자막 파일이 아예 없으면 track을 만들지 않는다. 빈 항목이 남으면 더 헷갈린다. */
   it('leaves the track out when there is no subtitle file', async () => {
     stubSubtitles({});
