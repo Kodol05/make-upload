@@ -1426,9 +1426,13 @@ main {
 @media (min-width: 640px) {
   /** 기기 테두리. 안쪽이 화면이다. */
   .chat-widget__panel {
-    inset: auto var(--space-5) calc(76px + var(--space-5)) auto;
+    /**
+     * 바닥까지 내려간다. 패널이 버튼보다 위 층(z-index)이라 덮어도 되므로,
+     * 버튼 높이만큼 띄워 둘 이유가 없다. 그 자리가 그냥 비어 보였다.
+     */
+    inset: auto var(--space-5) var(--space-5) auto;
     width: min(620px, calc(100vw - var(--space-5) * 2));
-    height: min(920px, calc(100vh - 140px));
+    height: min(940px, calc(100vh - var(--space-6) * 2));
     padding: 10px;
     background: var(--ink);
     border: none;
@@ -1772,9 +1776,20 @@ main {
   color: var(--ink);
 }
 
+/**
+ * 쓰는 자리. 대화와 다른 영역이지만 **선으로 가르지 않는다.**
+ * 스크롤은 위쪽만 하고 여기는 고정이라 역할은 이미 나뉘어 있다. 선까지 그으면
+ * 전화기 한 화면이 둘로 잘려 보인다.
+ */
 .chat-widget__body .chat__composer {
   flex: 0 0 auto;
-  padding: var(--space-4) var(--space-5);
+  padding: 0 var(--space-5) var(--space-5);
   background: var(--film);
-  border-top: var(--border-hair);
+}
+
+/** 대화가 쓰는 자리에 닿기 직전에 옅게 사라지게 한다. 선 대신 쓰는 경계다. */
+.chat-widget__body .chat__stream {
+  padding-bottom: var(--space-4);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent 100%);
 }
