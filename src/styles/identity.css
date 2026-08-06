@@ -400,86 +400,6 @@ main {
   text-wrap: pretty;
 }
 
-/**
- * 판을 두르지 않는다. 흰 판이 뒤의 그림을 통째로 가리고 있었다.
- * 그림 넉 장도 배경을 빼 두어 소개 그림이 그대로 비친다.
- */
-.masthead__legend {
-  padding: calc(var(--space-6) * 1.2) calc(var(--space-5) * 1.2);
-}
-
-/* 뒤에 그림이 비쳐서 보조색은 2.66:1까지 떨어진다. 본문색이면 같은 자리에서 5.3:1이다. */
-.masthead__legend-caption {
-  margin: 0 0 var(--space-6);
-  font-size: var(--text-label);
-  font-weight: 700;
-  letter-spacing: var(--tracking-label);
-  color: var(--ink);
-}
-
-/**
- * 좁은 화면에서는 두 칸, 넓어지면 네 칸으로 편다. `flex`로 감싸면 마지막 줄만
- * 가운데로 몰려 어긋나는데, 격자로 두면 어느 폭에서든 열이 맞는다.
- */
-.masthead__marks {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-@media (min-width: 620px) {
-  .masthead__marks {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* ── 분류 상자 ──────────────────────────────────────────── */
-
-/**
- * 그림만 남긴다.
- *
- * 표시와 이름을 두 배로 키웠더니 칸이 세로로 너무 길어졌다. 글자와 흰 판을
- * 걷어 내고 그림 넉 장만 늘어놓는다. 판도 테두리도 없어 배경 위에 그림만
- * 떠 있다.
- *
- * 이름은 지우지 않고 화면에서만 감춘다. 그림 안의 낱말은 한국어라, 읽지 못하는
- * 사람과 화면을 못 보는 사람에게는 이 이름이 네 갈래를 알 유일한 단서다.
- */
-.category-card {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* 넉 장의 원본이 1.57~1.96이라 그 사이로 잡는다. `contain`이라 남는 자리는 비친다. */
-  aspect-ratio: 5 / 3;
-  padding: 0;
-  background: none;
-  border: none;
-}
-
-.category-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: var(--category-cover, none);
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/** 그림을 못 보는 사람에게는 이 이름이 전부다. 화면에서만 감춘다. */
-.category-card .sort-mark {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 /* ══ 챗봇 위젯 ═══════════════════════════════════════════ */
 
 /**
@@ -2346,7 +2266,8 @@ main {
   align-items: center;
   margin-top: var(--space-5);
   padding: var(--space-5);
-  background: var(--paper);
+  /* 고르는 자리 전체를 회색으로 깔아 본문과 가른다. */
+  background: #eef0ef;
   border: var(--border-hair);
   border-radius: var(--radius-card);
 }
@@ -2363,8 +2284,7 @@ main {
   gap: var(--space-2);
   width: clamp(120px, 16vw, 230px);
   padding: var(--space-4) var(--space-3);
-  /* 안쪽을 회색으로 둬 흰 판 위에서 "여기가 고르는 칸"이라고 드러난다. */
-  background: #eceeed;
+  background: var(--paper);
   border: 2px solid var(--rule);
   border-radius: var(--radius-card);
   cursor: pointer;
@@ -2380,7 +2300,7 @@ main {
 }
 
 .game-play__bin-name {
-  font-size: clamp(14px, 1.2vw, 19px);
+  font-size: clamp(17px, 1.5vw, 24px);
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -2388,7 +2308,6 @@ main {
 /** 고를 수 있을 때만 반응한다. 잠겨 있을 때 움직이면 눌러도 되는 줄 안다. */
 .game-play__bin:not(:disabled):hover,
 .game-play__bin:not(:disabled):focus-visible {
-  background: var(--paper);
   transform: translateY(-3px);
 }
 

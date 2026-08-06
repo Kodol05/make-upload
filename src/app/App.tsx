@@ -1,7 +1,6 @@
 import { AppFooter } from '@/components/AppFooter';
 import { AppHeader } from '@/components/AppHeader';
 import { FeatureErrorBoundary } from '@/components/FeatureErrorBoundary';
-import { SortMark } from '@/components/SortMark';
 import { Wordmark } from '@/components/Wordmark';
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { CatalogSection } from '@/features/catalog/CatalogSection';
@@ -10,7 +9,6 @@ import { GamePage } from '@/features/game/GamePage';
 import { LearnSection } from '@/features/learn/LearnSection';
 import { ui } from '@/i18n/strings';
 import { assetUrl } from '@/lib/assetUrl';
-import { categories } from '@shared/types';
 import { journey, stepIndexOf } from './journey';
 import { LocaleProvider } from './LocaleProvider';
 import { useHashRoute } from './useHashRoute';
@@ -19,9 +17,9 @@ import { useLocale } from './useLocale';
 /**
  * ① 소개.
  *
- * 이 앱이 가르치는 것은 결국 "이 표시를 읽는 법"이다. 그래서 긴 소개 문장 대신
- * 네 분류를 표시로 나란히 세운다. 한 눈에 체계가 들어오고, 뒤의 도감에서 같은
- * 표시를 다시 만나면서 눈에 익는다.
+ * 이름과 한 줄 소개, 그리고 다음으로 넘어가는 길 하나. 분류 그림 넉 장을
+ * 늘어놓았었지만 그림 안의 낱말이 한국어뿐이라 유학생에게는 읽히지 않았고,
+ * 자리만 크게 차지했다.
  */
 function IntroRoute() {
   const { t } = useLocale();
@@ -50,30 +48,6 @@ function IntroRoute() {
        * 색은 눌러야 할 것 중 가장 조용하게 둔다. 여기서 붙잡아 둘 이유가 없다.
        */}
       <JourneyNext index={0} tone="quiet" />
-
-      <div className="masthead__legend">
-        <p className="masthead__legend-caption">{t(ui.home.legendCaption)}</p>
-        {/**
-         * 분류마다 상자를 두고 그 안에 대표 그림을 깐다. 그림 위에 표시와 이름을
-         * 얹어 "이 그림에 있는 것들이 이 분류다"가 한 번에 읽히게 한다.
-         * 그림은 옅게 깔아 글자 대비를 지킨다.
-         */}
-        <ul className="masthead__marks">
-          {categories.map((category) => (
-            <li
-              key={category}
-              className={`category-card category-card--${category}`}
-              style={
-                {
-                  '--category-cover': `url(${assetUrl(`/images/category/${category}.webp`)})`,
-                } as CSSProperties
-              }
-            >
-              <SortMark tone={category} label={t(ui.category[category])} size="lg" />
-            </li>
-          ))}
-        </ul>
-      </div>
     </section>
   );
 }
