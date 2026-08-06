@@ -6,7 +6,7 @@ import {
   localized,
   resolveText,
   todo,
-} from './placeholder';
+} from './placeholder.js';
 
 describe('placeholder', () => {
   it('makes a traceable marker for a missing string', () => {

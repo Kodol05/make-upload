@@ -1,6 +1,6 @@
-import type { Env } from '../worker/src/env';
-import worker from '../worker/src/index';
-import { createRateLimiter } from '../worker/src/rateLimit';
+import type { Env } from '../worker/src/env.js';
+import worker from '../worker/src/index.js';
+import { createRateLimiter } from '../worker/src/rateLimit.js';
 
 /**
  * Vercel 진입점.

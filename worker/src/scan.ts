@@ -1,9 +1,9 @@
-import { isValidBox, type Box } from '../../shared/geometry';
-import { scanRequestSchema, scanResponseSchema } from '../../shared/schemas';
-import { itemIds, type Locale, type ScanObject, type ScanResponse } from '../../shared/types';
-import type { Env } from './env';
-import { SCAN_MODEL, callGemini, type FetchLike } from './gemini';
-import { errorResponse, jsonResponse, logFailure } from './security';
+import { isValidBox, type Box } from '../../shared/geometry.js';
+import { scanRequestSchema, scanResponseSchema } from '../../shared/schemas.js';
+import { itemIds, type Locale, type ScanObject, type ScanResponse } from '../../shared/types.js';
+import type { Env } from './env.js';
+import { SCAN_MODEL, callGemini, type FetchLike } from './gemini.js';
+import { errorResponse, jsonResponse, logFailure } from './security.js';
 
 const TIMEOUT_MS = 15_000;
 const MAX_OBJECTS = 5;

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { itemIds, locales } from './types';
+import { itemIds, locales } from './types.js';
 
 /**
  * 요청과 응답의 런타임 계약.

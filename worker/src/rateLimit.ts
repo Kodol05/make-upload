@@ -1,4 +1,4 @@
-import type { RateLimitBinding } from './env';
+import type { RateLimitBinding } from './env.js';
 
 const MAX_TRACKED_KEYS = 2000;
 

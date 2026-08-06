@@ -1,7 +1,7 @@
-import { handleChat } from './chat';
-import { handleScan } from './scan';
-import type { Env, RateLimitBinding } from './env';
-import { errorResponse, isAllowedOrigin, preflightResponse, readSessionId } from './security';
+import { handleChat } from './chat.js';
+import { handleScan } from './scan.js';
+import type { Env, RateLimitBinding } from './env.js';
+import { errorResponse, isAllowedOrigin, preflightResponse, readSessionId } from './security.js';
 
 interface Route {
   path: string;

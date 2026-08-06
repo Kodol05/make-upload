@@ -1,4 +1,4 @@
-import type { Locale, LocalizedText } from './types';
+import type { Locale, LocalizedText } from './types.js';
 
 /**
  * 아직 검수되지 않은 문안의 자리를 표시하는 접두사.

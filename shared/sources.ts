@@ -1,5 +1,5 @@
-import { localized } from './placeholder';
-import type { Source } from './types';
+import { localized } from './placeholder.js';
+import type { Source } from './types.js';
 
 /**
  * 공식 출처를 한곳에서 관리한다.

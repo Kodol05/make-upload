@@ -1,4 +1,4 @@
-import { chatResponseSchema, scanResponseSchema } from './schemas';
+import { chatResponseSchema, scanResponseSchema } from './schemas.js';
 
 /** Worker가 모델 응답을 걸러 내는 계약이 실제로 막아 주는지 확인한다. */
 describe('response schemas', () => {

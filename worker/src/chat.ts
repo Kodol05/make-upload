@@ -1,12 +1,12 @@
-import { catalogItems } from '../../shared/catalog';
-import { faqs } from '../../shared/faqs';
-import { isTodo } from '../../shared/placeholder';
-import { chatRequestSchema, chatResponseSchema } from '../../shared/schemas';
-import { sources } from '../../shared/sources';
-import type { ChatResponse, Locale } from '../../shared/types';
-import type { Env } from './env';
-import { CHAT_MODEL, callGemini, type FetchLike } from './gemini';
-import { errorResponse, jsonResponse, limitHistory, logFailure } from './security';
+import { catalogItems } from '../../shared/catalog.js';
+import { faqs } from '../../shared/faqs.js';
+import { isTodo } from '../../shared/placeholder.js';
+import { chatRequestSchema, chatResponseSchema } from '../../shared/schemas.js';
+import { sources } from '../../shared/sources.js';
+import type { ChatResponse, Locale } from '../../shared/types.js';
+import type { Env } from './env.js';
+import { CHAT_MODEL, callGemini, type FetchLike } from './gemini.js';
+import { errorResponse, jsonResponse, limitHistory, logFailure } from './security.js';
 
 const TIMEOUT_MS = 10_000;
 
