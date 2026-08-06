@@ -108,7 +108,11 @@ typescript-eslint가 동작하지 못하고 `npm run lint`가 실패한다.
 npm init -y
 npm install react react-dom zod
 npm install -D "typescript@~6.0.3" vite @vitejs/plugin-react vitest jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event eslint @eslint/js typescript-eslint eslint-plugin-react-hooks globals wrangler
+npm install -D @types/react @types/react-dom @types/node
 ```
+
+타입 패키지가 없으면 `tsc -b`가 `TS7016 Could not find a declaration file for module 'react'`로
+실패한다. `@types/node`는 설정 파일의 `node:url` import에 필요하다.
 
 설치 후 실제 버전을 확인한다.
 
@@ -116,7 +120,13 @@ npm install -D "typescript@~6.0.3" vite @vitejs/plugin-react vitest jsdom @testi
 npm ls typescript
 ```
 
-Expected: `typescript@6.0.x`. 7.x가 보이면 `npm install -D "typescript@~6.0.3"`을 다시 실행한다.
+Expected: `typescript@6.0.x`이고 typescript-eslint 아래도 같은 버전으로 dedupe된다.
+7.x가 보이면 `npm install -D "typescript@~6.0.3"`을 다시 실행한다.
+
+`npm audit`이 `undici` 관련 경고를 내지만 `jsdom`(테스트 환경)과
+`wrangler → miniflare`(로컬 개발 시뮬레이터)를 통해 들어온 것이라 배포되는 코드에는 없다.
+`npm audit --omit=dev`가 0건인지로 확인한다. npm이 제안하는 자동 수정은 wrangler를
+크게 낮추므로 실행하지 않는다.
 
 - [ ] **Step 2: package scripts를 정확히 정의**
 
@@ -165,6 +175,16 @@ export function App() {
 ```
 
 `vitest.config.ts`에서 `environment: 'jsdom'`, `setupFiles: ['./src/test/setup.ts']`를 설정하고 setup 파일에서 `@testing-library/jest-dom/vitest`를 import한다.
+
+설정에서 두 곳이 걸린다.
+
+- **eslint**: `eslint-plugin-react-hooks`의 flat config는
+  `reactHooks.configs.flat['recommended-latest']`에 있다.
+  `reactHooks.configs['recommended-latest']`는 eslintrc 형식이라 eslint 10이
+  `A config object has a "plugins" key defined as an array of strings`로 거부한다.
+- **tsconfig**: TypeScript 6는 `baseUrl`을 폐기 예고해 `TS5101`을 낸다.
+  `baseUrl`을 쓰지 말고 `paths` 값을 `"./src/*"`처럼 `./`로 시작하는 상대 경로로 적는다.
+  `baseUrl` 없이 비상대 경로를 쓰면 `TS5090`이 난다.
 
 - [ ] **Step 6: Vite base 경로 설정**
 
