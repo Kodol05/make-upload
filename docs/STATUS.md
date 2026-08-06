@@ -7,16 +7,24 @@
 
 ## 현재 단계
 
-- **큰 마일스톤**: Task 2 완료. `shared/` 데이터 계약이 확정되어 화면 작업을 시작할 수 있다.
+- **큰 마일스톤**: Task 3 완료. 네 언어 전환과 해시 라우팅이 도는 앱 껍데기가 배포되어 있다.
 - **배포 URL**: <https://kodol05.github.io/make-upload/>
-- **진행 중 Task**: 없음 (Task 3 대기)
+- **진행 중 Task**: 없음 (Task 4 대기)
 - **Blocker**: 없음. 콘텐츠 미검수 상태에서도 개발이 진행된다.
 
 ## 지금 · 다음
 
 | 지금 | 다음 |
 |------|------|
-| Task 2 완료 (공용 타입·콘텐츠 골격) | Task 3: 언어 상태·해시 라우팅·UI 문자열 사전 |
+| Task 3 완료 (언어·라우팅·셸) | Task 4: 교육 영상과 4대 원칙 |
+
+Task 4는 영상 파일과 자막이 필요하다. 아직 없으므로 영상 오류 대체 UI를 먼저 만들고
+파일이 도착하면 연결한다. 필요한 파일명은 아래와 같다.
+
+```
+public/media/k-sort-guide.mp4    public/media/poster.webp
+public/subtitles/{ko,en,zh,vi}.vtt
+```
 
 ## 콘텐츠 진행률
 
@@ -74,17 +82,34 @@ chatRequestSchema / chatResponseSchema / scanResponseSchema
 localeSchema / itemIdSchema
 ```
 
+```ts
+// src/app  ← Task 3에서 확정
+useLocale()      → { locale, setLocale, t }   // t(LocalizedText) → string
+useHashRoute()   → string                     // '/' 또는 '/game'
+LocaleProvider   // localStorage 키는 'k-sort-locale'
+                 // context는 localeContext.ts에 따로 둔다 (Fast Refresh)
+
+// src/i18n/strings.ts  ← 화면 문자열은 전부 여기에 더한다
+ui.nav.{learn,scan,catalog,chat,game}
+ui.common.{language,close,retry,skipToContent}
+ui.home.intro / ui.game.{title,backToHome}
+```
+
 Task 5의 도감 검색은 `aliases`를 쓴다. 현재 한국어 별칭만 채워져 있고
 영어·중국어·베트남어 배열은 비어 있으므로, 그 언어의 별칭 검색 테스트는
 번역이 도착한 뒤에 켠다.
 
+`HomeRoute`와 `GameRoute`는 `src/app/App.tsx` 안의 최소 구현이다.
+Task 4가 영상 섹션을, Task 9가 실제 게임을 각각 여기에 붙인다.
+
 ## 다음 액션 (우선순위)
 
-1. Task 3: `LocaleProvider`, `useHashRoute`, `src/i18n/strings.ts`, 헤더·푸터
-2. Task 4: 영상과 4대 원칙
+1. Task 4: 영상과 4대 원칙 (에셋 없이 대체 UI부터)
+2. Task 5: 16종 도감 검색·필터·상세
 
 ## 최근 결정 · 변경
 
+- 2026-08-06 · Task 3 완료. 언어 전환·해시 라우팅·UI 문자열 사전 (PR #9)
 - 2026-08-06 · Task 2 완료. 자리 표시로 콘텐츠 대기 없이 개발 가능 (PR #7)
 - 2026-08-06 · Task 1 완료. Pages 배포까지 확인 (PR #5)
 - 2026-08-06 · 스택 결정을 구현 계획·설계에 반영 (PR #4)
