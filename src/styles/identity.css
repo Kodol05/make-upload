@@ -835,3 +835,282 @@ main {
   width: 44px;
   height: 5px;
 }
+
+/* ══ 도감: 두 갈래 찾기 ══════════════════════════════════ */
+
+/**
+ * 이름을 알면 검색, 모르면 사진. 들어오는 문은 둘이지만 도착지는 같은 도감
+ * 상세다. 나란히 세워 두 길이 대등하다는 것을 위치로 보여 준다.
+ */
+.catalog__intro {
+  margin: 0 0 var(--space-5);
+  max-width: var(--measure);
+  color: var(--ink-muted);
+}
+
+.catalog__find {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.catalog__find .catalog__search {
+  flex: 1 1 260px;
+  margin: 0;
+}
+
+.catalog__photo-button {
+  flex: 0 0 auto;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-5);
+  background: var(--paper);
+  color: var(--mark-deep);
+  font-weight: 700;
+  border: 2px solid var(--mark);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+}
+
+.catalog__photo-button:hover,
+.catalog__photo-button:focus-visible {
+  background: var(--wash);
+}
+
+.catalog__photo-button[aria-expanded='true'] {
+  background: var(--mark);
+  color: var(--paper);
+}
+
+/* ══ 사진으로 찾기 ═══════════════════════════════════════ */
+
+.finder {
+  margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  background: var(--film);
+  border: 2px solid var(--mark);
+  border-radius: var(--radius-card);
+}
+
+.finder__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.finder__bar h3 {
+  margin: 0;
+  font-size: var(--text-title);
+  font-weight: 800;
+}
+
+.finder__close {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-4);
+  background: none;
+  border: var(--border-hair);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/**
+ * 고지문은 사진을 고르기 **위쪽**에 둔다. 보낼지 말지 정하는 시점에 읽혀야
+ * 뜻이 있다. 왼쪽의 굵은 선은 "읽고 넘어가라"는 표시다.
+ */
+.finder__privacy {
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  background: var(--paper);
+  border-left: 5px solid var(--cat-special);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+}
+
+.finder__privacy strong {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--cat-special);
+}
+
+.finder__privacy p {
+  margin: 0;
+  font-size: var(--text-small);
+  color: var(--ink-muted);
+  max-width: var(--measure);
+}
+
+/** 사진을 놓는 자리. 끌어다 놓거나 눌러서 고른다. */
+.finder__drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-7) var(--space-5);
+  background: var(--paper);
+  border: 2px dashed var(--rule);
+  border-radius: var(--radius-card);
+  text-align: center;
+  cursor: pointer;
+}
+
+.finder__drop:hover,
+.finder__drop:focus-within,
+.finder__drop--over {
+  border-color: var(--mark);
+  background: var(--wash);
+}
+
+.finder__drop-hint {
+  color: var(--ink-muted);
+}
+
+.finder__drop-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-6);
+  background: var(--mark);
+  color: var(--paper);
+  font-weight: 700;
+  border-radius: var(--radius-card);
+}
+
+/** 파일 입력 자체는 숨긴다. 감싼 영역 전체가 누르는 자리다. */
+.finder__drop input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.finder__status:empty {
+  display: none;
+}
+
+.finder__status {
+  margin: var(--space-4) 0 0;
+  font-weight: 600;
+  color: var(--mark-deep);
+}
+
+.finder__error {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: var(--paper);
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
+}
+
+.finder__error p {
+  margin: 0;
+}
+
+.finder__result {
+  margin-top: var(--space-5);
+}
+
+.finder__canvas {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.finder__canvas img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-card);
+}
+
+.finder__box {
+  position: absolute;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 2px 6px;
+  font-family: var(--font-label);
+  font-weight: 700;
+  color: var(--paper);
+  background: rgb(12 122 66 / 22%);
+  border: 3px solid var(--mark);
+  border-radius: 6px;
+}
+
+.finder__objects {
+  display: grid;
+  gap: var(--space-4);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: found;
+}
+
+.finder__objects li {
+  counter-increment: found;
+  padding: var(--space-4);
+  background: var(--paper);
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
+}
+
+.finder__object-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-2);
+  font-weight: 700;
+}
+
+.finder__object-label::before {
+  content: counter(found);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  background: var(--mark);
+  color: var(--paper);
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  border-radius: 6px;
+}
+
+.finder__certainty {
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  color: var(--ink-muted);
+}
+
+.finder__object-reason {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-small);
+  color: var(--ink-muted);
+}
+
+.finder__open {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-5);
+  background: var(--mark);
+  color: var(--paper);
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-card);
+  cursor: pointer;
+}
+
+.finder__confirm select {
+  min-height: var(--touch-target);
+  width: 100%;
+  padding: 0 var(--space-3);
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
+  background: var(--paper);
+  font: inherit;
+}

@@ -38,9 +38,9 @@ describe('App integration', () => {
     ).toBeInTheDocument();
 
     act(() => goTo('#/catalog'));
-    for (const title of [ui.scanner.title.ko, ui.catalog.title.ko]) {
-      expect(screen.getByRole('heading', { name: title, level: 2 })).toBeInTheDocument();
-    }
+    expect(
+      screen.getByRole('heading', { name: ui.catalog.title.ko, level: 2 }),
+    ).toBeInTheDocument();
 
     act(() => goTo('#/game'));
     expect(
@@ -98,15 +98,14 @@ describe('App integration', () => {
 
     await userEvent.selectOptions(languageSelect(), 'vi');
 
-    // 한 섹션만 바뀌고 나머지가 한국어로 남는 일이 없어야 한다.
-    for (const title of [ui.scanner.title, ui.catalog.title]) {
-      expect(
-        screen.getByRole('heading', { name: title.vi, level: 2 }),
-      ).toBeInTheDocument();
-      expect(
-        screen.queryByRole('heading', { name: title.ko, level: 2 }),
-      ).not.toBeInTheDocument();
-    }
+    // 제목만 바뀌고 안내문이 한국어로 남는 일이 없어야 한다.
+    expect(
+      screen.getByRole('heading', { name: ui.catalog.title.vi, level: 2 }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(ui.scanner.intro.vi)).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: ui.catalog.title.ko, level: 2 }),
+    ).not.toBeInTheDocument();
     // 번역이 빠진 곳에만 붙는 표시다. 지금은 어디에도 남아 있으면 안 된다.
     expect(screen.queryByText(new RegExp(PLACEHOLDER_LABEL))).not.toBeInTheDocument();
   });
@@ -124,15 +123,12 @@ describe('App integration', () => {
     }
   });
 
-  it('opens the catalog entry chosen from the scanner shortcuts', async () => {
+  it('opens a catalog entry from the grid', async () => {
     render(<App />);
     act(() => goTo('#/catalog'));
-    const shortcuts = screen.getByRole('list', { name: ui.scanner.pickFromList.ko });
     const petName = catalogItems[0].name.ko;
 
-    await userEvent.click(
-      within(shortcuts).getByRole('button', { name: new RegExp(petName) }),
-    );
+    await userEvent.click(screen.getByRole('button', { name: new RegExp(petName) }));
 
     const dialog = screen.getByRole('dialog', { name: petName });
     expect(within(dialog).getByRole('heading', { name: petName })).toBeInTheDocument();
@@ -141,15 +137,29 @@ describe('App integration', () => {
   it('closes that dialog again', async () => {
     render(<App />);
     act(() => goTo('#/catalog'));
-    const shortcuts = screen.getByRole('list', { name: ui.scanner.pickFromList.ko });
     const petName = catalogItems[0].name.ko;
-    await userEvent.click(
-      within(shortcuts).getByRole('button', { name: new RegExp(petName) }),
-    );
+    await userEvent.click(screen.getByRole('button', { name: new RegExp(petName) }));
 
     await userEvent.keyboard('{Escape}');
 
     expect(screen.queryByRole('dialog', { name: petName })).not.toBeInTheDocument();
+  });
+
+  /**
+   * 사진으로 찾기는 도감의 한 갈래다. 예전에는 스캔 화면이 따로 있고 그 아래에
+   * 16종 목록이 또 있어서 도감과 같은 일을 두 번 했다.
+   */
+  it('keeps finding by photo inside the guide, and only after asking', async () => {
+    render(<App />);
+    act(() => goTo('#/catalog'));
+
+    // 열기 전에는 고지문이 없다. 늘 띄워 두면 읽지 않는다.
+    expect(screen.queryByText(ui.scanner.privacyNotice.ko)).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: ui.scanner.openFinder.ko }));
+
+    expect(screen.getByText(ui.scanner.privacyNotice.ko)).toBeInTheDocument();
+    expect(screen.getByLabelText(ui.scanner.choosePhoto.ko)).toBeInTheDocument();
   });
 
   it('keeps the header, footer and skip link on every route', () => {

@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { useLocale } from '@/app/useLocale';
-import { ItemImage } from '@/components/ItemImage';
 import { createSessionId } from '@/features/chat/chatApi';
 import { ui } from '@/i18n/strings';
 import { ApiError } from '@/lib/api';
@@ -38,15 +37,20 @@ function errorText(code: string): LocalizedText {
 }
 
 /**
- * AI Sort Scan.
+ * 사진으로 품목 찾기.
  *
- * 두 가지로 쓴다. 무엇인지 모르면 사진을 찍어 AI에게 묻고, 이미 아는 품목이면
- * 아래 목록에서 골라 도감으로 바로 들어간다. 두 번째 길은 AI를 부르지 않는다.
+ * 도감 안에 들어가는 보조 수단이다. 이름을 모르는 물건일 때만 쓰고 결과는 도감
+ * 상세로 이어진다. 별도 화면으로 빼지 않는 이유는, 이미 이름을 아는 사람에게는
+ * 도감에서 바로 찾는 편이 훨씬 빠르고 스캔은 하루 한도가 있기 때문이다.
+ *
+ * **개인정보 고지는 이 화면을 열었을 때 보여 준다.** 늘 띄워 두면 읽지 않고,
+ * 사진을 고른 뒤에 띄우면 이미 늦다. 보낼지 말지 정하는 시점에 있어야 한다.
  */
-export function ScannerSection({
+export function PhotoFinder({
   scanImage = defaultScanImage,
   prepareImage = compressImage,
   onOpenItem,
+  onClose,
 }: {
   scanImage?: (
     image: CompressedImage,
@@ -55,9 +59,11 @@ export function ScannerSection({
   ) => Promise<ScanResponse>;
   prepareImage?: (file: File) => Promise<CompressedImage | null>;
   onOpenItem: (itemId: ItemId) => void;
+  onClose: () => void;
 }) {
   const { locale, t } = useLocale();
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' });
+  const [dragging, setDragging] = useState(false);
   const sessionId = useRef(createSessionId());
 
   async function handleFile(file: File | undefined) {
@@ -84,46 +90,62 @@ export function ScannerSection({
   }
 
   return (
-    <section id="scan" className="scanner" aria-labelledby="scan-title">
-      <h2 id="scan-title">{t(ui.scanner.title)}</h2>
-      <p className="scanner__intro">{t(ui.scanner.intro)}</p>
+    <section className="finder" aria-labelledby="finder-title">
+      <div className="finder__bar">
+        <h3 id="finder-title">{t(ui.scanner.title)}</h3>
+        <button type="button" className="finder__close" onClick={onClose}>
+          {t(ui.common.close)}
+        </button>
+      </div>
 
-      <label className="scanner__pick">
-        <span>{t(ui.scanner.choosePhoto)}</span>
+      {/**
+       * 사진을 보내기 전에 무엇이 일어나는지 알린다. 무료 등급이라 Google이
+       * 서비스 개선에 쓸 수 있다는 사실까지 적는다.
+       */}
+      <div className="finder__privacy">
+        <strong>{t(ui.scanner.privacyTitle)}</strong>
+        <p>{t(ui.scanner.privacyNotice)}</p>
+      </div>
+
+      <label
+        className={`finder__drop${dragging ? ' finder__drop--over' : ''}`}
+        onDragOver={(event) => {
+          event.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(event) => {
+          event.preventDefault();
+          setDragging(false);
+          void handleFile(event.dataTransfer.files?.[0]);
+        }}
+      >
+        <span className="finder__drop-hint">{t(ui.scanner.dropHint)}</span>
+        <span className="finder__drop-action">{t(ui.scanner.choosePhoto)}</span>
         <input
           type="file"
           accept="image/jpeg,image/png,image/webp"
           capture="environment"
+          // 감싸는 label에 안내 문장이 두 줄이라, 이름은 여기서 직접 준다.
+          aria-label={t(ui.scanner.choosePhoto)}
           onChange={(event) => void handleFile(event.target.files?.[0])}
         />
       </label>
 
-      <p className="scanner__privacy">{t(ui.scanner.privacyNotice)}</p>
-
-      {phase.kind === 'working' && <p className="scanner__working">{t(ui.scanner.analyzing)}</p>}
+      {/** 진행과 결과를 낭독기에 알린다. 사진을 못 보는 사용자에게는 이것이 전부다. */}
+      <p className="finder__status" role="status">
+        {phase.kind === 'working' ? t(ui.scanner.analyzing) : ''}
+      </p>
 
       {phase.kind === 'failed' && (
-        <div className="scanner__error">
+        <div className="finder__error">
           <p>{t(phase.message)}</p>
-          <a href="#catalog">{t(ui.common.openCatalog)}</a>
         </div>
       )}
 
       {phase.kind === 'done' && (
         <ScanResult objects={phase.objects} preview={phase.preview} onOpenItem={onOpenItem} />
       )}
-
-      <h3 id="scan-shortcuts">{t(ui.scanner.pickFromList)}</h3>
-      <ul className="scanner__shortcuts" aria-labelledby="scan-shortcuts">
-        {catalogItems.map((item) => (
-          <li key={item.id}>
-            <button type="button" onClick={() => onOpenItem(item.id)}>
-              <ItemImage item={item} className="scanner__shortcut-image" />
-              <span>{t(item.name)}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
     </section>
   );
 }
@@ -142,22 +164,21 @@ function ScanResult({
 
   if (objects.length === 0) {
     return (
-      <div className="scanner__error">
+      <div className="finder__error">
         <p>{t(ui.scanner.noObjects)}</p>
-        <a href="#catalog">{t(ui.common.openCatalog)}</a>
       </div>
     );
   }
 
   return (
-    <div className="scanner__result" data-testid="scan-result">
-      <div className="scanner__canvas">
+    <div className="finder__result" data-testid="scan-result">
+      <div className="finder__canvas">
         <img src={preview} alt="" />
         {objects.map((object, index) => (
           <span
             key={index}
             data-testid={`scan-box-${index}`}
-            className="scanner__box"
+            className="finder__box"
             style={toCssBox(object.box as Box)}
             aria-hidden
           >
@@ -167,23 +188,23 @@ function ScanResult({
       </div>
 
       <h4>{t(ui.scanner.resultTitle)}</h4>
-      <ol className="scanner__objects">
+      <ol className="finder__objects">
         {objects.map((object, index) => (
           <li key={index}>
-            <p className="scanner__object-label">
+            <p className="finder__object-label">
               {object.itemId === 'unknown' ? t(ui.scanner.unknownLabel) : object.label}
-              <span className={`scanner__certainty scanner__certainty--${object.certainty}`}>
+              <span className={`finder__certainty finder__certainty--${object.certainty}`}>
                 {t(certaintyText(object.certainty))}
               </span>
             </p>
-            <p className="scanner__object-reason">{object.reason}</p>
+            <p className="finder__object-reason">{object.reason}</p>
 
             {needsConfirmation(object) ? (
               <ConfirmChoice onOpenItem={onOpenItem} />
             ) : (
               <button
                 type="button"
-                className="scanner__open"
+                className="finder__open"
                 // 눈에는 짧게 보이되 낭독기에는 어느 품목인지 함께 읽힌다.
                 aria-label={`${object.label} ${t(ui.common.openCatalog)}`}
                 onClick={() => onOpenItem(object.itemId as ItemId)}
@@ -203,7 +224,7 @@ function ConfirmChoice({ onOpenItem }: { onOpenItem: (itemId: ItemId) => void })
   const { locale, t } = useLocale();
 
   return (
-    <div className="scanner__confirm">
+    <div className="finder__confirm">
       <p>{t(ui.scanner.confirmPrompt)}</p>
       <select
         aria-label={t(ui.scanner.confirmPrompt)}

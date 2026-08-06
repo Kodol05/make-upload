@@ -372,10 +372,29 @@ export const ui = {
       vi: 'Tìm bằng AI',
     }),
     intro: localized('ui', 'scanner.intro', {
-      ko: '무엇인지 모르겠으면 사진을 찍고, 알고 있으면 아래에서 고르세요.',
-      en: 'Not sure what it is? Take a photo. Already know? Pick it from the list below.',
-      zh: '不知道是什么就拍张照片，已经知道的话就从下面选择。',
-      vi: 'Không biết là gì thì chụp ảnh. Đã biết rồi thì chọn từ danh sách bên dưới.',
+      ko: '이름을 모르는 물건은 사진으로 찾을 수 있습니다. 아래 도감에서 바로 찾아도 됩니다.',
+      en: 'If you do not know what something is called, find it by photo. Searching the guide below works too.',
+      zh: '不知道名称的物品可以用照片查找。直接在下面的图鉴中搜索也可以。',
+      vi: 'Vật không biết tên thì có thể tìm bằng ảnh. Tra thẳng trong cẩm nang bên dưới cũng được.',
+    }),
+    /** 사진 고르기 화면을 여는 버튼. 도감 검색 옆에 선다. */
+    openFinder: localized('ui', 'scanner.openFinder', {
+      ko: '사진으로 찾기',
+      en: 'Find by photo',
+      zh: '用照片查找',
+      vi: 'Tìm bằng ảnh',
+    }),
+    dropHint: localized('ui', 'scanner.dropHint', {
+      ko: '사진을 여기에 끌어다 놓거나 아래에서 고르세요',
+      en: 'Drop a photo here, or choose one below',
+      zh: '把照片拖到这里，或在下方选择',
+      vi: 'Kéo ảnh vào đây, hoặc chọn ở bên dưới',
+    }),
+    privacyTitle: localized('ui', 'scanner.privacyTitle', {
+      ko: '사진을 보내기 전에 알아 두세요',
+      en: 'Before you send a photo',
+      zh: '发送照片前请了解',
+      vi: 'Trước khi gửi ảnh, hãy lưu ý',
     }),
     takePhoto: localized('ui', 'scanner.takePhoto', {
       ko: '사진 찍기',
@@ -388,12 +407,6 @@ export const ui = {
       en: 'Upload a photo',
       zh: '上传照片',
       vi: 'Tải ảnh lên',
-    }),
-    pickFromList: localized('ui', 'scanner.pickFromList', {
-      ko: '목록에서 고르기',
-      en: 'Pick from the list',
-      zh: '从列表中选择',
-      vi: 'Chọn từ danh sách',
     }),
     analyzing: localized('ui', 'scanner.analyzing', {
       ko: '분석하는 중',

@@ -3,15 +3,14 @@ import { AppHeader } from '@/components/AppHeader';
 import { FeatureErrorBoundary } from '@/components/FeatureErrorBoundary';
 import { SortMark } from '@/components/SortMark';
 import { Wordmark } from '@/components/Wordmark';
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import { CatalogSection } from '@/features/catalog/CatalogSection';
 import { ChatWidget } from '@/features/chat/ChatWidget';
 import { GamePage } from '@/features/game/GamePage';
 import { LearnSection } from '@/features/learn/LearnSection';
-import { ScannerSection } from '@/features/scanner/ScannerSection';
 import { ui } from '@/i18n/strings';
 import { assetUrl } from '@/lib/assetUrl';
-import { categories, type ItemId } from '@shared/types';
+import { categories } from '@shared/types';
 import { journey, stepIndexOf } from './journey';
 import { LocaleProvider } from './LocaleProvider';
 import { useHashRoute } from './useHashRoute';
@@ -69,27 +68,17 @@ function LearnRoute() {
 }
 
 /**
- * ③ 도감과 AI 찾기.
+ * ③ 도감.
  *
- * 스캐너가 고른 품목의 상세를 열 수 있도록 요청을 여기서 들고 있다가 도감에
- * 넘긴다. 두 섹션이 서로를 직접 알 필요가 없다.
+ * 사진으로 찾기가 도감 안으로 들어가면서 이 화면은 섹션 하나가 됐다. 예전에는
+ * 스캔 화면과 도감이 위아래로 나뉘어 있었는데, 스캔 아래의 16종 목록이 도감과
+ * 같은 일을 해서 같은 화면을 두 번 만든 셈이었다.
  */
 function CatalogRoute() {
-  const [requestedItemId, setRequestedItemId] = useState<ItemId | null>(null);
-  const clearRequest = useCallback(() => setRequestedItemId(null), []);
-
   return (
-    <>
-      <FeatureErrorBoundary>
-        <ScannerSection onOpenItem={setRequestedItemId} />
-      </FeatureErrorBoundary>
-      <FeatureErrorBoundary>
-        <CatalogSection
-          requestedItemId={requestedItemId}
-          onRequestHandled={clearRequest}
-        />
-      </FeatureErrorBoundary>
-    </>
+    <FeatureErrorBoundary>
+      <CatalogSection />
+    </FeatureErrorBoundary>
   );
 }
 

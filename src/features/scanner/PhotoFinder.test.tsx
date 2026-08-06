@@ -3,11 +3,8 @@ import userEvent from '@testing-library/user-event';
 import { LocaleProvider } from '@/app/LocaleProvider';
 import { ui } from '@/i18n/strings';
 import { ApiError } from '@/lib/api';
-import { catalogItems } from '@shared/catalog';
 import type { ScanResponse } from '@shared/types';
-import { ScannerSection } from './ScannerSection';
-
-const petName = catalogItems[0].name.ko;
+import { PhotoFinder } from './PhotoFinder';
 
 const found: ScanResponse = {
   objects: [
@@ -21,19 +18,21 @@ const found: ScanResponse = {
   ],
 };
 
-function renderScanner(overrides: Partial<Parameters<typeof ScannerSection>[0]> = {}) {
+function renderScanner(overrides: Partial<Parameters<typeof PhotoFinder>[0]> = {}) {
   const onOpenItem = vi.fn();
+  const onClose = vi.fn();
   render(
     <LocaleProvider>
-      <ScannerSection
+      <PhotoFinder
         scanImage={async () => found}
         prepareImage={async () => ({ mimeType: 'image/jpeg', data: 'AAAA' })}
         onOpenItem={onOpenItem}
+        onClose={onClose}
         {...overrides}
       />
     </LocaleProvider>,
   );
-  return { onOpenItem };
+  return { onOpenItem, onClose };
 }
 
 /** 사진을 고르는 시늉을 한다. */
@@ -42,20 +41,28 @@ async function pickPhoto() {
   await userEvent.upload(screen.getByLabelText(ui.scanner.choosePhoto.ko), file);
 }
 
-describe('ScannerSection', () => {
+describe('PhotoFinder', () => {
   beforeEach(() => {
     localStorage.clear();
     localStorage.setItem('k-sort-locale', 'ko');
   });
 
-  it('explains both ways of using the screen', () => {
+  /**
+   * 고지는 사진을 고르기 **전에** 보여야 한다. 고른 뒤에 띄우면 이미 늦고,
+   * 늘 띄워 두면 읽지 않는다.
+   */
+  it('shows the privacy notice as soon as it opens', () => {
     renderScanner();
-    expect(screen.getByText(ui.scanner.intro.ko)).toBeInTheDocument();
+    expect(screen.getByText(ui.scanner.privacyTitle.ko)).toBeInTheDocument();
+    expect(screen.getByText(ui.scanner.privacyNotice.ko)).toBeInTheDocument();
   });
 
-  it('shows the privacy notice before anything is uploaded', () => {
-    renderScanner();
-    expect(screen.getByText(ui.scanner.privacyNotice.ko)).toBeInTheDocument();
+  it('closes back to the catalog', async () => {
+    const { onClose } = renderScanner();
+
+    await userEvent.click(screen.getByRole('button', { name: ui.common.close.ko }));
+
+    expect(onClose).toHaveBeenCalled();
   });
 
   // 경로 ① 사진을 올려 AI가 판별한다
@@ -68,7 +75,6 @@ describe('ScannerSection', () => {
     const overlay = await screen.findByTestId('scan-box-0');
     expect(overlay).toHaveStyle({ top: '10%', left: '20%' });
 
-    // 아래 바로가기 목록에도 같은 이름이 있으므로 결과 영역으로 좁힌다.
     const result = screen.getByTestId('scan-result');
     expect(within(result).getByText('투명 페트병')).toBeInTheDocument();
     expect(within(result).getByText(ui.scanner.certaintyHigh.ko)).toBeInTheDocument();
@@ -150,31 +156,4 @@ describe('ScannerSection', () => {
     expect(await screen.findByText(ui.error.rateLimited.ko)).toBeInTheDocument();
   });
 
-  // 경로 ② 이미 아는 품목을 목록에서 고른다
-
-  it('lists every catalog item as a shortcut', () => {
-    renderScanner();
-    const list = screen.getByRole('list', { name: ui.scanner.pickFromList.ko });
-    expect(within(list).getAllByRole('button')).toHaveLength(catalogItems.length);
-  });
-
-  it('opens the catalog entry straight from the shortcut list', async () => {
-    const { onOpenItem } = renderScanner();
-    const list = screen.getByRole('list', { name: ui.scanner.pickFromList.ko });
-
-    await userEvent.click(within(list).getByRole('button', { name: new RegExp(petName) }));
-
-    expect(onOpenItem).toHaveBeenCalledWith('clear-pet');
-  });
-
-  it('never sends anything to the model for the shortcut path', async () => {
-    const scanImage = vi.fn(async () => found);
-    renderScanner({ scanImage });
-    const list = screen.getByRole('list', { name: ui.scanner.pickFromList.ko });
-
-    await userEvent.click(within(list).getByRole('button', { name: new RegExp(petName) }));
-
-    // 이미 아는 품목을 고르는 길이므로 AI를 부를 이유가 없다.
-    expect(scanImage).not.toHaveBeenCalled();
-  });
 });
