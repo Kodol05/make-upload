@@ -3,11 +3,16 @@ import { describe, expect, it } from 'vitest';
 
 import {
   assertFalKey,
+  assembleMaster,
+  buildAssemblyInputs,
   buildAssemblyCommands,
   buildTtsFfmpegArgs,
   buildVideoPrompt,
   clipOrder,
   loadManifests,
+  isValidMaster,
+  isValidTts,
+  mergeRecords,
   parseArgs,
   shouldSkip,
 } from './k-sort-media.mjs';
@@ -50,6 +55,43 @@ describe('K-SORT media tooling', () => {
     expect(shouldSkip(true, { video: { width: 1, height: 1, duration: 8 } }, 8, false)).toBe(false);
   });
 
+  it('accepts only mono PCM 48 kHz narration as a resumable TTS output', () => {
+    expect(isValidTts({ audio: { codec: 'pcm_s16le', sampleRate: 48000, channels: 1 } })).toBe(true);
+    expect(isValidTts({ audio: { codec: 'aac', sampleRate: 48000, channels: 1 } })).toBe(false);
+    expect(isValidTts({ audio: { codec: 'pcm_s16le', sampleRate: 48000, channels: 2 } })).toBe(false);
+  });
+
+  it('uses the concat path immediately after its input flag before narration inputs', async () => {
+    const inputs = buildAssemblyInputs('C:/temp/concat.txt', ['C:/audio/vo-S01.wav'], undefined);
+    expect(inputs).toEqual(['-f', 'concat', '-safe', '0', '-i', 'C:/temp/concat.txt', '-i', 'C:/audio/vo-S01.wav']);
+    const commands = buildAssemblyCommands({
+      inputs, concatFile: 'ignored', narrationFilter: '[narration]anull[aout]', bgm: undefined,
+      subtitleFile: 'public/subtitles/ko.vtt', fontFile: 'C:/Windows/Fonts/malgun.ttf',
+    });
+    expect(commands.clean.args.slice(0, inputs.length + 1)).toEqual(['-y', ...inputs]);
+    expect(commands.clean.args.some((arg) => arg.includes('[0:v]fps=24,tpad=stop_mode=clone:stop_duration=120,trim=duration=120,setpts=PTS-STARTPTS[vout]'))).toBe(true);
+    const dryRun = await assembleMaster({ dryRun: true });
+    expect(dryRun.commands.clean.args.slice(0, 7)).toEqual(['-y', '-f', 'concat', '-safe', '0', '-i', expect.stringMatching(/\.k-sort-concat\.txt$/)]);
+    expect(dryRun.commands.clean.args[7]).toBe('-i');
+  });
+
+  it('requires exact 120-second H.264 24fps video and AAC audio for masters', () => {
+    const master = { video: { codec: 'h264', width: 1280, height: 720, fps: 24, duration: 120 }, audio: { codec: 'aac', sampleRate: 48000, channels: 2, duration: 120 } };
+    expect(isValidMaster(master)).toBe(true);
+    expect(isValidMaster({ ...master, video: { ...master.video, duration: 119.5 } })).toBe(false);
+    expect(isValidMaster({ ...master, audio: { ...master.audio, codec: 'pcm_s16le' } })).toBe(false);
+  });
+
+  it('upserts selected records without erasing earlier generation history', () => {
+    expect(mergeRecords([{ clipId: 'S01', requestId: 'fal-1', outputPath: 'S01.mp4' }], [
+      { clipId: 'S02', requestId: 'fal-2', outputPath: 'S02.mp4' },
+      { clipId: 'S01', requestId: 'fal-3', outputPath: 'S01.mp4' },
+    ])).toEqual([
+      { clipId: 'S01', requestId: 'fal-3', outputPath: 'S01.mp4' },
+      { clipId: 'S02', requestId: 'fal-2', outputPath: 'S02.mp4' },
+    ]);
+  });
+
   it('builds the required stable Seedance prompt and deterministic tts ffmpeg command', () => {
     expect(buildVideoPrompt({ promptPrefix: 'prefix', negativeSuffix: 'suffix' }, { motionPrompt: 'motion' }))
       .toBe('prefix motion suffix');
@@ -60,7 +102,7 @@ describe('K-SORT media tooling', () => {
 
   it('constructs clean and captioned assembly outputs deterministically', () => {
     const commands = buildAssemblyCommands({
-      concatFile: 'temp/concat.txt', narrationFilter: 'amix=inputs=14', bgm: undefined,
+      inputs: buildAssemblyInputs('temp/concat.txt', [], undefined), narrationFilter: 'amix=inputs=14',
       subtitleFile: 'public/subtitles/ko.vtt', fontFile: 'C:/Windows/Fonts/malgun.ttf',
     });
     expect(commands.clean.output).toBe('public/media/k-sort-guide-clean.mp4');
