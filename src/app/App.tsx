@@ -167,6 +167,22 @@ function AppShell() {
 
   return (
     <>
+      {/**
+       * 화면 전체 뒤에 까는 질감.
+       *
+       * 배경색만으로는 판이 밋밋해서 산과 숲 사진을 아주 흐리게 깐다. 투명도가
+       * 5%라 무엇인지 알아보기보다 색이 살짝 깊어지는 정도로만 작동한다.
+       * 경로는 여기서 넘긴다. Vite가 CSS의 `url()`에는 base를 붙이지 않는다.
+       */}
+      <div
+        className="page-texture"
+        aria-hidden="true"
+        style={
+          {
+            '--page-texture': `url(${assetUrl('/images/page-texture.webp')})`,
+          } as CSSProperties
+        }
+      />
       <AppHeader currentRoute={journey[index].route} />
       <JourneyProgress index={index} />
       <main id="main" ref={mainRef} tabIndex={-1}>

@@ -1298,3 +1298,33 @@ main {
   border-radius: var(--radius-card);
   cursor: pointer;
 }
+
+/* ══ 배경 질감 ═══════════════════════════════════════════ */
+
+/**
+ * 화면 전체 뒤에 산과 숲을 아주 흐리게 깐다.
+ *
+ * 투명도 5%라 무엇인지 알아보기보다 배경색이 살짝 깊어지는 정도로만 작동한다.
+ * 글자와 카드는 이 층 위에 있고 카드는 불투명하므로, 실제로 비치는 곳은
+ * 카드 사이의 여백이다. 대비 계산에는 영향을 주지 않는다.
+ *
+ * 스크롤을 따라오지 않고 화면에 고정한다. 함께 움직이면 시선을 끌어 본문을
+ * 방해한다.
+ */
+.page-texture {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--page-texture, none);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+/** 배경 그림을 줄여 달라는 설정이면 더 걷어 낸다. */
+@media (prefers-reduced-transparency: reduce) {
+  .page-texture {
+    opacity: 0.02;
+  }
+}
