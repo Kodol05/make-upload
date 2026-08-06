@@ -1,5 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ui } from '@/i18n/strings';
+import { locales } from '@shared/types';
 import { App } from './App';
 
 /** 해시를 바꾸고 브라우저와 같은 이벤트를 발생시킨다. */
@@ -49,5 +51,16 @@ describe('App', () => {
   it('gives the main content the skip link target', () => {
     render(<App />);
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main');
+  });
+
+  it('never leaks the machine readable placeholder to any locale', async () => {
+    const { container } = render(<App />);
+    // 언어 선택기의 라벨도 번역 대상이라 locale마다 바뀐다. role로 잡는다.
+    const languageSelect = screen.getByRole('combobox');
+
+    for (const locale of locales) {
+      await userEvent.selectOptions(languageSelect, locale);
+      expect(container.textContent, locale).not.toContain('__TODO__');
+    }
   });
 });
