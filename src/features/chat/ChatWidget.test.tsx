@@ -109,6 +109,69 @@ describe('ChatWidget', () => {
     expect(panelIsClosed()).toBe(true);
   });
 
+  /**
+   * 도감에서 못 찾은 사람에게 다음 수단이 있다는 것을 알린다. 도감이 아닌
+   * 곳에서는 띄우지 않고, 열 초가 지나면 스스로 사라진다.
+   */
+  describe('도감에서 뜨는 말풍선', () => {
+    it('stays away until the reader reaches the guide', () => {
+      render(<App />);
+      expect(screen.queryByText(ui.chat.nudge.ko)).not.toBeInTheDocument();
+
+      act(() => goTo('#/catalog'));
+      expect(screen.getByText(ui.chat.nudge.ko)).toBeInTheDocument();
+    });
+
+    it('goes away on its own after ten seconds', () => {
+      vi.useFakeTimers();
+      try {
+        render(<App />);
+        act(() => goTo('#/catalog'));
+
+        act(() => void vi.advanceTimersByTime(10_000));
+
+        expect(screen.queryByText(ui.chat.nudge.ko)).not.toBeInTheDocument();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('closes from the x without opening the chat', async () => {
+      render(<App />);
+      act(() => goTo('#/catalog'));
+
+      const bubble = screen.getByText(ui.chat.nudge.ko).closest('div')!;
+      await userEvent.click(
+        within(bubble).getByRole('button', { name: ui.common.close.ko }),
+      );
+
+      expect(screen.queryByText(ui.chat.nudge.ko)).not.toBeInTheDocument();
+      expect(panelIsClosed()).toBe(true);
+    });
+
+    it('opens the chat when the bubble itself is pressed', async () => {
+      render(<App />);
+      act(() => goTo('#/catalog'));
+
+      await userEvent.click(screen.getByRole('button', { name: ui.chat.nudge.ko }));
+
+      expect(screen.queryByText(ui.chat.nudge.ko)).not.toBeInTheDocument();
+      expect(panel()).toBeVisible();
+    });
+
+    it('does not come back after it has been seen once', async () => {
+      render(<App />);
+      act(() => goTo('#/catalog'));
+      await userEvent.click(screen.getByRole('button', { name: ui.chat.nudge.ko }));
+      await userEvent.keyboard('{Escape}');
+
+      act(() => goTo('#/'));
+      act(() => goTo('#/catalog'));
+
+      expect(screen.queryByText(ui.chat.nudge.ko)).not.toBeInTheDocument();
+    });
+  });
+
   it('closes with Escape and hands focus back to the launcher', async () => {
     render(<App />);
     await userEvent.click(launcher());

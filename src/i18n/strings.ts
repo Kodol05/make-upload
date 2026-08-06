@@ -524,6 +524,13 @@ export const ui = {
       zh: '你好。关于垃圾分类可以随意提问。我只根据图鉴中已核实的内容作答。',
       vi: 'Xin chào. Cứ thoải mái hỏi về phân loại rác. Tôi chỉ trả lời dựa trên nội dung đã kiểm chứng trong cẩm nang.',
     }),
+    /** 도감에서 챗봇 버튼 옆에 잠깐 떴다 사라지는 말풍선. */
+    nudge: localized('ui', 'chat.nudge', {
+      ko: '찾는 것이 없나요? AI에게 물어보세요',
+      en: 'Cannot find it? Ask the AI',
+      zh: '没找到想要的？可以问AI',
+      vi: 'Không tìm thấy? Hãy hỏi AI',
+    }),
     inputLabel: localized('ui', 'chat.inputLabel', {
       ko: '질문 입력',
       en: 'Enter your question',

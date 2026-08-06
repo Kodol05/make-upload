@@ -2233,3 +2233,85 @@ main {
 .catalog__filter[aria-pressed='false']:focus-visible {
   background: color-mix(in srgb, currentcolor 10%, var(--paper));
 }
+
+/* ══ 챗봇: 말풍선 알림 ═══════════════════════════════════ */
+
+/**
+ * 도감에서 못 찾은 사람에게 다음 수단이 있다는 것을 알린다. 열 초가 지나면
+ * 스스로 사라진다. 계속 떠 있으면 화면을 가리기만 한다.
+ */
+.chat-widget__nudge {
+  position: fixed;
+  right: var(--space-4);
+  bottom: calc(76px + var(--space-4) + var(--space-3));
+  z-index: 21;
+  display: flex;
+  align-items: stretch;
+  max-width: min(300px, calc(100vw - var(--space-4) * 2));
+  background: var(--paper);
+  border: 2px solid var(--mark);
+  border-radius: 16px;
+  box-shadow: var(--shadow-float);
+  animation: nudge-in 220ms ease-out;
+}
+
+@keyframes nudge-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/** 아래쪽 꼬리. 버튼에서 나온 말이라는 것을 위치로 알린다. */
+.chat-widget__nudge::after {
+  content: '';
+  position: absolute;
+  right: 26px;
+  bottom: -9px;
+  width: 14px;
+  height: 14px;
+  background: var(--paper);
+  border-right: 2px solid var(--mark);
+  border-bottom: 2px solid var(--mark);
+  transform: rotate(45deg);
+}
+
+.chat-widget__nudge-open {
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-3) var(--space-2) var(--space-3) var(--space-4);
+  background: none;
+  border: none;
+  color: var(--mark-deep);
+  font-size: var(--text-small);
+  font-weight: 700;
+  text-align: left;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.chat-widget__nudge-close {
+  flex: 0 0 auto;
+  min-height: 0;
+  width: 38px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--rule);
+  color: var(--ink-muted);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.chat-widget__nudge-close:hover,
+.chat-widget__nudge-close:focus-visible {
+  color: var(--ink);
+  background: var(--wash);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-widget__nudge {
+    animation: none;
+  }
+}

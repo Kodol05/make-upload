@@ -5,6 +5,9 @@ import { useFocusTrap } from '@/components/useFocusTrap';
 import { ui } from '@/i18n/strings';
 import { ChatSection } from './ChatSection';
 
+/** 말풍선이 스스로 사라지기까지. */
+const NUDGE_MS = 10_000;
+
 /**
  * 어디서나 열 수 있는 챗봇.
  *
@@ -19,11 +22,26 @@ import { ChatSection } from './ChatSection';
  * 닫혀 있어도 `ChatSection`은 마운트된 채로 두고 패널만 숨긴다. 그래야 답을
  * 받아 놓고 페이지를 옮겼다가 다시 열어도 대화가 남아 있다.
  */
-export function ChatWidget() {
+export function ChatWidget({ hint = false }: { hint?: boolean }) {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
+  const [nudging, setNudging] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
+  /** 한 번 보여 준 뒤에는 다시 띄우지 않는다. 오갈 때마다 뜨면 성가시다. */
+  const nudgeSpent = useRef(false);
+
+  /**
+   * 도감에 처음 닿았을 때 말풍선을 한 번 띄운다. 도감에서 못 찾은 사람에게
+   * 다음 수단이 있다는 것을 알려 주는 것이라, 도감이 아닌 곳에서는 띄우지 않는다.
+   */
+  useEffect(() => {
+    if (!hint || open || nudgeSpent.current) return;
+    nudgeSpent.current = true;
+    setNudging(true);
+    const timer = window.setTimeout(() => setNudging(false), NUDGE_MS);
+    return () => window.clearTimeout(timer);
+  }, [hint, open]);
 
   useFocusTrap(panelRef, () => setOpen(false), open);
 
@@ -35,6 +53,33 @@ export function ChatWidget() {
 
   return (
     <div className="chat-widget">
+      {/**
+       * 버튼 옆에서 잠깐 떴다 사라지는 말풍선. 열 초가 지나거나 x를 누르면
+       * 닫히고, 말풍선 자체를 누르면 대화가 열린다.
+       */}
+      {nudging && !open && (
+        <div className="chat-widget__nudge">
+          <button
+            type="button"
+            className="chat-widget__nudge-open"
+            onClick={() => {
+              setNudging(false);
+              setOpen(true);
+            }}
+          >
+            {t(ui.chat.nudge)}
+          </button>
+          <button
+            type="button"
+            className="chat-widget__nudge-close"
+            aria-label={t(ui.common.close)}
+            onClick={() => setNudging(false)}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+      )}
+
       <div
         ref={panelRef}
         id="chat-widget-panel"

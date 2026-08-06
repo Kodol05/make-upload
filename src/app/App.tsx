@@ -248,7 +248,7 @@ function AppShell() {
        * 챗봇은 라우트 바깥에 둔다. 안에 두면 페이지를 옮길 때 컴포넌트가 사라지면서
        * 대화가 통째로 날아간다. "어디서나 열 수 있게"의 전제 조건이다.
        */}
-      <ChatWidget />
+      <ChatWidget hint={journey[index].route === '/catalog'} />
     </>
   );
 }
