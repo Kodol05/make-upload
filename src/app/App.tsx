@@ -3,6 +3,7 @@ import { AppHeader } from '@/components/AppHeader';
 import { useCallback, useState } from 'react';
 import { CatalogSection } from '@/features/catalog/CatalogSection';
 import { ChatSection } from '@/features/chat/ChatSection';
+import { GamePage } from '@/features/game/GamePage';
 import { LearnSection } from '@/features/learn/LearnSection';
 import { ScannerSection } from '@/features/scanner/ScannerSection';
 import { ui } from '@/i18n/strings';
@@ -36,15 +37,9 @@ function HomeRoute() {
   );
 }
 
-/** 게임 화면. Task 9에서 실제 게임을 연결한다. */
+/** 게임 화면. */
 function GameRoute() {
-  const { t } = useLocale();
-  return (
-    <section>
-      <h2>{t(ui.game.title)}</h2>
-      <a href="#/">{t(ui.game.backToHome)}</a>
-    </section>
-  );
+  return <GamePage />;
 }
 
 function AppShell() {

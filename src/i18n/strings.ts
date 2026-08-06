@@ -165,13 +165,27 @@ export const ui = {
   game: {
     title: localized('ui', 'game.title', { ko: '게임으로 복습하기' }),
     intro: localized('ui', 'game.intro', {
-      ko: '배운 내용을 문제로 확인해 보세요.',
+      ko: '쓰레기를 보고 알맞은 곳에 버려 보세요. 열 문제입니다.',
     }),
     start: localized('ui', 'game.start', { ko: '시작하기' }),
-    score: localized('ui', 'game.score', { ko: '점수' }),
+    progress: localized('ui', 'game.progress', { ko: '문제' }),
+    prepQuestion: localized('ui', 'game.prepQuestion', {
+      ko: '이대로는 버릴 수 없어요. 먼저 무엇을 해야 할까요?',
+    }),
+    sortQuestion: localized('ui', 'game.sortQuestion', { ko: '어디에 버릴까요?' }),
+    binsLocked: localized('ui', 'game.binsLocked', {
+      ko: '먼저 처리 방법을 고르면 열립니다',
+    }),
+    hintTitle: localized('ui', 'game.hintTitle', { ko: '힌트' }),
+    wrongAgain: localized('ui', 'game.wrongAgain', { ko: '다시 한 번 골라 보세요' }),
+    revealed: localized('ui', 'game.revealed', { ko: '정답은 이것입니다' }),
+    correct: localized('ui', 'game.correct', { ko: '맞았습니다' }),
+    nextQuestion: localized('ui', 'game.nextQuestion', { ko: '다음 문제' }),
+    score: localized('ui', 'game.score', { ko: '맞힌 문제' }),
     resultTitle: localized('ui', 'game.resultTitle', { ko: '결과' }),
     playAgain: localized('ui', 'game.playAgain', { ko: '다시 하기' }),
     reviewTitle: localized('ui', 'game.reviewTitle', { ko: '다시 볼 품목' }),
+    allCorrect: localized('ui', 'game.allCorrect', { ko: '모두 맞혔습니다' }),
     backToHome: localized('ui', 'game.backToHome', { ko: '홈으로 돌아가기' }),
   },
 
