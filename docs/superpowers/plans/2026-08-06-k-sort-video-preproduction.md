@@ -8,6 +8,10 @@
 
 **Tech Stack:** Markdown, JSON, WebVTT, built-in image generation, fal.ai Seedance 1.5 Pro image-to-video, fal.ai ElevenLabs TTS, Suno Custom Mode, FFmpeg-compatible edit specifications.
 
+## Execution Result
+
+Completed in the current workspace. Tasks 1 through 8 produced 23 reviewed images, a 14-shot/120-second editorial timeline, an 18-clip/120-second Seedance manifest, 14 timed TTS requests, Korean WebVTT subtitles, Suno and mix directions, and a generation runbook. Paid Seedance, ElevenLabs, and Suno calls remain intentionally unexecuted at the user's requested boundary.
+
 ## Global Constraints
 
 - Friendly, non-childish stylized 3D public-information animation in 16:9.
@@ -127,6 +131,21 @@ Expected: `120`.
 - [ ] **Step 2: Add pronunciation and delivery notes for K-SORT, RFID, and foreign-student-friendly pacing**
 - [ ] **Step 3: Write a Suno Custom Mode instrumental prompt with a 120-second dynamic arc**
 - [ ] **Step 4: Define narration, BGM, and effect priorities for every timeline section**
+
+### Task 6A: Generate shot-specific Seedance start frames
+
+**Files:**
+- Create: `docs/video/prompts/keyframe-prompts.md`
+- Create: `public/media/preproduction/keyframes/S01.png` through `public/media/preproduction/keyframes/S14.png`
+
+**Interfaces:**
+- Consumes: character sheets, background sheets, storyboard sheets, and shot manifest
+- Produces: one independent 16:9 `image_url` source file for each Seedance image-to-video request
+
+- [ ] **Step 1: Write one start-frame prompt per shot with no in-progress motion blur**
+- [ ] **Step 2: Generate each frame as a separate image using the minimum relevant references**
+- [ ] **Step 3: Inspect identity, hands, object count, blank surfaces, and safe staging**
+- [ ] **Step 4: Record any video-only motion that must not be baked into the still frame**
 
 ### Task 7: Package Seedance generation
 

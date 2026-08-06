@@ -1,0 +1,134 @@
+{
+  "endpoint": "fal-ai/elevenlabs/tts/multilingual-v2",
+  "documentation": "https://fal.ai/models/fal-ai/elevenlabs/tts/multilingual-v2/api",
+  "authentication": {
+    "environmentVariable": "FAL_KEY",
+    "storeInFile": false
+  },
+  "sharedInput": {
+    "voice": "River",
+    "stability": 0.55,
+    "similarity_boost": 0.72,
+    "style": 0.15,
+    "speed": 0.95,
+    "language_code": "ko",
+    "timestamps": true,
+    "apply_text_normalization": "off",
+    "output_format": "pcm_48000"
+  },
+  "fallbackVoice": "Rachel",
+  "requests": [
+    {
+      "id": "S01",
+      "targetDurationSeconds": 8,
+      "text": "한국에서 생활하다 보면, 쓰레기통 앞에서 한 번쯤 망설이게 됩니다.",
+      "previous_text": "",
+      "next_text": "잘못 섞인 쓰레기는 재활용을 어렵게 하고, 건전지는 화재 위험도 높입니다.",
+      "outputFile": "public/media/audio/vo-S01.wav"
+    },
+    {
+      "id": "S02",
+      "targetDurationSeconds": 8,
+      "text": "잘못 섞인 쓰레기는 재활용을 어렵게 하고, 건전지는 화재 위험도 높입니다.",
+      "previous_text": "한국에서 생활하다 보면, 쓰레기통 앞에서 한 번쯤 망설이게 됩니다.",
+      "next_text": "기억할 것은 네 가지. 비우고, 헹구고, 분리하고, 섞지 않습니다.",
+      "outputFile": "public/media/audio/vo-S02.wav"
+    },
+    {
+      "id": "S03",
+      "targetDurationSeconds": 8,
+      "text": "기억할 것은 네 가지. 비우고, 헹구고, 분리하고, 섞지 않습니다.",
+      "previous_text": "잘못 섞인 쓰레기는 재활용을 어렵게 하고, 건전지는 화재 위험도 높입니다.",
+      "next_text": "첫째, 용기 속 남은 내용물을 완전히 비웁니다.",
+      "outputFile": "public/media/audio/vo-S03.wav"
+    },
+    {
+      "id": "S04",
+      "targetDurationSeconds": 7,
+      "text": "첫째, 용기 속 남은 내용물을 완전히 비웁니다.",
+      "previous_text": "기억할 것은 네 가지. 비우고, 헹구고, 분리하고, 섞지 않습니다.",
+      "next_text": "둘째, 음식물과 이물질을 물로 깨끗이 헹굽니다.",
+      "outputFile": "public/media/audio/vo-S04.wav"
+    },
+    {
+      "id": "S05",
+      "targetDurationSeconds": 7,
+      "text": "둘째, 음식물과 이물질을 물로 깨끗이 헹굽니다.",
+      "previous_text": "첫째, 용기 속 남은 내용물을 완전히 비웁니다.",
+      "next_text": "셋째, 라벨과 뚜껑처럼 다른 재질은 떼어 냅니다.",
+      "outputFile": "public/media/audio/vo-S05.wav"
+    },
+    {
+      "id": "S06",
+      "targetDurationSeconds": 7,
+      "text": "셋째, 라벨과 뚜껑처럼 다른 재질은 떼어 냅니다.",
+      "previous_text": "둘째, 음식물과 이물질을 물로 깨끗이 헹굽니다.",
+      "next_text": "넷째, 종류가 다른 재활용품은 서로 섞지 않습니다.",
+      "outputFile": "public/media/audio/vo-S06.wav"
+    },
+    {
+      "id": "S07",
+      "targetDurationSeconds": 7,
+      "text": "넷째, 종류가 다른 재활용품은 서로 섞지 않습니다.",
+      "previous_text": "셋째, 라벨과 뚜껑처럼 다른 재질은 떼어 냅니다.",
+      "next_text": "무색 페트병은 라벨과 내용물을 제거하고 헹군 뒤, 압착해 뚜껑을 닫아 배출합니다.",
+      "outputFile": "public/media/audio/vo-S07.wav"
+    },
+    {
+      "id": "S08",
+      "targetDurationSeconds": 10,
+      "text": "무색 페트병은 라벨과 내용물을 제거하고 헹군 뒤, 압착해 뚜껑을 닫아 배출합니다.",
+      "previous_text": "넷째, 종류가 다른 재활용품은 서로 섞지 않습니다.",
+      "next_text": "배달용기처럼 오염된 플라스틱은 깨끗이 씻습니다. 지워지지 않으면 재활용품에 섞지 마세요.",
+      "outputFile": "public/media/audio/vo-S08.wav"
+    },
+    {
+      "id": "S09",
+      "targetDurationSeconds": 9,
+      "text": "배달용기처럼 오염된 플라스틱은 깨끗이 씻습니다. 지워지지 않으면 재활용품에 섞지 마세요.",
+      "previous_text": "무색 페트병은 라벨과 내용물을 제거하고 헹군 뒤, 압착해 뚜껑을 닫아 배출합니다.",
+      "next_text": "음식물쓰레기는 수분과 이물질을 줄이고, 지역의 전용봉투나 알 에프 아이 디 수거함을 이용합니다.",
+      "outputFile": "public/media/audio/vo-S09.wav"
+    },
+    {
+      "id": "S10",
+      "targetDurationSeconds": 10,
+      "text": "음식물쓰레기는 수분과 이물질을 줄이고, 지역의 전용봉투나 알 에프 아이 디 수거함을 이용합니다.",
+      "previous_text": "배달용기처럼 오염된 플라스틱은 깨끗이 씻습니다. 지워지지 않으면 재활용품에 섞지 마세요.",
+      "next_text": "하지만 닭뼈와 조개껍데기는 음식물이 아닙니다. 일반 종량제봉투로 배출합니다.",
+      "outputFile": "public/media/audio/vo-S10.wav"
+    },
+    {
+      "id": "S11",
+      "targetDurationSeconds": 9,
+      "text": "하지만 닭뼈와 조개껍데기는 음식물이 아닙니다. 일반 종량제봉투로 배출합니다.",
+      "previous_text": "음식물쓰레기는 수분과 이물질을 줄이고, 지역의 전용봉투나 알 에프 아이 디 수거함을 이용합니다.",
+      "next_text": "폐건전지는 전지 수거함에, 깨지지 않은 형광등은 형광등 수거함에, 소형가전은 지정 수거 지점에 배출합니다.",
+      "outputFile": "public/media/audio/vo-S11.wav"
+    },
+    {
+      "id": "S12",
+      "targetDurationSeconds": 12,
+      "text": "폐건전지는 전지 수거함에, 깨지지 않은 형광등은 형광등 수거함에, 소형가전은 지정 수거 지점에 배출합니다.",
+      "previous_text": "하지만 닭뼈와 조개껍데기는 음식물이 아닙니다. 일반 종량제봉투로 배출합니다.",
+      "next_text": "이렇게 깨끗하게 분리하면 재활용품은 다시 자원으로 쓰일 가능성이 높아집니다.",
+      "outputFile": "public/media/audio/vo-S12.wav"
+    },
+    {
+      "id": "S13",
+      "targetDurationSeconds": 9,
+      "text": "이렇게 깨끗하게 분리하면 재활용품은 다시 자원으로 쓰일 가능성이 높아집니다.",
+      "previous_text": "폐건전지는 전지 수거함에, 깨지지 않은 형광등은 형광등 수거함에, 소형가전은 지정 수거 지점에 배출합니다.",
+      "next_text": "세부 방법은 지역마다 다를 수 있습니다. 케이 소트로 확인하고, 오늘부터 정확하게 실천해 보세요.",
+      "outputFile": "public/media/audio/vo-S13.wav"
+    },
+    {
+      "id": "S14",
+      "targetDurationSeconds": 9,
+      "text": "세부 방법은 지역마다 다를 수 있습니다. 케이 소트로 확인하고, 오늘부터 정확하게 실천해 보세요.",
+      "previous_text": "이렇게 깨끗하게 분리하면 재활용품은 다시 자원으로 쓰일 가능성이 높아집니다.",
+      "next_text": "",
+      "outputFile": "public/media/audio/vo-S14.wav"
+    }
+  ]
+}
