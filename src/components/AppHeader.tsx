@@ -2,7 +2,7 @@ import { journey } from '@/app/journey';
 import { useLocale } from '@/app/useLocale';
 import { ui } from '@/i18n/strings';
 import { LanguageSelect } from './LanguageSelect';
-import { SortMark } from './SortMark';
+import { Wordmark } from './Wordmark';
 
 /**
  * 상단 메뉴는 네 페이지로 직접 갈 수 있게 열어 두되 강조하지 않는다.
@@ -21,9 +21,8 @@ export function AppHeader({ currentRoute }: { currentRoute: string }) {
 
       <div className="app-header__bar">
         <h1 className="app-header__title">
-          <a className="app-header__logo" href="#/">
-            <SortMark tone="brand" size="sm" />
-            K-SORT
+          <a className="app-header__logo" href="#/" aria-label="K-SORT">
+            <Wordmark />
           </a>
         </h1>
         <LanguageSelect />

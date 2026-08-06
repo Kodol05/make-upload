@@ -2,6 +2,7 @@ import { AppFooter } from '@/components/AppFooter';
 import { AppHeader } from '@/components/AppHeader';
 import { FeatureErrorBoundary } from '@/components/FeatureErrorBoundary';
 import { SortMark } from '@/components/SortMark';
+import { Wordmark } from '@/components/Wordmark';
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { CatalogSection } from '@/features/catalog/CatalogSection';
 import { ChatWidget } from '@/features/chat/ChatWidget';
@@ -39,7 +40,7 @@ function IntroRoute() {
       }
     >
       <div className="masthead__figure">
-        <SortMark tone="brand" size="xl" />
+        <Wordmark size="lg" />
       </div>
       <h2 className="masthead__title">{t(ui.catalog.title)}</h2>
       <p className="masthead__intro">{t(ui.home.intro)}</p>

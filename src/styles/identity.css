@@ -687,3 +687,41 @@ button,
     opacity: 0.06;
   }
 }
+
+/* ══ 워드마크 ════════════════════════════════════════════ */
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.wordmark__text {
+  font-weight: 800;
+  /* 굵은 글자는 자간을 조금 벌려야 획이 서로 붙지 않는다. */
+  letter-spacing: 0.03em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/** 섹션 제목 앞의 짧은 선과 같은 장치다. 화면 전체가 한 손에서 나오게 묶는다. */
+.wordmark__joint {
+  color: var(--mark);
+  /* 글자 사이를 조금 좁혀 두 낱말이 한 덩어리로 읽히게 한다. */
+  margin-inline: -0.04em;
+}
+
+.wordmark--sm .wordmark__text {
+  font-size: 1.3rem;
+}
+
+/** 소개 화면에서는 표시를 위에 두고 이름을 아래로 내린다. */
+.wordmark--lg {
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.wordmark--lg .wordmark__text {
+  font-size: clamp(28px, 6vw, 40px);
+  letter-spacing: 0.06em;
+}
