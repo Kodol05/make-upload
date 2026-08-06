@@ -92,11 +92,11 @@ describe('K-SORT media tooling', () => {
     ]);
   });
 
-  it('builds the required stable Seedance prompt and deterministic tts ffmpeg command', () => {
+  it('builds the required stable Seedance prompt and autodetecting tts ffmpeg command', () => {
     expect(buildVideoPrompt({ promptPrefix: 'prefix', negativeSuffix: 'suffix' }, { motionPrompt: 'motion' }))
       .toBe('prefix motion suffix');
-    expect(buildTtsFfmpegArgs('source.wav', 'public/media/audio/vo-S01.wav')).toEqual([
-      '-y', '-f', 's16le', '-ar', '48000', '-ac', '1', '-i', 'source.wav', '-ac', '1', '-ar', '48000', '-c:a', 'pcm_s16le', 'public/media/audio/vo-S01.wav',
+    expect(buildTtsFfmpegArgs('source.mp3', 'public/media/audio/vo-S01.wav')).toEqual([
+      '-y', '-i', 'source.mp3', '-ac', '1', '-ar', '48000', '-c:a', 'pcm_s16le', 'public/media/audio/vo-S01.wav',
     ]);
   });
 

@@ -62,8 +62,9 @@ export function buildVideoPrompt(manifest, clip) {
   return [manifest.promptPrefix, clip.motionPrompt, manifest.negativeSuffix].join(' ');
 }
 
-export function buildTtsFfmpegArgs(source, output) {
-  return ['-y', '-f', 's16le', '-ar', '48000', '-ac', '1', '-i', source, '-ac', '1', '-ar', '48000', '-c:a', 'pcm_s16le', output];
+export function buildTtsFfmpegArgs(source, output, { rawPcm = false } = {}) {
+  const input = rawPcm ? ['-f', 's16le', '-ar', '48000', '-ac', '1', '-i', source] : ['-i', source];
+  return ['-y', ...input, '-ac', '1', '-ar', '48000', '-c:a', 'pcm_s16le', output];
 }
 
 function durationIsClose(actual, expected) {
@@ -148,6 +149,29 @@ async function download(url, output) {
   await writeFile(output, Buffer.from(await response.arrayBuffer()));
 }
 
+function sourceExtension(url, contentType) {
+  const mime = contentType.split(';', 1)[0].trim().toLowerCase();
+  if (mime === 'audio/mpeg' || mime === 'audio/mp3') return '.mp3';
+  if (mime === 'audio/wav' || mime === 'audio/x-wav') return '.wav';
+  if (mime === 'audio/ogg') return '.ogg';
+  if (mime === 'audio/flac') return '.flac';
+  if (mime === 'audio/pcm' || mime === 'audio/l16') return '.pcm';
+  try {
+    const extension = new URL(url).pathname.match(/\.(mp3|wav|ogg|flac|m4a|aac|pcm)$/i)?.[0];
+    if (extension) return extension.toLowerCase();
+  } catch { /* response content type is still sufficient */ }
+  return '.audio';
+}
+
+async function downloadTtsSource(url, temporaryBase) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Download failed (${response.status}) for ${url}`);
+  const contentType = response.headers.get('content-type') ?? '';
+  const source = `${temporaryBase}${sourceExtension(url, contentType)}`;
+  await writeFile(source, Buffer.from(await response.arrayBuffer()));
+  return { source, rawPcm: ['audio/pcm', 'audio/l16'].includes(contentType.split(';', 1)[0].trim().toLowerCase()) };
+}
+
 async function writeRecord(name, records) {
   await mkdir(RECORD_DIR, { recursive: true });
   const file = join(RECORD_DIR, `${name}.json`);
@@ -203,10 +227,9 @@ export async function generateTts({ clipIds = [], force = false, dryRun = false,
       if (valid && !force) { records.push({ clipId: request.id, outputPath: request.outputFile, status: 'skipped' }); continue; }
       const result = await fal.subscribe(tts.endpoint, { input: { ...tts.sharedInput, text: request.text, previous_text: request.previous_text, next_text: request.next_text }, logs: true });
       const sourceUrl = resultUrl(result, 'audio');
-      const source = join(temp, `${request.id}.pcm`);
-      await download(sourceUrl, source);
+      const source = await downloadTtsSource(sourceUrl, join(temp, request.id));
       await mkdir(dirname(output), { recursive: true });
-      await run('ffmpeg', buildTtsFfmpegArgs(source, output));
+      await run('ffmpeg', buildTtsFfmpegArgs(source.source, output, { rawPcm: source.rawPcm }));
       records.push({ clipId: request.id, requestId: resultRequestId(result), outputPath: request.outputFile, sourceUrl });
     }
     await writeRecord('tts', records);
