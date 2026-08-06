@@ -439,6 +439,192 @@ main {
   color: var(--color-muted);
 }
 
+/* ── AI 스캔 ──────────────────────────────────────── */
+
+.scanner {
+  margin-bottom: var(--space-6);
+}
+
+.scanner h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.4rem;
+}
+
+.scanner__intro {
+  margin: 0 0 var(--space-4);
+  color: var(--color-muted);
+}
+
+.scanner__pick {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.scanner__pick > span {
+  font-weight: 600;
+  color: var(--color-primary-strong);
+}
+
+.scanner__pick input {
+  min-height: var(--touch-target);
+  font: inherit;
+}
+
+.scanner__privacy {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3);
+  border-left: 4px solid var(--color-accent);
+  border-radius: calc(var(--radius-card) - 10px);
+  background: var(--color-bg);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.scanner__working {
+  margin: 0 0 var(--space-4);
+  color: var(--color-muted);
+}
+
+.scanner__error {
+  margin-bottom: var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.scanner__error p {
+  margin: 0 0 var(--space-2);
+}
+
+/* 박스를 사진 위에 겹치기 위한 기준점. */
+.scanner__canvas {
+  position: relative;
+  margin-bottom: var(--space-4);
+}
+
+.scanner__canvas img {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-card);
+}
+
+.scanner__box {
+  position: absolute;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: var(--space-1);
+  border: 3px solid var(--color-accent);
+  border-radius: 6px;
+  background: rgb(23 105 170 / 12%);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 60%);
+}
+
+.scanner__objects {
+  margin: 0 0 var(--space-5);
+  padding-left: var(--space-5);
+}
+
+.scanner__objects li {
+  margin-bottom: var(--space-3);
+}
+
+.scanner__object-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-1);
+  font-weight: 600;
+}
+
+.scanner__certainty {
+  padding: 2px var(--space-2);
+  border-radius: var(--touch-target);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.scanner__certainty--high { background: var(--color-food); color: #fff; }
+.scanner__certainty--medium { background: var(--color-special); color: #fff; }
+.scanner__certainty--low { background: var(--color-general); color: #fff; }
+
+.scanner__object-reason {
+  margin: 0 0 var(--space-2);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.scanner__open {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-primary-strong);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.scanner__confirm p {
+  margin: 0 0 var(--space-1);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.scanner__confirm select {
+  min-height: var(--touch-target);
+  max-width: 100%;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: inherit;
+  font: inherit;
+}
+
+.scanner h3 {
+  margin: 0 0 var(--space-3);
+  font-size: 1.05rem;
+}
+
+.scanner__shortcuts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scanner__shortcuts button {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: center;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.scanner__shortcuts button:hover {
+  border-color: var(--color-primary);
+}
+
 /* ── 챗봇 ─────────────────────────────────────────── */
 
 .chat {

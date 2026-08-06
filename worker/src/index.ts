@@ -1,4 +1,5 @@
 import { handleChat } from './chat';
+import { handleScan } from './scan';
 import type { Env, RateLimitBinding } from './env';
 import { errorResponse, isAllowedOrigin, preflightResponse, readSessionId } from './security';
 
@@ -10,8 +11,7 @@ interface Route {
 
 const ROUTES: Route[] = [
   { path: '/api/chat', limiter: (env) => env.CHAT_RATE_LIMITER, handle: handleChat },
-  // 스캔 처리는 다음 Task에서 붙인다.
-  { path: '/api/scan', limiter: (env) => env.SCAN_RATE_LIMITER, handle: null },
+  { path: '/api/scan', limiter: (env) => env.SCAN_RATE_LIMITER, handle: handleScan },
 ];
 
 /** 본문에서 세션 ID만 조심스럽게 꺼낸다. 본문이 깨져 있어도 요청을 죽이지 않는다. */
