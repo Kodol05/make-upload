@@ -46,9 +46,22 @@ function IntroRoute() {
 
       <div className="masthead__legend">
         <p className="masthead__legend-caption">{t(ui.home.legendCaption)}</p>
+        {/**
+         * 분류마다 상자를 두고 그 안에 대표 그림을 깐다. 그림 위에 표시와 이름을
+         * 얹어 "이 그림에 있는 것들이 이 분류다"가 한 번에 읽히게 한다.
+         * 그림은 옅게 깔아 글자 대비를 지킨다.
+         */}
         <ul className="masthead__marks">
           {categories.map((category) => (
-            <li key={category}>
+            <li
+              key={category}
+              className={`category-card category-card--${category}`}
+              style={
+                {
+                  '--category-cover': `url(${assetUrl(`/images/category/${category}.webp`)})`,
+                } as CSSProperties
+              }
+            >
               <SortMark tone={category} label={t(ui.category[category])} size="lg" />
             </li>
           ))}
