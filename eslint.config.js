@@ -16,5 +16,17 @@ export default tseslint.config(
       ecmaVersion: 2022,
       globals: { ...globals.browser, ...globals.node },
     },
+    rules: {
+      // 쓰지 않는 인자는 이름 앞에 _를 붙여 의도를 드러낸다.
+      // 테스트에서 mock의 인자 타입만 선언할 때 필요하다.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+    },
   },
 );
