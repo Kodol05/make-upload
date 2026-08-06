@@ -23,12 +23,19 @@
   isolation: isolate;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  /**
+   * 글을 가운데가 아니라 위쪽에 앉힌다. 영상에서 봐야 할 수거함이 아래쪽에
+   * 있어서, 글이 한가운데 있으면 정작 볼 것을 덮는다.
+   *
+   * 위 여백을 `vw`로 잡은 것은 판이 16:9라 높이도 폭을 따라 움직이기
+   * 때문이다. 11vw는 어느 폭에서든 판 높이의 약 19.6%가 된다.
+   */
+  align-items: flex-start;
   justify-content: center;
   aspect-ratio: 16 / 9;
   width: 100vw;
   margin-inline: calc(50% - 50vw);
-  padding: var(--space-6) var(--space-5);
+  padding: clamp(24px, 11vw, 260px) var(--space-5) var(--space-6);
   text-align: center;
   /**
    * `main`이 위에 두는 여백(`padding-block` 시작값)만큼 끌어올려 헤더에 붙인다.
@@ -49,6 +56,10 @@ body:has(.intro) {
   overflow-x: clip;
 }
 
+/**
+ * 영상 둘을 같은 자리에 겹쳐 두고 보이는 쪽만 바꾼다. 넘어갈 때 서서히 겹쳐
+ * 화면이 끊기지 않는다.
+ */
 .intro__video {
   position: absolute;
   inset: 0;
@@ -56,6 +67,19 @@ body:has(.intro) {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.intro__video--on {
+  opacity: 1;
+}
+
+/** 겹쳐 넘기는 것도 움직임이다. 줄여 달라는 설정이면 그냥 바꾼다. */
+@media (prefers-reduced-motion: reduce) {
+  .intro__video {
+    transition: none;
+  }
 }
 
 /**
@@ -65,8 +89,11 @@ body:has(.intro) {
  * 가운데·아래 어느 띠에서도 가장 어두운 픽셀이 L=0.000, 가장 밝은 픽셀이
  * L=0.95였다. 덮개 없이는 어떤 글자색도 어느 순간엔 읽히지 않는다는 뜻이다.
  *
- * 글이 앉는 가운데 띠를 62%까지 눌렀다. 가장 밝은 프레임이 와도 흰 글자가
- * 4.61:1이다. 위아래는 얇게 둬서 영상이 그대로 드러난다.
+ * 글이 앉는 자리를 62%까지 눌렀다. 가장 밝은 프레임이 와도 흰 글자가
+ * 4.61:1이다. 글이 위로 올라간 만큼 덮개도 함께 올렸다. 지금 글은 판 높이의
+ * 20%에서 45% 사이에 앉는다.
+ *
+ * 아래쪽은 얇게 둔다. 영상에서 봐야 할 수거함이 거기 있다.
  */
 .intro::after {
   content: '';
@@ -76,27 +103,66 @@ body:has(.intro) {
   pointer-events: none;
   background: linear-gradient(
     to bottom,
-    rgb(9 44 28 / 24%) 0%,
-    rgb(9 44 28 / 62%) 38%,
-    rgb(9 44 28 / 62%) 82%,
-    rgb(9 44 28 / 40%) 100%
+    rgb(9 44 28 / 46%) 0%,
+    rgb(9 44 28 / 62%) 14%,
+    rgb(9 44 28 / 62%) 52%,
+    rgb(9 44 28 / 26%) 100%
   );
 }
 
 .intro__body {
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(20px, 2.6vw, 52px);
 }
 
 .intro__title {
-  max-width: 18ch;
+  max-width: min(90vw, 20ch);
   margin: 0;
-  font-size: clamp(30px, 4.4vw, 68px);
+  font-size: clamp(34px, 7vw, 118px);
   font-weight: 800;
   line-height: 1.14;
   letter-spacing: -0.02em;
   color: var(--paper);
   text-wrap: balance;
+}
+
+/**
+ * 다음으로 가는 단추.
+ *
+ * 이 화면에서 누를 것은 이것 하나뿐이라 글에 눌리지 않을 만큼 크게 둔다.
+ * 글자 크기를 큰 글과 같은 `vw`로 묶어, 화면이 넓어지면 둘이 함께 커진다.
+ *
+ * 짙은 덮개 위라 색을 뒤집는다. 흰 바닥에 짙은 초록 글자로 7.78:1.
+ */
+.intro__button {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 24px);
+  padding: clamp(14px, 1.4vw, 30px) clamp(28px, 3vw, 64px);
+  background: var(--paper);
+  color: var(--mark-deep);
+  font-size: clamp(24px, 4vw, 68px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border-radius: var(--radius-card);
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.intro__button:hover,
+.intro__button:focus-visible {
+  background: var(--wash);
+  transform: translateY(-2px);
+}
+
+.intro__arrow {
+  /* 글자보다 조금 작게. 화살표가 글보다 커지면 눈이 그쪽으로 먼저 간다. */
+  font-size: 0.82em;
+  line-height: 1;
 }
 
 /**

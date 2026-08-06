@@ -14,20 +14,9 @@ import { LocaleProvider } from './LocaleProvider';
 import { useHashRoute } from './useHashRoute';
 import { useLocale } from './useLocale';
 
-/**
- * ① 소개.
- *
- * 화면은 `IntroPage`가 통째로 그린다. 다음으로 가는 단추만 아직 여기 남아
- * 있다. 이 단추까지 소개 안으로 들이는 것은 글과 언어 선택을 얹을 때 함께
- * 한다. 그때까지 소개에서 앞으로 갈 길이 끊기면 안 된다.
- */
+/** ① 소개. 다음으로 가는 단추까지 `IntroPage`가 들고 있다. */
 function IntroRoute() {
-  return (
-    <>
-      <IntroPage />
-      <JourneyNext index={0} tone="quiet" />
-    </>
-  );
+  return <IntroPage />;
 }
 
 /** ② 영상으로 배우기. */
