@@ -412,7 +412,12 @@ main {
   list-style: none;
 }
 
-@media (min-width: 620px) {
+/**
+ * 표시와 이름을 두 배로 키우면서 네 칸으로 펴는 폭도 함께 올렸다. 620px에서
+ * 네 칸으로 펴면 칸 하나가 130px 남짓인데, 커진 표시만으로도 그 폭을 다 쓴다.
+ * 그 아래에서는 두 칸으로 크게 보여 주는 편이 낫다.
+ */
+@media (min-width: 1100px) {
   .masthead__marks {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -453,26 +458,23 @@ main {
   background-size: 92% auto;
   background-position: center 30%;
   background-repeat: no-repeat;
-  opacity: 0.62;
+  opacity: 0.9;
 }
 
 /**
- * 아래쪽만 덮어 글자가 앉을 자리를 만든다. 그림은 위쪽에서 온전히 보인다.
+ * 아래쪽을 옅게 눌러 칸 바닥을 앉힌다.
  *
- * 70% 지점의 92%는 실측해서 정한 값이다. 그 아래로 내리면 음식물 분류의 글자가
- * 4.5:1을 못 넘긴다. 그림마다 가장 어두운 픽셀을 골라 합성해 확인했다.
+ * 전에는 여기서 92%까지 덮어 글자의 대비를 만들었다. 표시가 두 배로 커지면서
+ * 덮개가 닿지 않는 위쪽까지 올라와, 자리에 기대는 방식으로는 더 이상 대비를
+ * 보장할 수 없다(실측 1.00:1). 대비는 표시 자체가 깔고 앉는 바탕판이 맡고,
+ * 이 층은 그림을 가리지 않을 만큼만 남긴다.
  */
 .category-card::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(
-    to bottom,
-    transparent 38%,
-    rgb(255 255 255 / 92%) 60%,
-    rgb(255 255 255 / 97%) 100%
-  );
+  background: linear-gradient(to bottom, transparent 62%, rgb(255 255 255 / 30%) 100%);
 }
 
 /** 상자마다 분류색을 아주 옅게 깔아 네 갈래임을 색으로도 알린다. */
@@ -481,14 +483,35 @@ main {
 .category-card--general { background: #f5f6f5; }
 .category-card--special { background: #fdf5f0; }
 
+/**
+ * 표시와 이름이 깔고 앉는 바탕판.
+ *
+ * 그림 어디에 걸리든 대비가 같도록 글자 쪽이 바탕을 들고 다닌다. 그림의 가장
+ * 어두운 픽셀이 그대로 밑에 와도 최악 4.18:1이다(네 분류 중 음식물). 굵은
+ * 큰 글자라 기준은 3:1이므로 여유가 있다.
+ */
 .category-card .sort-mark {
   position: relative;
   z-index: 1;
+  padding: var(--space-3) var(--space-4);
+  background: rgb(255 255 255 / 90%);
+  border-radius: var(--radius-card);
+  backdrop-filter: blur(3px);
+}
+
+/* 지금의 두 배. 82px → 164px. */
+.category-card .sort-mark svg {
+  width: clamp(84px, 10vw, 164px);
+  height: clamp(84px, 10vw, 164px);
 }
 
 .category-card .sort-mark__label {
-  font-size: clamp(18px, 2vw, 27px);
+  /* 지금의 두 배. 27px → 54px. */
+  font-size: clamp(22px, 3vw, 54px);
   letter-spacing: 0.05em;
+  /* 영어와 베트남어 이름이 길어 한 줄로 묶어 두면 칸을 넘는다. */
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 /* ══ 챗봇 위젯 ═══════════════════════════════════════════ */
