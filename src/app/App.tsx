@@ -190,7 +190,16 @@ function AppShell() {
       />
       <AppHeader currentRoute={journey[index].route} />
       <main id="main" ref={mainRef} tabIndex={-1}>
-        {page}
+        {/**
+         * 화면이 바뀔 때 새 페이지가 나타나는 것을 눈에 보이게 한다.
+         *
+         * `key`가 이 상자의 전부다. 단계가 바뀌면 React가 이 상자를 버리고 새로
+         * 만들고, 새로 만들어진 요소에는 CSS 애니메이션이 저절로 한 번 돈다.
+         * 언제 트는지를 코드로 정할 필요가 없다. 규칙은 `styles/transition.css`.
+         */}
+        <div className="page" key={index}>
+          {page}
+        </div>
         {/**
          * 진행 표시와 다음 버튼을 아래에 함께 둔다. 헤더 밑에 있으면 화면을
          * 가로막기만 하고, 정작 필요한 순간은 "넘어갈까" 하고 정할 때다.

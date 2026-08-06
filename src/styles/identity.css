@@ -2232,6 +2232,65 @@ main {
 }
 
 /**
+ * 판정.
+ *
+ * 왼쪽에 "정답은 이것입니다", 분류 이름, 다음 단추가 줄줄이 붙어 있어서 무엇이
+ * 결과이고 무엇이 다음 행동인지 구분되지 않았다. 가운데로 모으고, 답을 크게
+ * 세우고, 단추에는 제 줄을 준다.
+ */
+.game-play__verdict {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-5) 0 0;
+  padding: var(--space-6) var(--space-5);
+  background: var(--paper);
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
+  text-align: center;
+}
+
+.game-play__verdict p {
+  margin: 0;
+}
+
+/** "정답은 이것입니다"는 아래 분류 이름을 가리키는 라벨이다. 작고 조용하게. */
+.game-play__revealed {
+  font-size: var(--text-small);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  color: var(--ink-muted);
+}
+
+/** 답. 이 화면에서 기억하고 갈 것은 이 한 낱말이다. */
+.game-play__answer {
+  font-size: clamp(30px, 3.4vw, 48px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.game-play__answer--recyclable { color: var(--cat-recyclable); }
+.game-play__answer--food { color: var(--cat-food); }
+.game-play__answer--general { color: var(--cat-general); }
+.game-play__answer--special { color: var(--cat-special); }
+
+.game-play__correct {
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 800;
+  color: var(--cat-food);
+}
+
+.game-play__verdict button {
+  min-width: min(320px, 100%);
+  min-height: calc(var(--touch-target) + 8px);
+  margin-top: var(--space-4);
+  font-size: clamp(17px, 1.4vw, 21px);
+  font-weight: 700;
+}
+
+/**
  * 처리 방법 고르기. 넷을 세로로 늘어놓으면 목록이 길어져 판이 화면 밖으로
  * 밀린다. 둘씩 두 줄로 접는다. 선택지가 늘 넷이라 빈칸이 남지 않는다.
  */

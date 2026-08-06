@@ -7,6 +7,8 @@ import './styles/global.css';
 import './styles/identity.css';
 // 소개 화면만 담당한다. 이름이 겹치지 않아 다른 화면을 덮지 않는다.
 import './styles/intro.css';
+// 화면이 넘어갈 때만 담당한다. 위와 같은 이유로 따로 둔다.
+import './styles/transition.css';
 
 const container = document.getElementById('root');
 if (!container) throw new Error('root element not found');

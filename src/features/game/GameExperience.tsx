@@ -176,7 +176,10 @@ export function GameExperience({ locale, items, onComplete }: GameExperienceProp
           {attempt.revealed ? (
             <>
               <p className="game-play__revealed">{t(ui.game.revealed)}</p>
-              <p className="game-play__answer">{t(ui.category[item.category])}</p>
+              {/* 분류색을 입혀 답이 어느 갈래인지 색으로도 남게 한다. */}
+              <p className={`game-play__answer game-play__answer--${item.category}`}>
+                {t(ui.category[item.category])}
+              </p>
             </>
           ) : (
             <p className="game-play__correct">{t(ui.game.correct)}</p>
