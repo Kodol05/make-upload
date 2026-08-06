@@ -10,3 +10,4 @@
 - 2026-08-06 (현민) [docs] 스택 검증 — TypeScript 7이 lint를 깨는 문제 사전 발견, 6.0.3 고정 → PR #3
 - 2026-08-06 (현민) [docs] 스택 결정을 구현 계획·설계·콘텐츠 체크리스트에 반영 → PR #4
 - 2026-08-06 (현민) [chore] Task 1: React/Vite/TS 기반 + Pages 배포. https://kodol05.github.io/make-upload/ 동작 확인 → PR #5
+- 2026-08-06 (현민) [feat] Task 2: 공용 타입·16종 골격·자리 표시 헬퍼. 자리 표시 756개로 콘텐츠 대기 없이 진행 가능 → PR #7
