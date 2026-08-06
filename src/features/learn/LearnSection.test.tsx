@@ -22,6 +22,123 @@ async function switchTo(locale: string) {
   await userEvent.selectOptions(screen.getByLabelText(ui.common.language.ko), locale);
 }
 
+describe('LearnSection 영상이 끝났을 때', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    localStorage.setItem('k-sort-locale', 'ko');
+  });
+
+  function renderLesson() {
+    render(
+      <LocaleProvider>
+        <LearnSection />
+      </LocaleProvider>,
+    );
+    return screen.getByTestId('lesson-video');
+  }
+
+  it('stays out of the way until the video actually ends', () => {
+    renderLesson();
+    expect(screen.queryByText(ui.learn.endedTitle.ko)).not.toBeInTheDocument();
+  });
+
+  /** 마지막 화면에서 그냥 멈춰 서면 다음에 무엇을 할지 알 수 없다. */
+  it('asks what to do next when the video ends', () => {
+    const video = renderLesson();
+
+    fireEvent.ended(video);
+
+    expect(screen.getByText(ui.learn.endedTitle.ko)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: ui.learn.watchAgain.ko }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: ui.journey.toCatalog.ko }),
+    ).toHaveAttribute('href', '#/catalog');
+  });
+
+  it('goes away again once something is playing', () => {
+    const video = renderLesson();
+    fireEvent.ended(video);
+
+    fireEvent.play(video);
+
+    expect(screen.queryByText(ui.learn.endedTitle.ko)).not.toBeInTheDocument();
+  });
+});
+
+describe('LearnSection 영상이 끝났을 때', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    localStorage.setItem('k-sort-locale', 'ko');
+  });
+
+  function renderLesson() {
+    render(
+      <LocaleProvider>
+        <LearnSection />
+      </LocaleProvider>,
+    );
+    const video = screen.getByTestId('lesson-video') as HTMLVideoElement;
+    // jsdom은 play를 구현하지 않는다. 몇 번 불렸는지만 보면 된다.
+    const play = vi.fn(() => Promise.resolve());
+    Object.defineProperty(video, 'play', { value: play, configurable: true });
+    return { video, play };
+  }
+
+  it('stays out of the way until the video actually ends', () => {
+    renderLesson();
+    expect(screen.queryByText(ui.learn.endedTitle.ko)).not.toBeInTheDocument();
+  });
+
+  it('asks what to do next when the video ends', () => {
+    const { video } = renderLesson();
+
+    fireEvent.ended(video);
+
+    expect(screen.getByText(ui.learn.endedTitle.ko)).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: ui.journey.toCatalog.ko }),
+    ).toHaveAttribute('href', '#/catalog');
+  });
+
+  /** 한 번 누르면 한 번만 재생돼야 한다. */
+  it('replays exactly once when asked', async () => {
+    const { video, play } = renderLesson();
+    fireEvent.ended(video);
+
+    await userEvent.click(screen.getByRole('button', { name: ui.learn.watchAgain.ko }));
+
+    expect(play).toHaveBeenCalledTimes(1);
+    expect(video.currentTime).toBe(0);
+    expect(screen.queryByText(ui.learn.endedTitle.ko)).not.toBeInTheDocument();
+  });
+
+  /** 되감는 도중에 오는 신호는 무시한다. 그대로 두면 덮개가 곧바로 다시 뜬다. */
+  it('ignores the stray ended signal while rewinding', async () => {
+    const { video } = renderLesson();
+    fireEvent.ended(video);
+    await userEvent.click(screen.getByRole('button', { name: ui.learn.watchAgain.ko }));
+
+    fireEvent.ended(video);
+
+    expect(screen.queryByText(ui.learn.endedTitle.ko)).not.toBeInTheDocument();
+  });
+
+  /** 다시 본 영상이 진짜로 끝나면 같은 선택지가 다시 떠야 한다. */
+  it('asks again after the replay finishes', async () => {
+    const { video, play } = renderLesson();
+    fireEvent.ended(video);
+    await userEvent.click(screen.getByRole('button', { name: ui.learn.watchAgain.ko }));
+    fireEvent.seeked(video);
+
+    fireEvent.ended(video);
+
+    expect(screen.getByText(ui.learn.endedTitle.ko)).toBeInTheDocument();
+    expect(play).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('LearnSection', () => {
   beforeEach(() => {
     localStorage.clear();

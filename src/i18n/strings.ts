@@ -204,6 +204,19 @@ export const ui = {
       zh: '下面的四大原则和图鉴涵盖了同样的内容。',
       vi: 'Bốn nguyên tắc bên dưới và cẩm nang cũng nói cùng nội dung này.',
     }),
+    /** 영상이 끝났을 때 뜨는 선택지. */
+    endedTitle: localized('ui', 'learn.endedTitle', {
+      ko: '다 보셨습니다',
+      en: 'That is the whole video',
+      zh: '视频到此结束',
+      vi: 'Bạn đã xem hết video',
+    }),
+    watchAgain: localized('ui', 'learn.watchAgain', {
+      ko: '다시 보기',
+      en: 'Watch again',
+      zh: '再看一遍',
+      vi: 'Xem lại',
+    }),
     subtitleLabel: localized('ui', 'learn.subtitleLabel', {
       ko: '자막',
       en: 'Subtitles',

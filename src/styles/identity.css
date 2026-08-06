@@ -2001,3 +2001,121 @@ main {
   padding: 0;
   list-style: none;
 }
+
+/* ══ 영상: 다 본 뒤 ══════════════════════════════════════ */
+
+.lesson__stage {
+  position: relative;
+}
+
+/**
+ * 영상이 끝나면 그 위에 덮어씌운다. 마지막 화면에서 그냥 멈춰 서면 다음에
+ * 무엇을 할지 알 수 없다. 다시 볼지, 넘어갈지를 그 자리에서 묻는다.
+ */
+/**
+ * 재생 조작줄은 덮지 않는다. 전부 덮으면 끝난 뒤에 멈추거나 되감을 방법이
+ * 사라져서, 다시 보기를 누른 다음에는 손쓸 데가 없어진다.
+ */
+.lesson__ended {
+  position: absolute;
+  inset: 0 0 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  background: rgb(13 43 29 / 82%);
+  text-align: center;
+}
+
+.lesson__ended-title {
+  margin: 0;
+  color: var(--paper);
+  font-size: var(--text-title);
+  font-weight: 800;
+}
+
+.lesson__ended-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.lesson__replay,
+.lesson__go-catalog {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-6);
+  font-size: var(--text-body);
+  font-weight: 700;
+  border-radius: var(--radius-card);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/** 넘어가는 쪽이 권하는 길이라 채워서 두고, 다시 보기는 테두리만 둔다. */
+.lesson__replay {
+  background: transparent;
+  color: var(--paper);
+  border: 2px solid var(--paper);
+}
+
+.lesson__replay:hover,
+.lesson__replay:focus-visible {
+  background: rgb(255 255 255 / 16%);
+}
+
+.lesson__go-catalog {
+  background: var(--paper);
+  color: var(--mark-deep);
+  border: 2px solid var(--paper);
+}
+
+.lesson__go-catalog:hover,
+.lesson__go-catalog:focus-visible {
+  background: var(--wash);
+}
+
+@media (min-width: 720px) {
+  /** 영상이 판 밖으로 나가 있으므로 덮개도 같이 나간다. */
+  .lesson__stage {
+    margin-inline: calc(var(--space-6) * -1);
+  }
+
+  .lesson__stage .lesson__video {
+    margin-inline: 0;
+    width: 100%;
+  }
+}
+
+/* ══ 소개 화면의 조용한 다음 버튼 ═══════════════════════ */
+
+/**
+ * 소개는 짧게 읽고 넘어가는 화면이라 넘어가는 길을 가운데에 둔다. 맨 아래까지
+ * 내려가야 한다면 한 번 더 스크롤해야 하고, 그만큼 이탈이 생긴다.
+ *
+ * 색은 조용하게 둔다. 여기서 붙잡아 둘 내용이 없어 강하게 밀 이유가 없고,
+ * 바로 아래 네 분류 상자가 더 눈에 들어와야 한다.
+ */
+.journey-next--quiet {
+  margin: 0 0 var(--space-6);
+}
+
+.journey-next--quiet .journey-next__button {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-6);
+  background: rgb(255 255 255 / 78%);
+  color: var(--mark-deep);
+  font-size: var(--text-body);
+  border: 1px solid var(--rule);
+  box-shadow: none;
+}
+
+.journey-next--quiet .journey-next__button:hover,
+.journey-next--quiet .journey-next__button:focus-visible {
+  background: var(--paper);
+  border-color: var(--mark);
+}

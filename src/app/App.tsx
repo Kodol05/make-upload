@@ -44,6 +44,13 @@ function IntroRoute() {
       <h2 className="masthead__title">{t(ui.catalog.title)}</h2>
       <p className="masthead__intro">{t(ui.home.intro)}</p>
 
+      {/**
+       * 다음으로 넘어가는 길을 화면 가운데에 둔다. 소개는 짧게 읽고 넘어가는
+       * 화면이라 맨 아래까지 내려가게 하면 한 번 더 스크롤해야 한다.
+       * 색은 눌러야 할 것 중 가장 조용하게 둔다. 여기서 붙잡아 둘 이유가 없다.
+       */}
+      <JourneyNext index={0} tone="quiet" />
+
       <div className="masthead__legend">
         <p className="masthead__legend-caption">{t(ui.home.legendCaption)}</p>
         {/**
@@ -153,14 +160,23 @@ function JourneyProgress({ index }: { index: number }) {
  * 화면 아래에 고정하지 않고 본문 흐름 맨 끝에 둔다. 고정하면 우하단 챗봇 버튼과
  * 좁은 화면에서 겹치고, 무엇보다 "다 봤으면 넘어가라"는 뜻이 위치로 전달된다.
  */
-function JourneyNext({ index }: { index: number }) {
+function JourneyNext({
+  index,
+  tone = 'strong',
+}: {
+  index: number;
+  /** 소개 화면에서는 조용하게 둔다. 붙잡아 둘 내용이 없는 화면이라 강하게 밀 이유가 없다. */
+  tone?: 'strong' | 'quiet';
+}) {
   const { t } = useLocale();
   const step = journey[index];
 
   // 링크 하나뿐이라 nav 랜드마크로 감싸지 않는다. 헤더 메뉴와 헷갈리게만 만든다.
   return (
-    <div className="journey-next">
-      <p className="journey-next__hint">{t(ui.journey.stayHint)}</p>
+    <div className={`journey-next journey-next--${tone}`}>
+      {tone === 'strong' && (
+        <p className="journey-next__hint">{t(ui.journey.stayHint)}</p>
+      )}
       <a className="journey-next__button" href={`#${step.nextRoute}`}>
         {t(step.nextLabel)}
       </a>
@@ -223,7 +239,8 @@ function AppShell() {
          */}
         <div className="journey-foot">
           <JourneyProgress index={index} />
-          <JourneyNext index={index} />
+          {/* 소개는 가운데에 이미 있다. 같은 버튼을 두 번 두지 않는다. */}
+          {index > 0 && <JourneyNext index={index} />}
         </div>
       </main>
       <AppFooter />
