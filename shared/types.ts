@@ -30,10 +30,7 @@ export type ItemId = (typeof itemIds)[number];
 
 export interface CatalogStep {
   id: string;
-  /** `/images/items/<itemId>/<stepId>.webp`. 파일이 없어도 화면은 동작해야 한다. */
-  image: string;
   text: LocalizedText;
-  alt: LocalizedText;
 }
 
 export interface CatalogItem {
@@ -43,6 +40,12 @@ export interface CatalogItem {
   /** 검색용 별칭. 언어별로 비어 있어도 된다. */
   aliases: Record<Locale, string[]>;
   summary: LocalizedText;
+  /**
+   * `/images/items/<itemId>.webp`. 품목당 한 장이며 도감과 스캔 선택 목록이 함께 쓴다.
+   * 파일이 없어도 화면은 온전히 동작해야 한다.
+   */
+  image: string;
+  imageAlt: LocalizedText;
   steps: CatalogStep[];
   commonMistake: LocalizedText;
   /** 지역마다 배출 방식이 달라질 수 있으면 true. 화면에 확인 안내를 띄운다. */
