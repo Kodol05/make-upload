@@ -9,7 +9,7 @@ function FeatureErrorFallback() {
     <div className="feature-error" role="alert">
       <p className="feature-error__title">{t(ui.error.sectionFailed)}</p>
       <p className="feature-error__hint">{t(ui.error.sectionFailedHint)}</p>
-      <a href="#catalog">{t(ui.common.openCatalog)}</a>
+      <a href="#/catalog">{t(ui.common.openCatalog)}</a>
     </div>
   );
 }

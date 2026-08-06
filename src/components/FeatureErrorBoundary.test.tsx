@@ -61,7 +61,7 @@ describe('FeatureErrorBoundary', () => {
     );
     expect(screen.getByRole('link', { name: ui.common.openCatalog.ko })).toHaveAttribute(
       'href',
-      '#catalog',
+      '#/catalog',
     );
   });
 

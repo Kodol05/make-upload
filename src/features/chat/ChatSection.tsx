@@ -131,7 +131,7 @@ function ChatAnswer({ turn }: { turn: Turn }) {
     return (
       <div className="chat__error">
         <p>{t(errorText(turn.errorCode))}</p>
-        <a href="#catalog">{t(ui.common.openCatalog)}</a>
+        <a href="#/catalog">{t(ui.common.openCatalog)}</a>
       </div>
     );
   }
@@ -144,7 +144,7 @@ function ChatAnswer({ turn }: { turn: Turn }) {
     return (
       <div className="chat__answer">
         <p>{t(ui.chat.outOfScope)}</p>
-        <a href="#catalog">{t(ui.common.openCatalog)}</a>
+        <a href="#/catalog">{t(ui.common.openCatalog)}</a>
       </div>
     );
   }
@@ -189,5 +189,5 @@ function ItemLink({ itemId }: { itemId: ItemId }) {
   const { t } = useLocale();
   const item = catalogItems.find((candidate) => candidate.id === itemId);
   if (!item) return null;
-  return <a href="#catalog">{t(item.name)}</a>;
+  return <a href="#/catalog">{t(item.name)}</a>;
 }

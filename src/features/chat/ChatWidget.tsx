@@ -45,8 +45,17 @@ export function ChatWidget() {
         tabIndex={-1}
         hidden={!open}
       >
+        {/** 화면 위쪽 띠. 전화기의 앱 표시줄처럼 보이게 해서 "대화 중"임을 알린다. */}
         <div className="chat-widget__bar">
-          <strong>{t(ui.chat.title)}</strong>
+          <span className="chat-widget__who">
+            <span className="chat-widget__avatar" aria-hidden="true">
+              AI
+            </span>
+            <span>
+              <strong>{t(ui.chat.title)}</strong>
+              <small>{t(ui.chat.intro)}</small>
+            </span>
+          </span>
           <button type="button" onClick={() => setOpen(false)}>
             {t(ui.common.close)}
           </button>
@@ -66,6 +75,9 @@ export function ChatWidget() {
         aria-controls="chat-widget-panel"
         onClick={() => setOpen((was) => !was)}
       >
+        <span className="chat-widget__launcher-badge" aria-hidden="true">
+          AI
+        </span>
         {open ? t(ui.common.close) : t(ui.nav.chat)}
       </button>
     </div>

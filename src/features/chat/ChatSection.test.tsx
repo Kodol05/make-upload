@@ -84,7 +84,7 @@ describe('ChatSection', () => {
     expect(await screen.findByText(ui.error.unavailable.ko)).toBeInTheDocument();
     expect(
       screen.getByRole('link', { name: ui.common.openCatalog.ko }),
-    ).toHaveAttribute('href', '#catalog');
+    ).toHaveAttribute('href', '#/catalog');
   });
 
   it('explains a rate limit in the current language', async () => {
@@ -130,7 +130,7 @@ describe('ChatSection', () => {
 
     expect(await screen.findByRole('link', { name: /투명 페트병/ })).toHaveAttribute(
       'href',
-      '#catalog',
+      '#/catalog',
     );
   });
 
