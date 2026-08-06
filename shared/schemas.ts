@@ -38,6 +38,24 @@ export const chatResponseSchema = z.object({
   status: z.enum(['answered', 'needs_local_check', 'out_of_scope']),
 });
 
+/**
+ * 스캔 요청.
+ *
+ * 이미지를 `multipart/form-data`가 아니라 base64 문자열로 받는다. 무료 Cloudflare
+ * Workers의 요청당 CPU가 10ms라 1.5MB를 Worker에서 자바스크립트로 인코딩하면 이
+ * 시간을 넘길 수 있다. 브라우저가 네이티브 API로 만들어 보내면 Worker는 받은
+ * 문자열을 그대로 Gemini에 넘기기만 하면 된다.
+ */
+export const scanRequestSchema = z.object({
+  locale: localeSchema,
+  sessionId: z.string().min(1).max(128),
+  image: z.object({
+    mimeType: z.enum(['image/jpeg', 'image/png', 'image/webp']),
+    /** `data:` 접두사가 없는 순수 base64. */
+    data: z.string().min(1),
+  }),
+});
+
 const boxCoordinate = z.number().min(0).max(1000);
 
 export const scanResponseSchema = z.object({
@@ -55,5 +73,6 @@ export const scanResponseSchema = z.object({
 });
 
 export type ChatRequestInput = z.infer<typeof chatRequestSchema>;
+export type ScanRequestInput = z.infer<typeof scanRequestSchema>;
 export type ChatResponseOutput = z.infer<typeof chatResponseSchema>;
 export type ScanResponseOutput = z.infer<typeof scanResponseSchema>;
