@@ -1,14 +1,17 @@
+import { handleChat } from './chat';
 import type { Env, RateLimitBinding } from './env';
 import { errorResponse, isAllowedOrigin, preflightResponse, readSessionId } from './security';
 
 interface Route {
   path: string;
   limiter: (env: Env) => RateLimitBinding;
+  handle: ((request: Request, env: Env, origin: string) => Promise<Response>) | null;
 }
 
 const ROUTES: Route[] = [
-  { path: '/api/chat', limiter: (env) => env.CHAT_RATE_LIMITER },
-  { path: '/api/scan', limiter: (env) => env.SCAN_RATE_LIMITER },
+  { path: '/api/chat', limiter: (env) => env.CHAT_RATE_LIMITER, handle: handleChat },
+  // 스캔 처리는 다음 Task에서 붙인다.
+  { path: '/api/scan', limiter: (env) => env.SCAN_RATE_LIMITER, handle: null },
 ];
 
 /** 본문에서 세션 ID만 조심스럽게 꺼낸다. 본문이 깨져 있어도 요청을 죽이지 않는다. */
@@ -68,7 +71,13 @@ export default {
     const { success } = await route.limiter(env).limit({ key: sessionId });
     if (!success) return errorResponse('rate_limited', 429, allowed);
 
-    // 실제 처리는 채팅과 스캔 Task에서 붙인다.
-    return errorResponse('not_implemented', 501, allowed);
+    if (!route.handle) return errorResponse('not_implemented', 501, allowed);
+
+    try {
+      return await route.handle(request, env, allowed);
+    } catch {
+      // 처리 중 예외 내용에는 프롬프트나 사용자 입력이 섞일 수 있다.
+      return errorResponse('server_error', 500, allowed);
+    }
   },
 };
