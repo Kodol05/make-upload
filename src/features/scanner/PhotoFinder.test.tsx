@@ -112,6 +112,8 @@ describe('PhotoFinder', () => {
     await pickPhoto();
 
     expect(await screen.findByText(ui.scanner.unknownLabel.ko)).toBeInTheDocument();
+    // 도감으로는 못 잇지만 챗봇으로는 이어 준다. 여기서 길이 끊기면 안 된다.
+    expect(screen.getByRole('button', { name: ui.scanner.askAi.ko })).toBeInTheDocument();
     expect(screen.getByText(ui.scanner.confirmPrompt.ko)).toBeInTheDocument();
   });
 

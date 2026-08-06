@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useLocale } from '@/app/useLocale';
 import { createSessionId } from '@/features/chat/chatApi';
+import { useAskChat } from '@/features/chat/askChat';
 import { ui } from '@/i18n/strings';
 import { ApiError } from '@/lib/api';
 import { catalogItems } from '@shared/catalog';
@@ -200,7 +201,17 @@ function ScanResult({
             <p className="finder__object-reason">{object.reason}</p>
 
             {needsConfirmation(object) ? (
-              <ConfirmChoice onOpenItem={onOpenItem} />
+              <div className="finder__next">
+                <ConfirmChoice onOpenItem={onOpenItem} />
+                {/**
+                 * 도감에 없으면 여기서 길이 끊긴다. 모델은 사진에서 무엇인지
+                 * 알아보고도 16종에 없으면 `unknown`이 되기 때문에, 화면에는
+                 * "판단하지 못했습니다"로 보인다. 챗봇은 도감 밖도 답하므로
+                 * 그쪽으로 이어 준다. 모델이 적어 둔 이름을 질문 자리에 넣어
+                 * 준다 — 보고 나서 고칠 수 있게 보내지는 않는다.
+                 */}
+                {object.itemId === 'unknown' && <AskAi label={object.label} />}
+              </div>
             ) : (
               <button
                 type="button"
@@ -216,6 +227,22 @@ function ScanResult({
         ))}
       </ol>
     </div>
+  );
+}
+
+/** 도감 밖의 물건을 챗봇으로 넘긴다. */
+function AskAi({ label }: { label: string }) {
+  const { t } = useLocale();
+  const { ask } = useAskChat();
+
+  return (
+    <button
+      type="button"
+      className="finder__ask"
+      onClick={() => ask({ question: label.trim() || undefined })}
+    >
+      {t(ui.scanner.askAi)}
+    </button>
   );
 }
 

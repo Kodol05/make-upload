@@ -215,6 +215,29 @@ describe('App integration', () => {
     expect(screen.getByLabelText(ui.chat.inputLabel.ko)).toHaveValue('고양이 모래');
   });
 
+  /**
+   * 화면 전환을 넣으면서 페이지를 감싸는 상자가 하나 생겼다. 그 상자가
+   * 초점 이동을 가로막으면 키보드와 스크린 리더 사용자는 화면이 바뀐 것을
+   * 알 방법이 없다. 전환은 눈에 보이는 것일 뿐 길을 막아서는 안 된다.
+   */
+  it('still moves focus into the content after a page change', () => {
+    render(<App />);
+
+    act(() => goTo('#/learn'));
+
+    expect(document.activeElement).toBe(screen.getByRole('main'));
+  });
+
+  /** 새 페이지마다 상자가 새로 만들어져야 전환이 한 번씩 돈다. */
+  it('gives each page its own box so the change is visible', () => {
+    const { container } = render(<App />);
+    const first = container.querySelector('.page');
+
+    act(() => goTo('#/learn'));
+
+    expect(container.querySelector('.page')).not.toBe(first);
+  });
+
   it('closes that dialog again', async () => {
     render(<App />);
     act(() => goTo('#/catalog'));
