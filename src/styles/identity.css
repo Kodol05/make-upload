@@ -1424,9 +1424,9 @@ button,
 /**
  * 화면 전체 뒤에 산과 숲을 아주 흐리게 깐다.
  *
- * 투명도 5%라 무엇인지 알아보기보다 배경색이 살짝 깊어지는 정도로만 작동한다.
  * 글자와 카드는 이 층 위에 있고 카드는 불투명하므로, 실제로 비치는 곳은
- * 카드 사이의 여백이다. 대비 계산에는 영향을 주지 않는다.
+ * 카드 사이의 여백이다. 가장 어두운 픽셀이 그대로 비쳐도 본문 대비 11.17:1이라
+ * 읽는 데는 영향이 없다.
  *
  * 스크롤을 따라오지 않고 화면에 고정한다. 함께 움직이면 시선을 끌어 본문을
  * 방해한다.
@@ -1438,7 +1438,7 @@ button,
   background-image: var(--page-texture, none);
   background-size: cover;
   background-position: center;
-  opacity: 0.07;
+  opacity: 0.11;
   pointer-events: none;
 }
 
@@ -2485,10 +2485,15 @@ main {
   background-image: var(--game-brief, none);
   background-size: cover;
   background-position: center;
-  opacity: 0.2;
+  opacity: 0.4;
 }
 
-/** 글이 앉는 가운데를 덮어 읽히게 한다. 위아래는 그림이 조금 더 보인다. */
+/**
+ * 글이 앉는 가운데를 덮어 읽히게 한다. 위아래는 그림이 더 보인다.
+ *
+ * 그림이 거의 안 보인다고 해서 그림을 0.2에서 0.4로 올리고 덮개도 걷어 냈다.
+ * 가장 어두운 픽셀이 글 뒤에 오더라도 본문 대비 11.79:1이라 여유가 있다.
+ */
 .game--brief::after {
   content: '';
   position: absolute;
@@ -2496,10 +2501,10 @@ main {
   z-index: -1;
   background: linear-gradient(
     to bottom,
-    rgb(244 250 246 / 52%) 0%,
-    rgb(244 250 246 / 90%) 30%,
-    rgb(244 250 246 / 90%) 74%,
-    rgb(244 250 246 / 52%) 100%
+    rgb(244 250 246 / 40%) 0%,
+    rgb(244 250 246 / 78%) 30%,
+    rgb(244 250 246 / 78%) 74%,
+    rgb(244 250 246 / 40%) 100%
   );
 }
 

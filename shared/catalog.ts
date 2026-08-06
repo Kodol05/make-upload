@@ -144,10 +144,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Hộp nhựa đựng đồ ăn giao đến. Việc bạn có rửa sạch dầu và sốt hay không quyết định nó có tái chế được không.',
     }),
     ...image('delivery-container', {
-      ko: '물로 헹군 배달 플라스틱 용기와 뚜껑이 나란히 놓여 있습니다.',
-      en: 'A rinsed plastic delivery container and its lid placed side by side.',
-      zh: '冲洗过的外卖塑料容器和盖子并排放着。',
-      vi: 'Hộp nhựa giao đồ ăn đã tráng nước và nắp đặt cạnh nhau.',
+      ko: '양념 자국이 남은 투명 플라스틱 배달용기에 뚜껑이 덮여 있습니다.',
+      en: 'A clear plastic delivery container with sauce stains inside, lid still on.',
+      zh: '盖着盖子的透明塑料外卖容器，里面还留着酱汁痕迹。',
+      vi: 'Hộp nhựa trong đựng đồ ăn giao tận nơi còn vết sốt bên trong, nắp vẫn đậy.',
     }),
     steps: steps('delivery-container', [
       {
@@ -200,10 +200,10 @@ export const catalogItems: CatalogItem[] = [
       vi: 'Hộp mì ly có hai loại: giấy và xốp. Loại nào cũng phải rửa sạch vết nước dùng mới tái chế được.',
     }),
     ...image('cup-noodle', {
-      ko: '국물을 비우고 헹군 컵라면 용기와 떼어낸 비닐 뚜껑입니다.',
-      en: 'A cup noodle container emptied and rinsed, with its film lid peeled off beside it.',
-      zh: '倒空并冲洗过的杯面容器，以及撕下来的塑料盖膜。',
-      vi: 'Hộp mì ly đã đổ hết nước dùng và tráng sạch, cùng lớp màng nắp đã bóc ra.',
+      ko: '뚜껑을 뗀 종이 컵라면 용기입니다. 안이 비어 있습니다.',
+      en: 'A paper cup noodle container with the film lid peeled off, empty inside.',
+      zh: '撕掉盖膜的纸质杯面容器，里面是空的。',
+      vi: 'Hộp mì ly bằng giấy đã bóc lớp màng nắp, bên trong trống rỗng.',
     }),
     steps: steps('cup-noodle', [
       {
