@@ -355,12 +355,17 @@ main {
   text-wrap: balance;
 }
 
-/** 글줄은 판 전체 폭을 쓰지 않는다. 한 줄이 길면 눈이 되돌아올 곳을 잃는다. */
+/**
+ * 글줄은 판 전체 폭을 쓰지 않는다. 한 줄이 길면 눈이 되돌아올 곳을 잃는다.
+ *
+ * 색은 보조색이 아니라 본문색을 쓴다. 뒤에 그림이 깔려 있어서 보조색(--ink-muted)은
+ * 최악의 자리에서 3.08:1까지 떨어진다. 본문색이면 같은 자리에서 7.57:1이다.
+ */
 .masthead__intro {
   max-width: var(--measure);
   margin: 0 auto var(--space-7);
-  font-size: clamp(16px, 2.4vw, 18px);
-  color: var(--ink-muted);
+  font-size: clamp(16px, 2.4vw, 19px);
+  color: var(--ink);
   text-wrap: pretty;
 }
 
@@ -654,11 +659,18 @@ button,
  * 별도 층에 두고 투명도를 낮춘 뒤, 글자는 그 위에서 원래 색을 그대로 쓴다.
  * 파일이 없으면 배경만 비고 나머지는 그대로 보인다. CSS 배경은 조용히 실패한다.
  */
+/**
+ * 소개 화면은 **자기 배경을 불투명하게 덮는다.**
+ *
+ * 처음엔 그림을 14%로만 깔았는데, 화면 전체에 깔린 숲 질감과 겹쳐서 두 그림이
+ * 서로를 흐리게 만들었다. 여기서는 숲을 막고 이 그림 하나만 또렷하게 둔다.
+ */
 .masthead {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   border-radius: var(--radius-card);
+  background: var(--film);
 }
 
 .masthead::before {
@@ -673,22 +685,33 @@ button,
   background-image: var(--intro-cover, none);
   background-size: cover;
   background-position: center;
-  /* 질감으로만 남기고 글자를 방해하지 않는 선 */
-  opacity: 0.14;
+  opacity: 0.55;
 }
 
-/** 아래로 갈수록 배경을 걷어 낸다. 분류 카드가 놓이는 자리를 깨끗하게 둔다. */
+/**
+ * 글자 뒤만 덮개를 씌운다.
+ *
+ * 그림을 진하게 하면 대비가 떨어지므로, 위쪽(이름과 제목이 있는 자리)은 배경색을
+ * 두껍게 얹고 가운데는 얇게 둬서 그림이 드러나게 한다. 아래는 완전히 걷어 내
+ * 분류 카드가 깨끗한 바탕 위에 놓이게 한다.
+ */
 .masthead::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(to bottom, transparent 40%, var(--film) 92%);
+  background: linear-gradient(
+    to bottom,
+    rgb(244 250 246 / 82%) 0%,
+    rgb(244 250 246 / 52%) 34%,
+    rgb(244 250 246 / 70%) 62%,
+    var(--film) 88%
+  );
 }
 
 @media (prefers-reduced-transparency: reduce) {
   .masthead::before {
-    opacity: 0.06;
+    opacity: 0.2;
   }
 }
 
