@@ -104,15 +104,17 @@ describe('CatalogSection', () => {
     expect(screen.getByText(ui.catalog.localCheckTitle.ko)).toBeInTheDocument();
   });
 
-  it('hides the source link while the URL is not verified', async () => {
+  it('links a source only to an address that was actually verified', async () => {
     renderCatalog();
 
     await userEvent.click(screen.getByRole('button', { name: new RegExp(petName) }));
 
     const dialog = screen.getByRole('dialog');
-    // 출처 URL이 빈 문자열이면 링크를 만들지 않는다. 잘못된 주소는 없는 것보다 나쁘다.
-    expect(within(dialog).queryByRole('link')).not.toBeInTheDocument();
-    expect(within(dialog).getByText(ui.catalog.sourceUnverified.ko)).toBeInTheDocument();
+    // 주소를 지어내지 않는다. 링크가 생겼다면 등록된 https 주소여야 한다.
+    for (const link of within(dialog).getAllByRole('link')) {
+      expect(link).toHaveAttribute('href', expect.stringMatching(/^https:\/\//));
+      expect(link).toHaveAttribute('rel', 'noreferrer noopener');
+    }
   });
 
   it('keeps the steps readable when the image fails to load', async () => {

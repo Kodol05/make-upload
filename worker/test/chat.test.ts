@@ -1,4 +1,8 @@
 // @vitest-environment node
+import { catalogItems } from '../../shared/catalog';
+import { faqs } from '../../shared/faqs';
+import { isTodo } from '../../shared/placeholder';
+import { sources } from '../../shared/sources';
 import { buildApprovedKnowledge, handleChat } from '../src/chat';
 import type { Env } from '../src/env';
 import type { FetchLike } from '../src/gemini';
@@ -48,11 +52,27 @@ const goodAnswer = {
 };
 
 describe('buildApprovedKnowledge', () => {
-  it('leaves out items whose Korean text is still a placeholder', () => {
-    // 지금은 모든 문안이 검수 전이므로 쓸 수 있는 지식이 없다.
-    const knowledge = buildApprovedKnowledge();
-    expect(knowledge.items).toEqual([]);
-    expect(knowledge.faqs).toEqual([]);
+  it('includes an item only when its Korean text is fully verified', () => {
+    // 데이터가 채워질수록 통과 조건이 바뀌면 안 되므로 개수 대신 규칙을 검사한다.
+    const included = new Set(buildApprovedKnowledge().items.map((item) => item.id));
+
+    for (const item of catalogItems) {
+      const koreanReady = ![
+        item.summary.ko,
+        item.commonMistake.ko,
+        ...item.steps.map((step) => step.text.ko),
+      ].some(isTodo);
+      expect(included.has(item.id), item.id).toBe(koreanReady);
+    }
+  });
+
+  it('includes a FAQ only when its Korean text is fully verified', () => {
+    const included = new Set(buildApprovedKnowledge().faqs.map((faq) => faq.id));
+
+    for (const faq of faqs) {
+      const koreanReady = !isTodo(faq.question.ko) && !isTodo(faq.answer.ko);
+      expect(included.has(faq.id), faq.id).toBe(koreanReady);
+    }
   });
 
   it('never lets the placeholder marker reach the model', () => {
@@ -60,8 +80,22 @@ describe('buildApprovedKnowledge', () => {
   });
 
   it('offers only source IDs that have a verified URL', () => {
-    // 출처 URL이 아직 비어 있으므로 인용할 출처도 없다.
-    expect(buildApprovedKnowledge().sourceIds).toEqual([]);
+    const offered = buildApprovedKnowledge().sourceIds;
+
+    for (const id of offered) {
+      expect(sources[id]?.url, id).toMatch(/^https:\/\//);
+    }
+    for (const [id, source] of Object.entries(sources)) {
+      if (!source.url) expect(offered, id).not.toContain(id);
+    }
+  });
+
+  it('lets an item cite only the sources that are verified', () => {
+    for (const item of buildApprovedKnowledge().items) {
+      for (const id of item.sourceIds) {
+        expect(sources[id]?.url, `${item.id} -> ${id}`).toMatch(/^https:\/\//);
+      }
+    }
   });
 });
 
@@ -97,7 +131,7 @@ describe('handleChat', () => {
     expect(response.status).toBe(400);
   });
 
-  it('answers out_of_scope without calling the model when no knowledge is ready', async () => {
+  it('asks the model once the knowledge is ready', async () => {
     const fetchImpl = vi.fn(replyWith(goodAnswer));
 
     const response = await handleChat(
@@ -107,10 +141,19 @@ describe('handleChat', () => {
       fetchImpl,
     );
 
-    // 검수된 지식이 없으면 물어볼 것이 없다. Gemini를 부르지 않는다.
-    expect(fetchImpl).not.toHaveBeenCalled();
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
     expect(response.status).toBe(200);
-    expect(await response.json()).toMatchObject({ status: 'out_of_scope' });
+    expect(await response.json()).toMatchObject({ status: 'answered' });
+  });
+
+  it('sends the verified knowledge to the model', async () => {
+    const fetchImpl = vi.fn(replyWith(goodAnswer));
+    await handleChat(chatRequest(validBody), makeEnv(), ORIGIN, fetchImpl);
+
+    const body = String((fetchImpl.mock.calls[0]?.[1] as RequestInit).body);
+    expect(body).toContain('APPROVED_KNOWLEDGE');
+    // 검수 전 문안은 지식에 들어가지 않는다. 모델이 자리 표시를 사실처럼 인용하면 안 된다.
+    expect(body).not.toContain('__TODO__');
   });
 
   it('keeps CORS headers on a rejection', async () => {

@@ -18,10 +18,24 @@ import { createRateLimiter } from '../worker/src/rateLimit.js';
 const CHAT_RATE_LIMITER = createRateLimiter(10, 60_000);
 const SCAN_RATE_LIMITER = createRateLimiter(5, 60_000);
 
+/**
+ * 환경 변수를 `globalThis`를 거쳐 읽는다.
+ *
+ * `process.env`를 그대로 쓰면 Vercel이 API 함수를 타입 검사할 때 node 타입을
+ * 못 찾아 `TS2591: Cannot find name 'process'`가 난다. 우리 tsconfig에는 node
+ * 타입이 있어서 로컬에서는 통과하기 때문에 배포 로그를 봐야만 드러난다.
+ * 전역에서 꺼내 오면 어느 쪽 설정에서도 검사를 통과한다.
+ */
+function readEnvVars(): Record<string, string | undefined> {
+  const runtime = globalThis as { process?: { env?: Record<string, string | undefined> } };
+  return runtime.process?.env ?? {};
+}
+
 function readEnv(): Env {
+  const vars = readEnvVars();
   return {
-    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
-    ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN ?? 'https://kodol05.github.io',
+    GEMINI_API_KEY: vars.GEMINI_API_KEY,
+    ALLOWED_ORIGIN: vars.ALLOWED_ORIGIN ?? 'https://kodol05.github.io',
     CHAT_RATE_LIMITER,
     SCAN_RATE_LIMITER,
   };

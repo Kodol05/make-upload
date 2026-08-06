@@ -32,15 +32,24 @@ function estimateBytes(base64: string): number {
  *
  * 그릴 수 없는 좌표는 버리고, 등록되지 않은 품목은 버리는 대신 `unknown`으로 바꾼다.
  * 무엇인지 못 맞혀도 어디 있는지는 알려 주는 편이 사용자에게 낫다.
+ *
+ * 입력 좌표를 `readonly unknown[]`로 받는다. Zod의 튜플 추론이 타입스크립트 버전마다
+ * 달라서, 우리 저장소에서는 `[number, number, number, number]`로 좁혀지지만 Vercel이
+ * 함수를 검사할 때는 `[number?, number?, number?, number?, ...unknown[]]`로 나온다.
+ * 네 칸이 맞는지, 값이 좌표로 쓸 수 있는지는 어차피 `isValidBox`가 런타임에 확인하므로
+ * 타입은 가장 느슨하게 받고 검증을 통과한 것만 내보낸다.
  */
-export function sanitiseObjects(objects: ScanObject[]): ScanObject[] {
+export function sanitiseObjects(
+  objects: Array<Omit<ScanObject, 'box'> & { box: readonly unknown[] }>,
+): ScanObject[] {
   const known = new Set<string>(itemIds);
 
   return objects
-    .filter((object) => isValidBox(object.box as Box))
+    .filter((object) => isValidBox(object.box as unknown as Box))
     .slice(0, MAX_OBJECTS)
     .map((object) => ({
       ...object,
+      box: object.box as unknown as Box,
       itemId: known.has(object.itemId) ? object.itemId : ('unknown' as const),
     }));
 }
