@@ -1,7 +1,7 @@
 import { AppFooter } from '@/components/AppFooter';
 import { AppHeader } from '@/components/AppHeader';
 import { FeatureErrorBoundary } from '@/components/FeatureErrorBoundary';
-import { Wordmark } from '@/components/Wordmark';
+import { LanguageSelect } from '@/components/LanguageSelect';
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { CatalogSection } from '@/features/catalog/CatalogSection';
 import { ChatWidget } from '@/features/chat/ChatWidget';
@@ -12,42 +12,68 @@ import { assetUrl } from '@/lib/assetUrl';
 import { journey, stepIndexOf } from './journey';
 import { LocaleProvider } from './LocaleProvider';
 import { useHashRoute } from './useHashRoute';
+import { usePrefersReducedMotion } from './usePrefersReducedMotion';
 import { useLocale } from './useLocale';
 
 /**
  * ① 소개.
  *
- * 이름과 한 줄 소개, 그리고 다음으로 넘어가는 길 하나. 분류 그림 넉 장을
- * 늘어놓았었지만 그림 안의 낱말이 한국어뿐이라 유학생에게는 읽히지 않았고,
- * 자리만 크게 차지했다.
+ * 영상 한 편이 화면을 채우고, 그 위에 한 줄과 언어 선택, 단추 하나만 올린다.
+ *
+ * 앞서는 설명 문장과 분류 그림 넉 장을 늘어놓았는데, 읽을 것이 많은 만큼
+ * 어디로 가야 하는지가 흐려졌다. 첫 화면이 할 일은 둘뿐이다. "겁먹을 것 없다"를
+ * 한 줄로 말하는 것, 그리고 다음으로 보내는 것.
+ *
+ * 상단 메뉴와 진행 막대는 이 화면에서만 감춘다. 아직 여정이 시작되지 않았는데
+ * "1/4"이 떠 있으면 이미 뭔가 놓친 것처럼 읽힌다. 대신 메뉴에 있던 언어 선택을
+ * 화면 한가운데로 끌어와, 읽지 못하는 언어로 시작하는 일이 없게 한다.
  */
 function IntroRoute() {
   const { t } = useLocale();
+  const calm = usePrefersReducedMotion();
+  const first = journey[0];
 
   return (
-    <section
-      className="masthead"
-      /**
-       * 대표 이미지 경로를 CSS로 넘긴다. Vite는 CSS의 `url()`에 base를 붙이지
-       * 않으므로 배포 경로를 아는 이쪽에서 만들어 준다. 파일이 없으면 배경만
-       * 비고 나머지는 그대로 보인다.
-       */
-      style={
-        { '--intro-cover': `url(${assetUrl('/images/intro-cover.webp')})` } as CSSProperties
-      }
-    >
-      <div className="masthead__figure">
-        <Wordmark size="lg" />
-      </div>
-      <h2 className="masthead__title">{t(ui.catalog.title)}</h2>
-      <p className="masthead__intro">{t(ui.home.intro)}</p>
+    <section className="hero">
+      {/**
+       * 배경 영상. 소리도 뜻도 없는 장식이라 보조 기술에는 숨긴다.
+       *
+       * 움직임을 줄여 달라는 설정이면 스스로 재생하지 않는다. 표지 한 장이
+       * 남으므로 화면이 비지는 않는다.
+       */}
+      <video
+        className="hero__video"
+        poster={assetUrl('/images/intro-poster.webp')}
+        src={assetUrl('/media/intro-loop.mp4')}
+        autoPlay={!calm}
+        loop
+        muted
+        playsInline
+        aria-hidden="true"
+        tabIndex={-1}
+      />
 
       {/**
-       * 다음으로 넘어가는 길을 화면 가운데에 둔다. 소개는 짧게 읽고 넘어가는
-       * 화면이라 맨 아래까지 내려가게 하면 한 번 더 스크롤해야 한다.
-       * 색은 눌러야 할 것 중 가장 조용하게 둔다. 여기서 붙잡아 둘 이유가 없다.
+       * 영상 아무 데나 눌러도 넘어간다. 키보드로는 아래 단추가 같은 곳으로
+       * 데려다주므로, 이 링크는 탭 순서와 읽어 주는 순서에서 뺀다. 같은 곳으로
+       * 가는 길이 두 번 읽히면 그게 더 헷갈린다.
        */}
-      <JourneyNext index={0} tone="quiet" />
+      <a
+        className="hero__surface"
+        href={`#${first.nextRoute}`}
+        aria-hidden="true"
+        tabIndex={-1}
+      />
+
+      <div className="hero__body">
+        <h1 className="hero__title">{t(ui.home.title)}</h1>
+        <div className="hero__language">
+          <LanguageSelect />
+        </div>
+        <a className="journey-next__button hero__button" href={`#${first.nextRoute}`}>
+          {t(first.nextLabel)}
+        </a>
+      </div>
     </section>
   );
 }
@@ -161,6 +187,7 @@ function JourneyNext({
 function AppShell() {
   const route = useHashRoute();
   const index = stepIndexOf(route);
+  const onIntro = index === 0;
   const mainRef = useRef<HTMLElement>(null);
   const firstRender = useRef(true);
 
@@ -204,18 +231,20 @@ function AppShell() {
           } as CSSProperties
         }
       />
-      <AppHeader currentRoute={journey[index].route} />
+      {/**
+       * 소개에서는 메뉴도 진행 막대도 띄우지 않는다. 아직 아무것도 시작하지
+       * 않았는데 "1/4"이 떠 있으면 이미 뭔가 놓친 것처럼 읽힌다. 소개 화면이
+       * 언어 선택과 다음으로 가는 길을 직접 들고 있다.
+       */}
+      {!onIntro && <AppHeader currentRoute={journey[index].route} />}
       <main id="main" ref={mainRef} tabIndex={-1}>
         {page}
-        {/**
-         * 진행 표시와 다음 버튼을 아래에 함께 둔다. 헤더 밑에 있으면 화면을
-         * 가로막기만 하고, 정작 필요한 순간은 "넘어갈까" 하고 정할 때다.
-         */}
-        <div className="journey-foot">
-          <JourneyProgress index={index} />
-          {/* 소개는 가운데에 이미 있다. 같은 버튼을 두 번 두지 않는다. */}
-          {index > 0 && <JourneyNext index={index} />}
-        </div>
+        {!onIntro && (
+          <div className="journey-foot">
+            <JourneyProgress index={index} />
+            <JourneyNext index={index} />
+          </div>
+        )}
       </main>
       <AppFooter />
       {/**

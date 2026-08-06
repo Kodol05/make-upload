@@ -170,18 +170,17 @@ export const ui = {
   },
 
   home: {
-    /** 소개 화면에서 네 분류를 세워 놓고 그 위에 붙이는 말. */
-    legendCaption: localized('ui', 'home.legendCaption', {
-      ko: '한국의 쓰레기는 네 갈래로 나뉩니다',
-      en: 'Waste in Korea is sorted into four groups',
-      zh: '韩国的垃圾分为四类',
-      vi: 'Rác ở Hàn Quốc được chia thành bốn nhóm',
-    }),
-    intro: localized('ui', 'home.intro', {
-      ko: '한국의 분리배출을 영상으로 배우고, 사진으로 찾고, 도감에서 확인하세요.',
-      en: 'Learn how Korea sorts its waste: watch the video, snap a photo, and check the guide.',
-      zh: '通过视频学习韩国的垃圾分类，用照片查找，在图鉴中确认。',
-      vi: 'Học cách phân loại rác ở Hàn Quốc: xem video, chụp ảnh tra cứu và kiểm tra trong cẩm nang.',
+    /**
+     * 소개 화면에 남는 유일한 글이다. 영상 위에 얹히므로 한 줄로 끊는다.
+     *
+     * 겁부터 먹고 아무 봉투에나 넣는 것이 유학생이 가장 흔히 겪는 일이라,
+     * 처음 만나는 문장은 "할 수 있다"여야 한다고 봤다.
+     */
+    title: localized('ui', 'home.title', {
+      ko: '한국의 분리배출은 어렵지 않습니다',
+      en: 'Sorting waste in Korea is not hard',
+      zh: '在韩国分类扔垃圾并不难',
+      vi: 'Phân loại rác ở Hàn Quốc không khó',
     }),
   },
 

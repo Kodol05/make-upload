@@ -17,16 +17,18 @@ describe('App', () => {
     window.location.hash = '';
   });
 
-  it('renders the K-SORT product name', () => {
+  it('renders the K-SORT product name once the journey starts', () => {
     render(<App />);
+    // 소개는 영상 한 장면이라 메뉴를 띄우지 않는다. 이름은 그다음 화면부터 나온다.
+    act(() => goTo('#/learn'));
     expect(screen.getByRole('heading', { name: 'K-SORT' })).toBeInTheDocument();
   });
 
   it('opens on the first step of the journey', () => {
     render(<App />);
-    // 첫 페이지는 소개다. 네 분류를 표시로 보여 주고 나머지 화면은 아직 없다.
+    // 첫 페이지는 소개다. 영상 한 편과 한 줄, 그리고 나머지 화면은 아직 없다.
     expect(
-      screen.getByRole('heading', { name: ui.catalog.title.ko, level: 2 }),
+      screen.getByRole('heading', { name: ui.home.title.ko, level: 1 }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole('heading', { name: ui.game.title.ko }),
@@ -41,7 +43,7 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: ui.game.title.ko })).toBeInTheDocument();
   });
 
-  it('keeps the header and footer on every route', () => {
+  it('keeps the header and footer once the journey starts', () => {
     render(<App />);
     act(() => goTo('#/game'));
 
