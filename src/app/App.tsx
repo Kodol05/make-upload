@@ -1,14 +1,20 @@
 import { AppFooter } from '@/components/AppFooter';
 import { AppHeader } from '@/components/AppHeader';
+import { LearnSection } from '@/features/learn/LearnSection';
 import { ui } from '@/i18n/strings';
 import { LocaleProvider } from './LocaleProvider';
 import { useHashRoute } from './useHashRoute';
 import { useLocale } from './useLocale';
 
-/** 학습 여정 화면. Task 4부터 영상·도감·스캐너·챗봇 섹션이 여기에 붙는다. */
+/** 학습 여정 화면. 도감·스캐너·챗봇 섹션이 이어서 붙는다. */
 function HomeRoute() {
   const { t } = useLocale();
-  return <p>{t(ui.home.intro)}</p>;
+  return (
+    <>
+      <p className="home-intro">{t(ui.home.intro)}</p>
+      <LearnSection />
+    </>
+  );
 }
 
 /** 게임 화면. Task 9에서 실제 게임을 연결한다. */

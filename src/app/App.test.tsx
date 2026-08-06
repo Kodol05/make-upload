@@ -23,6 +23,9 @@ describe('App', () => {
   it('shows the home route by default', () => {
     render(<App />);
     expect(
+      screen.getByRole('heading', { name: ui.learn.title.ko, level: 2 }),
+    ).toBeInTheDocument();
+    expect(
       screen.queryByRole('heading', { name: ui.game.title.ko }),
     ).not.toBeInTheDocument();
   });

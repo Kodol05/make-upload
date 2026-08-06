@@ -26,6 +26,39 @@ export const ui = {
   home: {
     intro: localized('ui', 'home.intro', {}),
   },
+  learn: {
+    title: localized('ui', 'learn.title', { ko: '영상으로 배우기' }),
+    videoUnavailable: localized('ui', 'learn.videoUnavailable', {
+      ko: '영상을 재생할 수 없습니다',
+    }),
+    videoSummary: localized('ui', 'learn.videoSummary', {}),
+    subtitleLabel: localized('ui', 'learn.subtitleLabel', { ko: '자막' }),
+    principlesTitle: localized('ui', 'learn.principlesTitle', {
+      ko: '분리배출 4대 원칙',
+    }),
+    /**
+     * 원칙 이름은 설계 문서가 정한 네 가지다.
+     * 각 원칙의 설명은 실제 배출 방법이므로 검수 뒤에 채운다.
+     */
+    principles: {
+      empty: {
+        label: localized('ui', 'learn.principles.empty.label', { ko: '비운다' }),
+        description: localized('ui', 'learn.principles.empty.description', {}),
+      },
+      rinse: {
+        label: localized('ui', 'learn.principles.rinse.label', { ko: '헹군다' }),
+        description: localized('ui', 'learn.principles.rinse.description', {}),
+      },
+      separate: {
+        label: localized('ui', 'learn.principles.separate.label', { ko: '분리한다' }),
+        description: localized('ui', 'learn.principles.separate.description', {}),
+      },
+      dontMix: {
+        label: localized('ui', 'learn.principles.dontMix.label', { ko: '섞지 않는다' }),
+        description: localized('ui', 'learn.principles.dontMix.description', {}),
+      },
+    },
+  },
   game: {
     title: localized('ui', 'game.title', { ko: '게임으로 복습하기' }),
     backToHome: localized('ui', 'game.backToHome', { ko: '홈으로 돌아가기' }),
