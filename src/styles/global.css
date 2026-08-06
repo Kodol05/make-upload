@@ -100,6 +100,85 @@ main {
   padding: var(--space-5) var(--space-4);
 }
 
+.home-intro {
+  margin: 0 0 var(--space-5);
+  color: var(--color-muted);
+}
+
+.lesson {
+  margin-bottom: var(--space-6);
+}
+
+.lesson h2 {
+  margin: 0 0 var(--space-4);
+  font-size: 1.4rem;
+}
+
+/* 영상과 포스터가 화면 폭을 넘지 않게 한다. 360px에서도 가로 스크롤이 없어야 한다. */
+.lesson__video,
+.lesson__poster {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-card);
+  background: #000;
+}
+
+.lesson__fallback {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.lesson__fallback-title {
+  margin: var(--space-3) 0 var(--space-2);
+  font-weight: 600;
+}
+
+.lesson__fallback-summary {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.lesson__principles-title {
+  margin: var(--space-5) 0 var(--space-3);
+  font-size: 1.1rem;
+}
+
+.lesson__principles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson__principle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.lesson__principle strong {
+  color: var(--color-primary-strong);
+}
+
+.lesson__principle span {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  /* 자리 표시 문자열이 길어도 카드를 밀어내지 않게 한다. */
+  overflow-wrap: anywhere;
+}
+
 .app-footer {
   padding: var(--space-5) var(--space-4);
   border-top: 1px solid var(--color-border);
