@@ -7,41 +7,75 @@
 
 ## 현재 단계
 
-- **큰 마일스톤**: Task 8 완료. 학습 여정의 다섯 화면 중 게임을 뺀 넷이 동작한다.
-- **배포 URL**: <https://kodol05.github.io/make-upload/> (프런트만. Worker는 아직 미배포)
-- **진행 중 Task**: 없음 (Task 9 대기)
-- **Blocker**: 없음. 다만 **Gemini API 키가 있어야 실제 호출을 확인할 수 있다.**
+- **큰 마일스톤**: Task 10까지 완료. 다섯 화면이 모두 동작한다. **API가 실제 Gemini를 부른다.**
+- **웹앱**: <https://kodol05.github.io/make-upload/>
+- **API**: <https://make-upload.vercel.app> — `POST /api/chat`, `POST /api/scan`
+- **진행 중 Task**: Task 11 (배포와 운영 연결) 마무리 단계
+- **Blocker**: **GitHub Pages 배포가 실패 중.** 빌드는 통과하는데 `actions/deploy-pages`가
+  `deployment_queued`에서 10분을 기다리다 타임아웃한다. 그래서 배포된 번들에 아직
+  `VITE_API_BASE_URL`이 들어가지 않아 브라우저에서 AI 기능이 동작하지 않는다.
+  재실행으로 풀리는지 확인 중이다.
 
 ## 지금 · 다음
 
 | 지금 | 다음 |
 |------|------|
-| Task 8 완료 (AI Sort Scan) | Task 9: 게임 연결 계약과 게임 통합 |
+| Task 11: Pages 재배포로 API 주소 주입 | Task 12: 최종 검증·증거 수집·발표 동결 |
 
-Task 9의 게임 내부 설계는 김현민의 별도 기획을 따른다. 현재 정해 둔 방향은
-학습 도구 성격이고 시간 압박을 두지 않으며, 추가 처리가 필요한 품목은 퀴즈를
-통과해야 배출할 수 있게 하는 것이다.
+## 🔴 API는 Cloudflare가 아니라 Vercel에 있다
 
-## 키를 받으면 바로 할 일
+Cloudflare Worker로 배포했더니 Gemini가 이렇게 거부했다.
 
-Task 6의 마지막 단계를 미뤄 두었다. 키가 생기면 이것부터 확인한다.
-
-```powershell
-npm run worker:dev
+```
+User location is not supported for the API use.
 ```
 
-`toGeminiSchema`가 만든 스키마를 Gemini가 받는지 실제 호출로 본다.
-`400 INVALID_ARGUMENT`가 나오면 오류 메시지에 적힌 키 이름을 `worker/src/gemini.ts`의
-`UNSUPPORTED_KEYS`에 추가한다. 지금까지 확인한 문제는 세 가지다.
+한국에서 보내는데도 막힌 이유는 Google이 보는 것이 사용자 위치가 아니라 **Worker의
+출구 IP**이기 때문이다. Cloudflare 대역이 미지원 지역으로 판정된다. smart placement로
+지역을 옮겨도, AI Gateway를 경유해도 똑같이 실패했다.
 
-- `$schema`와 `additionalProperties`가 들어간다
-- 튜플이 `prefixItems`로 나온다. 스캔 응답의 `box`가 여기 해당한다
+그래서 API를 **Vercel Functions(`iad1`)** 로 옮겼다. Worker 코드가 표준 `Request`/
+`Response`만 쓰고 있어서 거의 그대로 옮겨갔고, Cloudflare 전용 바인딩이던 rate limiter만
+`worker/src/rateLimit.ts`의 메모리 구현으로 갈아 끼웠다.
+
+| | 값 |
+|---|---|
+| 고정 주소 | `https://make-upload.vercel.app` |
+| 진입점 | `api/[...path].ts` → `worker/src/index.ts` |
+| 설정 | `vercel.json` |
+| 프로젝트 | `koya5/make-upload` |
+
+**배포마다 생기는 `make-upload-xxxx-koya5.vercel.app` 주소는 쓰지 않는다.** 매번 바뀐다.
+고정 별칭만 `VITE_API_BASE_URL`에 넣는다.
+
+`wrangler.jsonc`와 Cloudflare Worker(`k-sort-api.momomomkiop3.workers.dev`)는 남아 있지만
+쓰지 않는다.
+
+### ⚠️ Vercel은 TypeScript를 번들하지 않는다
+
+트랜스파일만 해서 출력이 순수 ESM이 된다. ESM은 확장자 생략을 허용하지 않으므로
+**`api/`와 `worker/`의 상대 임포트에는 `.js`를 붙인다.** 소스는 `.ts`인데 임포트는 `.js`로
+쓰는 것이 맞다. 빠뜨리면 배포 후 런타임에 `ERR_MODULE_NOT_FOUND`가 난다.
+
+```ts
+import worker from '../worker/src/index.js';   // ← .js
+```
+
+### 운영 설정
+
+```powershell
+npx vercel env add GEMINI_API_KEY production   # 키는 여기에만 둔다
+npx vercel project protection disable --sso    # 공개 API라 SSO 보호를 끈다
+gh variable set VITE_API_BASE_URL --body "https://make-upload.vercel.app"
+```
+
+`VITE_API_BASE_URL`은 **빌드 시점에 박힌다.** 값을 바꾸면 Pages를 다시 배포해야 반영된다.
 
 ## 준비할 것
 
 - Google AI Studio에서 Gemini API 키 발급
 - 로컬 `.dev.vars`에 `GEMINI_API_KEY` 저장 (커밋하지 않는다)
-- Cloudflare 계정 로그인
+- Vercel 계정 로그인 (`npx vercel login`)
 
 ### 🔴 무료 한도는 모델마다 다르고 생각보다 훨씬 빡빡하다
 
@@ -59,11 +93,11 @@ Lite에 두고 500회를 함께 쓴다. 나누는 것보다 총량은 적지만 
 **남은 확인**: `gemini-3.5-flash`의 무료 한도가 넉넉하면 챗봇을 그쪽으로 옮겨 버킷을 다시
 나눈다. `worker/src/gemini.ts`의 `CHAT_MODEL` 한 줄만 바꾸면 된다.
 
-Workers는 100,000 req/day라 문제되지 않는다. 다만 **무료 등급은 Google이 제출 이미지를
-서비스 개선에 쓸 수 있어** 스캔 화면에 그 사실을 고지한다(`ui.scanner.privacyNotice`).
+**무료 등급은 Google이 제출 이미지를 서비스 개선에 쓸 수 있어** 스캔 화면에 그 사실을
+고지한다(`ui.scanner.privacyNotice`).
 
-Workers 무료는 요청당 CPU 10ms다. 1.5MB 이미지를 base64로 바꾸는 데 이 시간을 넘을 수
-있으므로 Task 8에서 실측하고, 넘으면 브라우저에서 인코딩해 보내는 방식으로 바꾼다.
+Vercel 무료는 함수 실행 시간이 넉넉해서 Workers의 요청당 CPU 10ms 제약이 사라졌다. 다만
+Task 8에서 이미 브라우저가 base64로 인코딩해 보내도록 바꿔 두었으므로 그대로 둔다.
 
 ## 콘텐츠 대기 상황
 
@@ -105,10 +139,11 @@ public/images/items/<itemId>.webp   # 16장
 ```
 node 24.16.0 · npm 11.13.0
 react 19.2.8 · vite 8.2.0 · typescript 6.0.3 · zod 4.4.3
-vitest 4.1.10 · eslint 10.8.0 · wrangler 4.119.0
+vitest 4.1.10 · eslint 10.8.0
 ```
 
-`npm run check` (lint + test + build) 통과 상태. main에 병합하면 Pages로 자동 배포된다.
+테스트 235 passed / 3 skipped(릴리스 게이트). `npm run check` (lint + test + build) 통과 상태.
+main에 병합하면 웹앱은 Pages로, API는 Vercel로 각각 자동 배포된다.
 
 ## 인터페이스 계약 (병렬 작업용)
 
@@ -121,8 +156,8 @@ Locale = 'ko' | 'en' | 'zh' | 'vi'
 LocalizedText = Record<Locale, string>
 Category = 'recyclable' | 'food' | 'general' | 'special'
 ItemId = 16종 고정 유니온
-CatalogStep  { id, image, text, alt }
-CatalogItem  { id, category, name, aliases, summary, steps, commonMistake, needsLocalCheck, sourceIds }
+CatalogStep  { id, text }             // 이미지는 품목당 한 장으로 바꾸면서 단계에서 뺐다
+CatalogItem  { id, category, name, aliases, summary, image, steps, commonMistake, needsLocalCheck, sourceIds }
 Faq          { id, question, answer, relatedItemIds, sourceIds }
 Source       { title, url }           // url이 빈 문자열이면 UI가 링크를 만들지 않는다
 GameResult   { score, learnedItemIds }
@@ -160,11 +195,20 @@ Task 4가 영상 섹션을, Task 9가 실제 게임을 각각 여기에 붙인�
 
 ## 다음 액션 (우선순위)
 
-1. Task 4: 영상과 4대 원칙 (에셋 없이 대체 UI부터)
-2. Task 5: 16종 도감 검색·필터·상세
+1. Pages 배포 성공시키기 (지금 막힌 곳). 배포본에서 챗봇·스캔이 실제로 도는지 확인
+2. Task 12: 릴리스 게이트 `.skip` 해제, 스크린샷, 리허설 3회, secret 검색, 태그
 
 ## 최근 결정 · 변경
 
+- 2026-08-06 · **API를 Cloudflare에서 Vercel로 이전.** Gemini가 Cloudflare 출구 IP를 지역 차단 (PR #25)
+- 2026-08-06 · 챗봇·스캔 모두 `gemini-3.5-flash-lite`로. 3.6-flash는 하루 20회뿐
+- 2026-08-06 · Task 10 완료. 기능별 오류 경계와 모달 포커스 가둠 (PR #24)
+- 2026-08-06 · Task 9 완료. 게임 (PR #20)
+- 2026-08-06 · Task 8 완료. AI Sort Scan 두 경로 (PR #19)
+- 2026-08-06 · Task 7 완료. 근거 기반 챗봇 (PR #18)
+- 2026-08-06 · Task 6 완료. Worker 기반과 `toGeminiSchema` (PR #16)
+- 2026-08-06 · Task 5 완료. 16종 도감 (PR #14)
+- 2026-08-06 · Task 4 완료. 영상과 4대 원칙 (PR #11)
 - 2026-08-06 · Task 3 완료. 언어 전환·해시 라우팅·UI 문자열 사전 (PR #9)
 - 2026-08-06 · Task 2 완료. 자리 표시로 콘텐츠 대기 없이 개발 가능 (PR #7)
 - 2026-08-06 · Task 1 완료. Pages 배포까지 확인 (PR #5)

@@ -19,3 +19,8 @@
 - 2026-08-06 (현민) [feat] Task 6: Worker 보안·Gemini 공통 호출. toGeminiSchema로 Zod→Gemini 스키마 비호환(prefixItems 등) 해결, worker/ 타입 검사 누락 수정 → PR #16
 - 2026-08-06 (현민) [feat] Task 7: 근거 기반 챗봇. 자리 표시가 남은 문안은 지식에서 제외, 쓸 지식 없으면 모델 호출 안 함 → PR #18
 - 2026-08-06 (현민) [feat] Task 8: AI Sort Scan 두 경로. Workers CPU 10ms 때문에 multipart 대신 base64 JSON으로 변경 → PR #19
+- 2026-08-06 (현민) [feat] Task 9: 게임 → PR #20
+- 2026-08-06 (현민) [feat] Task 10: 기능별 오류 경계와 모달 포커스 가둠 → PR #24
+- 2026-08-06 (현민) [fix] 챗봇·스캔 모두 gemini-3.5-flash-lite로. 3.6-flash 무료 한도가 하루 20회뿐이었음
+- 2026-08-06 (현민) [feat] Task 11: API를 Cloudflare에서 Vercel로 이전. Gemini가 Cloudflare 출구 IP를 지역 차단 → PR #25
+- 2026-08-06 (현민) [docs] Vercel 이전을 STATUS·CLAUDE·설계 문서에 반영
