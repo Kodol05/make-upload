@@ -346,10 +346,10 @@ export const ui = {
     }),
     /** 도감 상세에서 챗봇을 부르는 단추. 도감이 다 못 답하는 것을 이어 받는다. */
     askAboutThis: localized('ui', 'catalog.askAboutThis', {
-      ko: '이 품목에 대해 물어보기',
-      en: 'Ask about this item',
-      zh: '就这个物品提问',
-      vi: 'Hỏi về vật này',
+      ko: '이 품목에 대해 챗봇에게 물어보기',
+      en: 'Ask the chatbot about this item',
+      zh: '就这个物品询问聊天机器人',
+      vi: 'Hỏi chatbot về vật này',
     }),
     stepsTitle: localized('ui', 'catalog.stepsTitle', {
       ko: '처리 순서',
