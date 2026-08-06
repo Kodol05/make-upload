@@ -2231,6 +2231,22 @@ main {
   color: var(--ink-muted);
 }
 
+/**
+ * 처리 방법 고르기. 넷을 세로로 늘어놓으면 목록이 길어져 판이 화면 밖으로
+ * 밀린다. 둘씩 두 줄로 접는다. 선택지가 늘 넷이라 빈칸이 남지 않는다.
+ */
+.game-play__choices {
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+/* 좁은 화면에서는 한 줄에 하나. 두 칸으로 쪼개면 글이 서너 줄로 접힌다. */
+@media (max-width: 560px) {
+  .game-play__choices {
+    grid-template-columns: 1fr;
+  }
+}
+
 .game-play__question {
   font-size: var(--text-title);
   font-weight: 700;

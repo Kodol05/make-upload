@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LocaleProvider } from '@/app/LocaleProvider';
 import { ui } from '@/i18n/strings';
@@ -27,6 +27,18 @@ function correctBinName() {
 
 function bins() {
   return screen.getByRole('group', { name: ui.game.sortQuestion.ko });
+}
+
+/**
+ * 처리 방법 선택지들.
+ *
+ * 전에는 화면의 첫 단추가 곧 선택지라고 보고 `getAllByRole('button')[0]`을 썼다.
+ * 묻는 말을 판 아래로 옮기자 첫 단추가 수거함이 되면서 그 가정이 깨졌다.
+ * 자리가 아니라 어느 덩어리에 속하는지로 집는다.
+ */
+function choiceButtons(): HTMLElement[] {
+  const quiz = document.querySelector<HTMLElement>('.game-play__quiz');
+  return quiz ? within(quiz).getAllByRole('button') : [];
 }
 
 /** 현재 문제가 선처리 단계인지 본다. */
@@ -58,8 +70,7 @@ describe('GameExperience', () => {
     renderGame();
     while (isPrepStep()) {
       // 바로 버릴 수 있는 문제가 나올 때까지 넘긴다.
-      const choices = screen.getAllByRole('button');
-      await userEvent.click(choices[0]);
+      await userEvent.click(choiceButtons()[0]);
       const next = screen.queryByRole('button', { name: ui.game.nextQuestion.ko });
       if (next) await userEvent.click(next);
     }
@@ -81,9 +92,8 @@ describe('GameExperience', () => {
     for (let i = 0; i < 10; i += 1) {
       if (isPrepStep()) {
         // 선처리 선택지 중 아무거나 두 번 눌러 정답 공개로 넘어간다.
-        const choice = screen.getAllByRole('button')[0];
-        await userEvent.click(choice);
-        if (isPrepStep()) await userEvent.click(screen.getAllByRole('button')[0]);
+        await userEvent.click(choiceButtons()[0]);
+        if (isPrepStep()) await userEvent.click(choiceButtons()[0]);
       }
       await userEvent.click(screen.getByRole('button', { name: correctBinName() }));
       await userEvent.click(screen.getByRole('button', { name: ui.game.nextQuestion.ko }));

@@ -164,6 +164,38 @@ describe('handleChat', () => {
     expect(body).toContain('out_of_scope');
   });
 
+  /**
+   * 범위를 "어느 통에 넣는가"로만 적어 두니 모델이 그대로 읽어서, "분리배출을
+   * 하면 뭐가 좋아?"나 "약품은 어떻게 버려?"까지 거절했다. 분명히 분리배출
+   * 이야기인데 답을 못 받는다.
+   */
+  it('tells the model to answer when it is unsure whether something counts', async () => {
+    const fetchImpl = vi.fn(replyWith(goodAnswer));
+    await handleChat(chatRequest(validBody), makeEnv(), ORIGIN, fetchImpl);
+
+    const body = String((fetchImpl.mock.calls[0]?.[1] as RequestInit).body);
+    expect(body).toContain('LEAN TOWARDS ANSWERING');
+    expect(body).toContain('When you are unsure whether something counts, answer it');
+    // 거절은 드물어야 한다는 것을 지시문이 직접 말한다
+    expect(body).toContain('This should be rare');
+  });
+
+  /** 범위 안에 무엇이 드는지를 지시문이 예로 들어 준다. 목록이 곧 경계다. */
+  it('spells out the kinds of question that count as waste separation', async () => {
+    const fetchImpl = vi.fn(replyWith(goodAnswer));
+    await handleChat(chatRequest(validBody), makeEnv(), ORIGIN, fetchImpl);
+
+    const body = String((fetchImpl.mock.calls[0]?.[1] as RequestInit).body);
+    for (const kind of [
+      'why the rules exist',
+      'what are the benefits',
+      'medicines',
+      'where to buy bags',
+    ]) {
+      expect(body, kind).toContain(kind);
+    }
+  });
+
   /** 모델이 등록되지 않은 출처를 붙여 와도 화면까지 가지 못한다. */
   it('drops a source the model made up', async () => {
     const response = await handleChat(
