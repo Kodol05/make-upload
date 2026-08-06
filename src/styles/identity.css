@@ -1328,3 +1328,40 @@ main {
     opacity: 0.02;
   }
 }
+
+/* ══ 진행 표시 (칸 나누기) ═══════════════════════════════ */
+
+/**
+ * 이어진 막대는 얼마나 왔는지만 알려 준다. 칸으로 나누면 전부 몇 단계인지도
+ * 함께 읽힌다. 칸 사이의 실선이 그 경계다.
+ *
+ * 선은 잉크색으로 둔다. 채워진 초록 위에서도, 빈 칸의 연한 바탕 위에서도
+ * 똑같이 보여야 하기 때문이다.
+ */
+.journey-progress__track {
+  display: flex;
+  height: 14px;
+  background: var(--rule);
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.journey-progress__step {
+  flex: 1;
+  background: transparent;
+  transition: background-color 200ms ease;
+}
+
+.journey-progress__step + .journey-progress__step {
+  border-left: 2px solid var(--ink);
+}
+
+.journey-progress__step--done {
+  background: var(--mark);
+}
+
+.journey-progress__count {
+  font-size: var(--text-body);
+  font-weight: 700;
+}

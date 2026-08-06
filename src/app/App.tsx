@@ -97,6 +97,10 @@ function JourneyProgress({ index }: { index: number }) {
   const current = index + 1;
   const total = journey.length;
 
+  /**
+   * 막대를 단계 수만큼 칸으로 나눈다. 이어진 막대는 얼마나 왔는지만 알려 주지만,
+   * 칸으로 나누면 **전부 몇 단계인지**도 같이 읽힌다. 칸 사이의 실선이 그 경계다.
+   */
   return (
     <div className="journey-progress">
       <div
@@ -107,7 +111,16 @@ function JourneyProgress({ index }: { index: number }) {
         aria-valuemin={1}
         aria-valuemax={total}
       >
-        <span style={{ width: `${(current / total) * 100}%` }} />
+        {journey.map((step, position) => (
+          <span
+            key={step.route}
+            className={
+              position <= index
+                ? 'journey-progress__step journey-progress__step--done'
+                : 'journey-progress__step'
+            }
+          />
+        ))}
       </div>
       <span className="journey-progress__count">
         {current} / {total}
