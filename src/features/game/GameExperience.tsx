@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ItemImage } from '@/components/ItemImage';
+import { assetUrl } from '@/lib/assetUrl';
 import { ui } from '@/i18n/strings';
 import { resolveText } from '@shared/placeholder';
 import { categories, type Category, type ItemId, type LocalizedText } from '@shared/types';
@@ -91,16 +92,6 @@ export function GameExperience({ locale, items, onComplete }: GameExperienceProp
         {t(ui.game.progress)} {index + 1} / {questions.length}
       </p>
 
-      <div className="game-play__item">
-        <ItemImage item={item} className="game-play__image" />
-        <p className="game-play__name" data-testid="game-item-name">
-          {t(item.name)}
-        </p>
-        {question.needsPreparation && (
-          <p className="game-play__condition">{t(item.commonMistake)}</p>
-        )}
-      </div>
-
       {step === 'prepare' && (
         <div className="game-play__quiz">
           <p className="game-play__question">{t(ui.game.prepQuestion)}</p>
@@ -144,22 +135,85 @@ export function GameExperience({ locale, items, onComplete }: GameExperienceProp
         </div>
       )}
 
-      <div className="game-play__bins">
-        {binsLocked && <p className="game-play__locked">{t(ui.game.binsLocked)}</p>}
-        <div className="game-play__bin-row" role="group" aria-label={t(ui.game.sortQuestion)}>
-          {categories.map((category) => (
-            <button
+      {/**
+       * 수거함을 좌우 둘씩 나누고 품목을 가운데 둔다. 넷을 아래에 한 줄로 늘어놓으면
+       * 문제 설명이 길어질 때 화면 밖으로 밀려 스크롤해야 고를 수 있다.
+       */}
+      <div
+        className="game-play__arena"
+        role="group"
+        aria-label={t(ui.game.sortQuestion)}
+      >
+        <div className="game-play__bin-col">
+          {categories.slice(0, 2).map((category) => (
+            <BinButton
               key={category}
-              type="button"
-              className={`game-play__bin game-play__bin--${category}`}
+              category={category}
               disabled={step !== 'sort'}
-              onClick={() => answerSort(category)}
-            >
-              {t(ui.category[category])}
-            </button>
+              onPick={answerSort}
+              label={t(ui.category[category])}
+            />
+          ))}
+        </div>
+
+        <div className="game-play__item">
+          <ItemImage item={item} className="game-play__image" />
+          <p className="game-play__name" data-testid="game-item-name">
+            {t(item.name)}
+          </p>
+          {question.needsPreparation && (
+            <p className="game-play__condition">{t(item.commonMistake)}</p>
+          )}
+          {binsLocked && <p className="game-play__locked">{t(ui.game.binsLocked)}</p>}
+        </div>
+
+        <div className="game-play__bin-col">
+          {categories.slice(2).map((category) => (
+            <BinButton
+              key={category}
+              category={category}
+              disabled={step !== 'sort'}
+              onPick={answerSort}
+              label={t(ui.category[category])}
+            />
           ))}
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * 수거함 하나.
+ *
+ * 그림 안에 분류 이름이 적혀 있지만 글자를 함께 둔다. 그림이 안 뜨거나 화면을
+ * 못 보는 사람에게는 이름이 유일한 단서다.
+ */
+function BinButton({
+  category,
+  label,
+  disabled,
+  onPick,
+}: {
+  category: Category;
+  label: string;
+  disabled: boolean;
+  onPick: (category: Category) => void;
+}) {
+  return (
+    <button
+      type="button"
+      className={`game-play__bin game-play__bin--${category}`}
+      disabled={disabled}
+      onClick={() => onPick(category)}
+    >
+      <img
+        className="game-play__bin-image"
+        src={assetUrl(`/images/bins/${category}.webp`)}
+        alt=""
+        loading="lazy"
+      />
+      <span className="game-play__bin-name">{label}</span>
+    </button>
   );
 }

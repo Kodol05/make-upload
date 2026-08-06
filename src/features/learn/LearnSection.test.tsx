@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LocaleProvider } from '@/app/LocaleProvider';
 import { LanguageSelect } from '@/components/LanguageSelect';
@@ -22,49 +22,38 @@ async function switchTo(locale: string) {
   await userEvent.selectOptions(screen.getByLabelText(ui.common.language.ko), locale);
 }
 
-describe('LearnSection 영상이 끝났을 때', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    localStorage.setItem('k-sort-locale', 'ko');
+const VTT_SAMPLE = ['WEBVTT', '', '00:00:01.000 --> 00:00:02.000', '안녕', ''].join(
+  String.fromCharCode(10),
+);
+
+const SRT_SAMPLE = ['1', '00:00:01,000 --> 00:00:02,000', 'Xin chào', ''].join(
+  String.fromCharCode(10),
+);
+
+/**
+ * 자막 파일을 흉내 낸다. 목록에 없는 주소는 404로 답해 다음 확장자를 찾게 한다.
+ */
+function stubSubtitles(files: Record<string, string>) {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (input: string | URL) => {
+      const url = String(input);
+      const hit = Object.keys(files).find((name) => url.endsWith(name));
+      return hit
+        ? new Response(files[hit], { status: 200 })
+        : new Response('', { status: 404 });
+    }),
+  );
+  let counter = 0;
+  vi.stubGlobal('URL', {
+    ...URL,
+    createObjectURL: () => `blob:stub/${(counter += 1)}`,
+    revokeObjectURL: () => {},
   });
+}
 
-  function renderLesson() {
-    render(
-      <LocaleProvider>
-        <LearnSection />
-      </LocaleProvider>,
-    );
-    return screen.getByTestId('lesson-video');
-  }
-
-  it('stays out of the way until the video actually ends', () => {
-    renderLesson();
-    expect(screen.queryByText(ui.learn.endedTitle.ko)).not.toBeInTheDocument();
-  });
-
-  /** 마지막 화면에서 그냥 멈춰 서면 다음에 무엇을 할지 알 수 없다. */
-  it('asks what to do next when the video ends', () => {
-    const video = renderLesson();
-
-    fireEvent.ended(video);
-
-    expect(screen.getByText(ui.learn.endedTitle.ko)).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: ui.learn.watchAgain.ko }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: ui.journey.toCatalog.ko }),
-    ).toHaveAttribute('href', '#/catalog');
-  });
-
-  it('goes away again once something is playing', () => {
-    const video = renderLesson();
-    fireEvent.ended(video);
-
-    fireEvent.play(video);
-
-    expect(screen.queryByText(ui.learn.endedTitle.ko)).not.toBeInTheDocument();
-  });
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 describe('LearnSection 영상이 끝났을 때', () => {
@@ -152,21 +141,60 @@ describe('LearnSection', () => {
     ).toBeInTheDocument();
   });
 
-  it('loads the subtitle track for the current language', () => {
+  it('loads the subtitle track for the current language', async () => {
+    stubSubtitles({ 'ko.vtt': VTT_SAMPLE });
     renderLearn();
-    const track = video().querySelector('track');
-    expect(track?.getAttribute('src')).toContain('subtitles/ko.vtt');
-    expect(track?.getAttribute('srclang')).toBe('ko');
+
+    await waitFor(() => {
+      const track = video().querySelector('track');
+      expect(track?.getAttribute('src')).toContain('subtitles/ko.vtt');
+      expect(track?.getAttribute('srclang')).toBe('ko');
+    });
   });
 
-  it('swaps the subtitle track when the language changes', async () => {
+  /**
+   * 자막을 만드는 쪽이 SRT를 주는 경우가 있다. `<track>`은 WebVTT만 읽으므로
+   * 받아서 바꾼 뒤 blob 주소로 넘긴다.
+   */
+  it('converts an SRT subtitle before handing it to the player', async () => {
+    stubSubtitles({ 'vi.srt': SRT_SAMPLE });
     renderLearn();
+    await switchTo('vi');
+
+    await waitFor(() => {
+      const track = video().querySelector('track');
+      expect(track?.getAttribute('src')).toMatch(/^blob:/);
+      expect(track?.getAttribute('srclang')).toBe('vi');
+    });
+  });
+
+  /**
+   * `default`는 재생기가 처음 뜰 때 한 번만 먹는다. 언어를 바꾸면 track이 새로
+   * 붙는데 그때는 꺼진 채로 들어와서, 켜 주지 않으면 자막이 사라진 것처럼 보인다.
+   */
+  it('turns the new subtitle on after a language change', async () => {
+    stubSubtitles({ 'ko.vtt': VTT_SAMPLE, 'vi.srt': SRT_SAMPLE });
+    renderLearn();
+    await waitFor(() => expect(video().querySelector('track')).not.toBeNull());
 
     await switchTo('vi');
 
-    const track = video().querySelector('track');
-    expect(track?.getAttribute('src')).toContain('subtitles/vi.vtt');
-    expect(track?.getAttribute('srclang')).toBe('vi');
+    await waitFor(() => {
+      const track = video().querySelector('track') as HTMLTrackElement;
+      expect(track.getAttribute('srclang')).toBe('vi');
+    });
+    // 켜는 동작 자체는 jsdom이 TextTrack을 안 만들어 여기서 볼 수 없다.
+    // `showSubtitles`를 따로 검사한다(useSubtitleTrack.test.ts).
+  });
+
+  /** 자막 파일이 아예 없으면 track을 만들지 않는다. 빈 항목이 남으면 더 헷갈린다. */
+  it('leaves the track out when there is no subtitle file', async () => {
+    stubSubtitles({});
+    renderLearn();
+
+    await waitFor(() => {
+      expect(video().querySelector('track')).toBeNull();
+    });
   });
 
   it('keeps the same video element and playback position across a language change', async () => {

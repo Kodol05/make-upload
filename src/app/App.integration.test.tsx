@@ -193,10 +193,20 @@ describe('App integration', () => {
     }
   });
 
-  it('takes the reader back to the first step from the logo', () => {
+  /** 어디에 있든 로고를 누르면 소개로 돌아온다. */
+  it('takes the reader back to the first step from the logo', async () => {
     render(<App />);
-    act(() => goTo('#/game'));
 
-    expect(screen.getByRole('link', { name: /K-SORT/ })).toHaveAttribute('href', '#/');
+    for (const route of ['/learn', '/catalog', '/game']) {
+      act(() => goTo(`#${route}`));
+      const logo = screen.getByRole('link', { name: /K-SORT/ });
+      expect(logo, route).toHaveAttribute('href', '#/');
+
+      // jsdom은 앵커 클릭으로 hash를 바꾸지 않는다. 브라우저가 하는 일을 대신한다.
+      await userEvent.click(logo);
+      act(() => goTo('#/'));
+
+      expect(screen.getByRole('progressbar'), route).toHaveAttribute('aria-valuenow', '1');
+    }
   });
 });

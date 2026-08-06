@@ -1,16 +1,11 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocale } from '@/app/useLocale';
 import { ui } from '@/i18n/strings';
 import { assetUrl } from '@/lib/assetUrl';
-import type { Locale } from '@shared/types';
+import { showSubtitles, useSubtitleTrack } from './useSubtitleTrack';
 
 const VIDEO_SRC = assetUrl('/media/k-sort-guide.mp4');
 const POSTER_SRC = assetUrl('/media/poster.webp');
-
-/** 자막은 언어별 WebVTT 파일 하나씩을 쓴다. */
-function subtitleSrc(locale: Locale): string {
-  return assetUrl(`/subtitles/${locale}.vtt`);
-}
 
 /**
  * 영상이 없거나 재생할 수 없을 때 보여 줄 대체 화면.
@@ -80,7 +75,19 @@ export function LearnSection() {
   const [videoFailed, setVideoFailed] = useState(false);
   const [ended, setEnded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const subtitleSrc = useSubtitleTrack(locale);
+  const trackRef = useRef<HTMLTrackElement>(null);
   const restarting = useRef(false);
+
+  /**
+   * 새로 붙은 자막을 켠다.
+   *
+   * `default`는 재생기가 처음 뜰 때 한 번만 먹는다. 언어를 바꾸면 track이 새로
+   * 붙는데 그때는 꺼진 채로 들어와서, 켜 주지 않으면 자막이 사라진 것처럼 보인다.
+   */
+  useEffect(() => {
+    showSubtitles(trackRef.current);
+  }, [subtitleSrc]);
 
   /**
    * 다시 보기. 멈춘 뒤 처음으로 되돌리고 한 번만 재생한다.
@@ -131,14 +138,24 @@ export function LearnSection() {
             }}
           >
             <source src={VIDEO_SRC} type="video/mp4" />
-            <track
-              key={locale}
-              kind="subtitles"
-              src={subtitleSrc(locale)}
-              srcLang={locale}
-              label={t(ui.learn.subtitleLabel)}
-              default
-            />
+            {/**
+             * 자막 파일이 있을 때만 track을 만든다. 빈 주소를 주면 브라우저가
+             * 오류를 뱉고 자막 메뉴에 고를 수 없는 항목이 남는다.
+             *
+             * `key`를 주는 이유는 src만 바꾸면 브라우저가 이전 자막 큐를 그대로
+             * 들고 있는 경우가 있어서다.
+             */}
+            {subtitleSrc && (
+              <track
+                key={subtitleSrc}
+                ref={trackRef}
+                kind="subtitles"
+                src={subtitleSrc}
+                srcLang={locale}
+                label={t(ui.learn.subtitleLabel)}
+                default
+              />
+            )}
           </video>
 
           {/**
