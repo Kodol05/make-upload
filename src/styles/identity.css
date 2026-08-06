@@ -2153,16 +2153,28 @@ main {
  * 게임은 그림을 보고 판단하는 화면이라 다른 곳보다 크게 둔다. 작으면 무엇인지
  * 알아보느라 문제를 못 푼다.
  */
+/**
+ * 가운데 품목 칸.
+ *
+ * 무엇을 버려야 하는지 알아보는 자리라 그림을 크게 두고 위아래로 넉넉히 띄운다.
+ * 좁으면 이름과 설명이 붙어 보이고, 그림도 작아 무엇인지 알아보기 어렵다.
+ */
 .game-play__item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: clamp(320px, 34vw, 460px);
+  padding: var(--space-6) var(--space-4);
+  background: var(--paper);
+  border: var(--border-hair);
+  border-radius: var(--radius-card);
   text-align: center;
 }
 
 .game-play__image {
-  width: min(260px, 100%);
+  width: min(300px, 100%);
   max-width: 100%;
 }
 
@@ -2337,7 +2349,7 @@ main {
 .game-play__arena {
   display: grid;
   /* 양옆 수거함이 가운데 품목보다 넓게 자리를 잡는다. 고르는 것이 주된 일이다. */
-  grid-template-columns: auto minmax(0, 0.9fr) auto;
+  grid-template-columns: auto minmax(0, 1.1fr) auto;
   gap: var(--space-5);
   align-items: center;
   margin-top: var(--space-5);
@@ -2442,31 +2454,61 @@ main {
  * 시작하기 전에 무엇을 하는 게임인지 한 번 말해 준다. 시작하면 사라진다.
  * 문제를 푸는 동안 위쪽에 계속 남아 있으면 정작 봐야 할 품목과 수거함이
  * 아래로 밀린다.
+ *
+ * 그림은 배경으로 깔되 흐리게 둔다. 또렷하면 글보다 먼저 눈이 가고, 정작
+ * 읽어야 할 규칙과 시작 단추가 뒤로 밀린다.
  */
 .game--brief {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-5);
+  /* 원본이 1200×655다. 그 비율로 판을 잡아 그림이 잘리지 않게 한다. */
+  aspect-ratio: 1200 / 655;
+  min-height: 320px;
+  padding: var(--space-6);
   text-align: center;
+}
+
+.game--brief::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--game-brief, none);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.32;
+}
+
+/** 글이 앉는 가운데를 덮어 읽히게 한다. 위아래는 그림이 그대로 보인다. */
+.game--brief::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    rgb(244 250 246 / 30%) 0%,
+    rgb(244 250 246 / 88%) 30%,
+    rgb(244 250 246 / 88%) 74%,
+    rgb(244 250 246 / 30%) 100%
+  );
 }
 
 .game--brief h2::before {
   margin-inline: auto;
 }
 
-.game__brief-image {
-  display: block;
-  width: min(460px, 100%);
-  height: auto;
-  border-radius: var(--radius-card);
-}
-
 .game__brief-text {
   max-width: var(--measure);
   margin: 0;
   font-size: clamp(16px, 1.3vw, 20px);
-  color: var(--ink-muted);
+  color: var(--ink);
 }
 
 .game__start {
@@ -2496,6 +2538,13 @@ main {
   white-space: nowrap;
 }
 
+/** 좁은 화면에서는 비율을 풀어 글이 잘리지 않게 한다. */
+@media (max-width: 720px) {
+  .game--brief {
+    aspect-ratio: auto;
+    padding-block: var(--space-7);
+  }
+}
 /* ══ 도감 상세: 읽히게 만들기 ════════════════════════════ */
 
 /**

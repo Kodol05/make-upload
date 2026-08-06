@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type CSSProperties } from 'react';
 import { useLocale } from '@/app/useLocale';
 import { assetUrl } from '@/lib/assetUrl';
 import { SortMark } from '@/components/SortMark';
@@ -39,17 +39,20 @@ export function GamePage({
    */
   if (!result && !started) {
     return (
-      <section className="game game--brief" aria-labelledby="game-title">
+      <section
+        className="game game--brief"
+        aria-labelledby="game-title"
+        /**
+         * 안내 그림을 배경으로 깐다. 파일이 없으면 배경만 비고 글과 단추는 그대로
+         * 남는다. Vite가 CSS의 `url()`에는 base를 붙이지 않아 여기서 만들어 준다.
+         */
+        style={
+          {
+            '--game-brief': `url(${assetUrl('/images/game-brief.webp')})`,
+          } as CSSProperties
+        }
+      >
         <h2 id="game-title">{t(ui.game.title)}</h2>
-        <img
-          className="game__brief-image"
-          src={assetUrl('/images/game-brief.webp')}
-          alt=""
-          onError={(event) => {
-            // 그림이 아직 없어도 안내와 시작 단추는 그대로 남는다.
-            event.currentTarget.hidden = true;
-          }}
-        />
         <p className="game__brief-text">{t(ui.game.intro)}</p>
         <button type="button" className="game__start" onClick={() => setStarted(true)}>
           {t(ui.game.start)}
