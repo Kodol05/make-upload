@@ -1359,10 +1359,10 @@ main {
   display: flex;
   height: 28px;
   /**
-   * 빈 칸은 **흰색**이어야 한다. 처음엔 연한 초록(--rule)을 썼는데 채워진 초록과
-   * 구별이 안 돼서 네 칸이 전부 칠해진 것처럼 보였다.
+   * 남은 칸은 아주 옅게. 처음엔 구분선 색(--rule)을 썼는데 채워진 초록과 구별이
+   * 안 돼서 네 칸이 전부 칠해진 것처럼 보였다.
    */
-  background: var(--paper);
+  background: var(--bar-todo);
   border: 3px solid var(--ink);
   border-radius: 6px;
   overflow: hidden;
@@ -1379,7 +1379,7 @@ main {
 }
 
 .journey-progress__step--done {
-  background: var(--mark);
+  background: var(--bar-done);
 }
 
 .journey-progress__count {
