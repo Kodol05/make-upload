@@ -104,13 +104,17 @@ AI Sort Scan은 사용자가 이름을 모르는 쓰레기를 도감으로 손�
 ### 저장소 구성
 
 - `src/`: React 화면, 상태, 컴포넌트, 스타일
+- `src/i18n/`: 도감 데이터 바깥의 UI 문자열 4언어 단일 사전
 - `shared/`: 프런트와 Worker가 함께 사용하는 타입, 도감, FAQ, 출처 데이터
+- `shared/placeholder.ts`: 검수 전 문안의 자리 표시 헬퍼
 - `worker/`: Cloudflare Worker와 Gemini 호출, 요청 검증, CORS, 제한 처리
 - `public/media/`: 영상, 포스터, 자막
 - `public/images/items/`: 품목별 과정 이미지
 - `public/images/samples/`: 스캐너 발표용 샘플
 
-프런트는 React + Vite + TypeScript로 구현하고 `HashRouter`를 사용한다. Vite의 배포 base는 `/make-upload/`로 설정하고 GitHub Actions로 GitHub Pages에 배포한다. 공개 Worker 주소는 빌드 변수 `VITE_API_BASE_URL`로 주입한다.
+프런트는 React + Vite + TypeScript로 구현한다. 라우트가 홈 `#/`와 게임 `#/game` 둘뿐이므로 라우팅 라이브러리 대신 `src/app/useHashRoute.ts`를 직접 구현해 쓴다. Vite의 배포 base는 `/make-upload/`로 설정하고 GitHub Actions로 GitHub Pages에 배포한다. 공개 Worker 주소는 빌드 변수 `VITE_API_BASE_URL`로 주입한다.
+
+Gemini 호출은 `POST /v1beta/models/gemini-3.6-flash:generateContent`를 사용한다. Zod 스키마 하나에서 `responseSchema`를 파생해 모델이 형식을 지키게 하고, 같은 스키마로 응답을 다시 검증한다. 스택 선택의 근거는 [기술 스택 확정과 구현 설계](2026-08-06-k-sort-stack-decisions.md)에 있다.
 
 ### 공유 데이터 타입
 
