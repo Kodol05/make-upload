@@ -7,30 +7,50 @@
 
 ## 현재 단계
 
-- **큰 마일스톤**: Task 3 완료. 네 언어 전환과 해시 라우팅이 도는 앱 껍데기가 배포되어 있다.
+- **큰 마일스톤**: Task 5 완료. 영상·도감까지 배포되어 실제로 쓸 수 있다.
 - **배포 URL**: <https://kodol05.github.io/make-upload/>
-- **진행 중 Task**: 없음 (Task 4 대기)
+- **진행 중 Task**: 없음 (Task 6 대기)
 - **Blocker**: 없음. 콘텐츠 미검수 상태에서도 개발이 진행된다.
 
 ## 지금 · 다음
 
 | 지금 | 다음 |
 |------|------|
-| Task 3 완료 (언어·라우팅·셸) | Task 4: 교육 영상과 4대 원칙 |
+| Task 5 완료 (도감 검색·필터·상세) | Task 6: Worker 보안과 Gemini 공통 호출 |
 
-Task 4는 영상 파일과 자막이 필요하다. 아직 없으므로 영상 오류 대체 UI를 먼저 만들고
-파일이 도착하면 연결한다. 필요한 파일명은 아래와 같다.
+Task 6부터는 Cloudflare 계정과 Gemini API 키가 필요하다. 준비할 것은 아래와 같다.
+
+- Google AI Studio에서 Gemini API 키 발급
+- 로컬 `.dev.vars`에 `GEMINI_API_KEY` 저장 (커밋하지 않는다)
+- Cloudflare 계정 로그인
+
+무료 등급으로 진행한다. 한도는 Gemini 15 RPM · 1,500 RPD, Workers 100,000 req/day로
+데모에 충분하다. 다만 **무료 등급은 Google이 제출 이미지를 서비스 개선에 쓸 수 있어**
+스캔 화면에 그 사실을 고지한다(`ui.scanner.privacyNotice`).
+
+Workers 무료는 요청당 CPU 10ms다. 1.5MB 이미지를 base64로 바꾸는 데 이 시간을 넘을 수
+있으므로 Task 8에서 실측하고, 넘으면 브라우저에서 인코딩해 보내는 방식으로 바꾼다.
+
+## 콘텐츠 대기 상황
+
+에셋이 없어도 화면은 온전히 동작한다. 파일이 도착하면 코드 수정 없이 붙는다.
 
 ```
 public/media/k-sort-guide.mp4    public/media/poster.webp
 public/subtitles/{ko,en,zh,vi}.vtt
+public/images/items/<itemId>.webp   # 16장
 ```
+
+요청 내용과 전달 형식은 [콘텐츠 요청서](CONTENT_REQUEST.md)에 정리했다.
 
 ## 콘텐츠 진행률
 
 ```
-자리 표시 756개 남음 · 출처 URL 0/5개 확인됨
+자리 표시 620개 남음 · 출처 URL 0/5개 확인됨
 ```
+
+이미지를 품목당 한 장으로 바꾸면서 단계 대체 텍스트 200개가 사라지고 품목 대체 텍스트
+64개가 생겨 756개에서 620개로 줄었다. 화면 UI 문자열 268칸은 여기에 포함되지 않는다.
 
 `npm run test:run -- shared/content-progress.test.ts`를 돌리면 현재 수치가 나온다.
 남은 항목은 `git grep "__TODO__" -- shared`로 확인한다.
@@ -38,11 +58,13 @@ public/subtitles/{ko,en,zh,vi}.vtt
 | 묶음 | 남은 개수 |
 |------|---:|
 | 품목 이름·요약·흔한 실수 | 176 |
-| 처리 단계 설명·대체 텍스트 | 400 |
+| 품목 대표 이미지 대체 텍스트 | 64 |
+| 처리 단계 설명 | 200 |
 | FAQ 질문·답변 | 160 |
 | 출처 제목 | 20 |
 
-그 외에 출처 URL 5개와 FAQ 20개의 `sourceIds`가 비어 있다.
+그 외에 출처 URL 5개와 FAQ 20개의 `sourceIds`가 비어 있고, 화면 UI 문자열 88개의
+번역 264칸과 4대 원칙 설명 4개가 남아 있다.
 
 ## 확정된 환경
 
