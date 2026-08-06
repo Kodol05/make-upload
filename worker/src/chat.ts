@@ -1,9 +1,9 @@
-import { catalogItems } from '@shared/catalog';
-import { faqs } from '@shared/faqs';
-import { isTodo } from '@shared/placeholder';
-import { chatRequestSchema, chatResponseSchema } from '@shared/schemas';
-import { sources } from '@shared/sources';
-import type { ChatResponse, Locale } from '@shared/types';
+import { catalogItems } from '../../shared/catalog';
+import { faqs } from '../../shared/faqs';
+import { isTodo } from '../../shared/placeholder';
+import { chatRequestSchema, chatResponseSchema } from '../../shared/schemas';
+import { sources } from '../../shared/sources';
+import type { ChatResponse, Locale } from '../../shared/types';
 import type { Env } from './env';
 import { CHAT_MODEL, callGemini, type FetchLike } from './gemini';
 import { errorResponse, jsonResponse, limitHistory } from './security';

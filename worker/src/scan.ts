@@ -1,6 +1,6 @@
-import { isValidBox, type Box } from '@shared/geometry';
-import { scanRequestSchema, scanResponseSchema } from '@shared/schemas';
-import { itemIds, type Locale, type ScanObject, type ScanResponse } from '@shared/types';
+import { isValidBox, type Box } from '../../shared/geometry';
+import { scanRequestSchema, scanResponseSchema } from '../../shared/schemas';
+import { itemIds, type Locale, type ScanObject, type ScanResponse } from '../../shared/types';
 import type { Env } from './env';
 import { SCAN_MODEL, callGemini, type FetchLike } from './gemini';
 import { errorResponse, jsonResponse } from './security';
