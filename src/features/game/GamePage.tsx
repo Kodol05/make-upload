@@ -118,13 +118,25 @@ export function GamePage({
           </h3>
           <p className="game-review__hint">{t(ui.game.reviewHint)}</p>
           <ul className="game-review__list">
+            {/**
+             * 틀린 품목을 도감으로 잇는다. 틀렸다고 알려 주는 이유는 다시 안
+             * 틀리게 하려는 것인데, 정작 다시 볼 곳으로 데려다주지 않으면
+             * 여기서 길이 끊긴다.
+             *
+             * 주소에 품목을 담아 보낸다. 새로고침해도 그 품목이 그대로 열리고,
+             * 그냥 링크라 키보드와 스크린 리더가 따로 손볼 것 없이 닿는다.
+             */}
             {reviewItems.map((item) => (
-              <li key={item.id} className="game-review__item">
-                <SortMark tone={item.category} size="sm" />
-                <span className="game-review__name">{t(item.name)}</span>
-                <span className={`game-review__category game-review__category--${item.category}`}>
-                  {t(ui.category[item.category])}
-                </span>
+              <li key={item.id}>
+                <a className="game-review__item" href={`#/catalog?item=${item.id}`}>
+                  <SortMark tone={item.category} size="sm" />
+                  <span className="game-review__name">{t(item.name)}</span>
+                  <span
+                    className={`game-review__category game-review__category--${item.category}`}
+                  >
+                    {t(ui.category[item.category])}
+                  </span>
+                </a>
               </li>
             ))}
           </ul>

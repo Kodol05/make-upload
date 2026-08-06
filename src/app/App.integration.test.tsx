@@ -149,6 +149,72 @@ describe('App integration', () => {
     expect(within(dialog).getByRole('heading', { name: petName })).toBeInTheDocument();
   });
 
+  /**
+   * 도감은 정해진 16종의 정해진 답이고 챗봇은 그 밖도 답한다. 둘 사이를
+   * 사용자가 직접 건너가게 두면 "이건 알겠는데 내 경우는?"에서 길이 끊긴다.
+   */
+  it('hands the reader from a catalog entry to the chat', async () => {
+    render(<App />);
+    act(() => goTo('#/catalog'));
+    const petName = catalogItems[0].name.ko;
+    await userEvent.click(screen.getByRole('button', { name: new RegExp(petName) }));
+
+    await userEvent.click(
+      screen.getByRole('button', { name: ui.catalog.askAboutThis.ko }),
+    );
+
+    // 상세는 닫힌다. 포커스를 가둔 채로 두면 키보드가 챗봇에 닿지 못한다.
+    expect(screen.queryByRole('dialog', { name: petName })).not.toBeInTheDocument();
+    // 챗봇이 열리고 품목 이름이 입력란에 들어와 있다.
+    expect(screen.getByLabelText(ui.chat.inputLabel.ko)).toHaveValue(petName);
+  });
+
+  /**
+   * 게임에서 틀린 품목을 누르면 도감 상세가 열려야 한다. 주소에 품목을 담기
+   * 때문에 새로고침해도 그 자리다.
+   */
+  it('opens the catalog entry the address points at', () => {
+    render(<App />);
+    const pet = catalogItems[0];
+
+    act(() => goTo(`#/catalog?item=${pet.id}`));
+
+    // 물음표가 붙어도 도감 화면으로 읽혀야 한다.
+    expect(screen.getByRole('dialog', { name: pet.name.ko })).toBeInTheDocument();
+  });
+
+  it('forgets the item once the reader closes it, so it does not reopen', async () => {
+    render(<App />);
+    const pet = catalogItems[0];
+    act(() => goTo(`#/catalog?item=${pet.id}`));
+
+    // "닫기"는 챗봇에도 있다. 상세 안의 것으로 좁힌다.
+    const dialog = screen.getByRole('dialog', { name: pet.name.ko });
+    await userEvent.click(within(dialog).getByRole('button', { name: ui.common.close.ko }));
+    act(() => goTo(window.location.hash));
+
+    expect(screen.queryByRole('dialog', { name: pet.name.ko })).not.toBeInTheDocument();
+    expect(window.location.hash).toBe('#/catalog');
+  });
+
+  /**
+   * 16종은 자주 헷갈리는 것을 고른 것이지 한국의 쓰레기 전부가 아니다. 없는
+   * 것을 찾았을 때 안내문만 띄우고 끝내면 거기가 막다른 길이 된다.
+   */
+  it('hands an unfound search over to the chat', async () => {
+    render(<App />);
+    act(() => goTo('#/catalog'));
+
+    await userEvent.type(
+      screen.getByLabelText(ui.catalog.searchLabel.ko),
+      '고양이 모래',
+    );
+    await userEvent.click(screen.getByRole('button', { name: ui.catalog.emptyAsk.ko }));
+
+    // 찾던 말이 그대로 질문 자리에 들어와 있다.
+    expect(screen.getByLabelText(ui.chat.inputLabel.ko)).toHaveValue('고양이 모래');
+  });
+
   it('closes that dialog again', async () => {
     render(<App />);
     act(() => goTo('#/catalog'));

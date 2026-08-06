@@ -49,8 +49,30 @@ export const journey: JourneyStep[] = [
   },
 ];
 
+/**
+ * 주소 뒤에 붙는 것을 떼고 여정 단계만 본다.
+ *
+ * 게임 결과에서 틀린 품목을 누르면 `#/catalog?item=clear-pet`로 온다. 여기까지
+ * 한 덩어리로 보면 모르는 주소가 되어 첫 페이지로 떨어진다.
+ */
+function routeOf(hash: string): string {
+  return hash.split('?')[0];
+}
+
 /** 모르는 주소로 들어오면 첫 페이지로 본다. */
-export function stepIndexOf(route: string): number {
-  const index = journey.findIndex((step) => step.route === route);
+export function stepIndexOf(hash: string): number {
+  const index = journey.findIndex((step) => step.route === routeOf(hash));
   return index === -1 ? 0 : index;
+}
+
+/**
+ * 주소가 지목한 품목을 꺼낸다. 없거나 모르는 값이면 `null`.
+ *
+ * 주소에 담는 이유는 둘이다. 새로고침해도 그 품목이 그대로 열리고, 누르는 쪽이
+ * 그냥 `<a href>`라 키보드와 스크린 리더가 따로 손볼 것 없이 닿는다.
+ */
+export function requestedItemFrom(hash: string): string | null {
+  const query = hash.split('?')[1];
+  if (!query) return null;
+  return new URLSearchParams(query).get('item');
 }

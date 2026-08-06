@@ -3,13 +3,16 @@ import { AppHeader } from '@/components/AppHeader';
 import { FeatureErrorBoundary } from '@/components/FeatureErrorBoundary';
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { CatalogSection } from '@/features/catalog/CatalogSection';
+import { AskChatProvider } from '@/features/chat/askChat';
 import { ChatWidget } from '@/features/chat/ChatWidget';
 import { GamePage } from '@/features/game/GamePage';
 import { IntroPage } from '@/features/intro/IntroPage';
 import { LearnSection } from '@/features/learn/LearnSection';
 import { ui } from '@/i18n/strings';
+import { catalogItems } from '@shared/catalog';
+import type { ItemId } from '@shared/types';
 import { assetUrl } from '@/lib/assetUrl';
-import { journey, stepIndexOf } from './journey';
+import { journey, requestedItemFrom, stepIndexOf } from './journey';
 import { LocaleProvider } from './LocaleProvider';
 import { useHashRoute } from './useHashRoute';
 import { useLocale } from './useLocale';
@@ -35,10 +38,19 @@ function LearnRoute() {
  * 스캔 화면과 도감이 위아래로 나뉘어 있었는데, 스캔 아래의 16종 목록이 도감과
  * 같은 일을 해서 같은 화면을 두 번 만든 셈이었다.
  */
-function CatalogRoute() {
+function CatalogRoute({ requestedItemId }: { requestedItemId: ItemId | null }) {
   return (
     <FeatureErrorBoundary>
-      <CatalogSection />
+      <CatalogSection
+        requestedItemId={requestedItemId}
+        /**
+         * 상세를 닫으면 주소에서 품목을 지운다. 남겨 두면 닫자마자 다시 열린다.
+         * 주소가 바뀌면서 본문으로 초점이 되돌아가는 것은 `AppShell`이 맡는다.
+         */
+        onRequestHandled={() => {
+          window.location.hash = '/catalog';
+        }}
+      />
     </FeatureErrorBoundary>
   );
 }
@@ -146,10 +158,15 @@ function AppShell() {
     document.documentElement.scrollTop = 0;
   }, [route]);
 
+  /** 주소가 지목한 품목. 우리가 아는 것만 통과시킨다. */
+  const asked = requestedItemFrom(route);
+  const requestedItemId =
+    (catalogItems.find((item) => item.id === asked)?.id as ItemId | undefined) ?? null;
+
   const page = [
     <IntroRoute key="intro" />,
     <LearnRoute key="learn" />,
-    <CatalogRoute key="catalog" />,
+    <CatalogRoute key="catalog" requestedItemId={requestedItemId} />,
     <GameRoute key="game" />,
   ][index];
 
@@ -197,7 +214,10 @@ function AppShell() {
 export function App() {
   return (
     <LocaleProvider>
-      <AppShell />
+      {/* 도감·검색에서 챗봇을 부르는 통로. 챗봇은 라우트 바깥에 있고 부르는 쪽은 안쪽이다. */}
+      <AskChatProvider>
+        <AppShell />
+      </AskChatProvider>
     </LocaleProvider>
   );
 }

@@ -3,6 +3,7 @@ import { useLocale } from '@/app/useLocale';
 import { FeatureErrorBoundary } from '@/components/FeatureErrorBoundary';
 import { useFocusTrap } from '@/components/useFocusTrap';
 import { ui } from '@/i18n/strings';
+import { useAskChat, type ChatAsk } from './askChat';
 import { ChatSection } from './ChatSection';
 
 /** 말풍선이 스스로 사라지기까지. */
@@ -24,6 +25,7 @@ const NUDGE_MS = 10_000;
  */
 export function ChatWidget({ hint = false }: { hint?: boolean }) {
   const { t } = useLocale();
+  const { pending } = useAskChat();
   const [open, setOpen] = useState(false);
   const [nudging, setNudging] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -42,6 +44,19 @@ export function ChatWidget({ hint = false }: { hint?: boolean }) {
     const timer = window.setTimeout(() => setNudging(false), NUDGE_MS);
     return () => window.clearTimeout(timer);
   }, [hint, open]);
+
+  /**
+   * 도감이나 검색에서 부르면 스스로 열린다.
+   *
+   * `pending`은 부를 때마다 새 객체라 같은 품목을 다시 눌러도 한 번씩 반응한다.
+   * 효과가 아니라 렌더 중에 맞춘다. 효과로 열면 닫힌 화면이 한 번 그려진 뒤에
+   * 열려서 깜빡인다.
+   */
+  const [answered, setAnswered] = useState<ChatAsk | null>(null);
+  if (pending && pending !== answered) {
+    setAnswered(pending);
+    setOpen(true);
+  }
 
   useFocusTrap(panelRef, () => setOpen(false), open);
 
@@ -107,7 +122,7 @@ export function ChatWidget({ hint = false }: { hint?: boolean }) {
         </div>
         <div className="chat-widget__body">
           <FeatureErrorBoundary>
-            <ChatSection />
+            <ChatSection ask={pending} />
           </FeatureErrorBoundary>
         </div>
 
