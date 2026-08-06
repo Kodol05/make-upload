@@ -24,12 +24,10 @@ describe('App integration', () => {
   });
 
   it('gives each step of the journey its own page', () => {
-    render(<App />);
+    const { container } = render(<App />);
 
     // 소개
-    expect(
-      screen.getByRole('heading', { name: ui.catalog.title.ko, level: 2 }),
-    ).toBeInTheDocument();
+    expect(container.querySelector('.intro__video')).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: ui.learn.title.ko })).not.toBeInTheDocument();
 
     act(() => goTo('#/learn'));

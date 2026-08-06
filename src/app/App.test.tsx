@@ -24,10 +24,8 @@ describe('App', () => {
 
   it('opens on the first step of the journey', () => {
     render(<App />);
-    // 첫 페이지는 소개다. 네 분류를 표시로 보여 주고 나머지 화면은 아직 없다.
-    expect(
-      screen.getByRole('heading', { name: ui.catalog.title.ko, level: 2 }),
-    ).toBeInTheDocument();
+    // 첫 페이지는 소개다. 영상 한 편이 깔리고 나머지 화면은 아직 없다.
+    expect(document.querySelector('.intro__video')).toBeInTheDocument();
     expect(
       screen.queryByRole('heading', { name: ui.game.title.ko }),
     ).not.toBeInTheDocument();
