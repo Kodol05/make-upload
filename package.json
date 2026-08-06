@@ -12,6 +12,9 @@
     "test": "vitest",
     "test:run": "vitest run",
     "check": "npm run lint && npm run test:run && npm run build",
+    "media:generate": "node tools/k-sort-media.mjs all",
+    "media:assemble": "node tools/k-sort-media.mjs assemble",
+    "media:validate": "node tools/k-sort-media.mjs validate",
     "worker:dev": "wrangler dev",
     "worker:test": "vitest run worker/test",
     "worker:deploy": "wrangler deploy"
@@ -22,6 +25,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@fal-ai/client": "^1.10.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "zod": "^4.4.3"

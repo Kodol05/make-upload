@@ -16,3 +16,11 @@ coverage/
 .idea/
 .vercel
 .env*
+.superpowers/sdd/
+
+# Large generated intermediates stay local; final masters and source audio are committed.
+public/media/generated/
+public/media/qa/*
+!public/media/qa/S06-clean-end.png
+!public/media/qa/contact-mid.png
+!public/media/qa/contact-end.png

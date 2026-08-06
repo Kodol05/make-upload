@@ -1,0 +1,225 @@
+{
+  "endpoint": "fal-ai/bytedance/seedance/v1.5/pro/image-to-video",
+  "documentation": "https://fal.ai/models/fal-ai/bytedance/seedance/v1.5/pro/image-to-video/api",
+  "authentication": {
+    "environmentVariable": "FAL_KEY",
+    "storeInFile": false,
+    "mustBeRotatedBeforeUse": true
+  },
+  "billingReference": {
+    "source": "fal.ai official model page",
+    "withoutAudioUsdPerMillionVideoTokens": 1.2,
+    "tokenFormula": "height * width * fps * duration / 1024",
+    "estimatedSinglePassUsdAt720p24fpsFor120Seconds": 3.1104,
+    "estimatedPlannedTwoCandidateAllowanceUsd": 0.2851,
+    "estimatedMaximumPlannedUsd": 3.3955
+  },
+  "sharedInput": {
+    "resolution": "720p",
+    "aspect_ratio": "16:9",
+    "generate_audio": false,
+    "enable_safety_checker": true
+  },
+  "promptPrefix": "Friendly non-childish stylized 3D public-information animation for international university students in Korea. Preserve the input frame's exact character identity, face, hairstyle, teal hair clip position, clothing, object count, object materials, environment, lighting, and color palette. Warm morning daylight, believable everyday materials, smooth controlled motion, stable anatomy, clear practical action.",
+  "negativeSuffix": "No readable text, new labels, letters, numbers, symbols, recycling icons, logos, brands, watermark, extra person, duplicate object, extra fingers, fused fingers, malformed hands, identity drift, clothing change, disappearing object, changing object material, unsafe waste handling, broken glass, broken fluorescent lamp, spill outside the sink, talking mouth, lip sync, sudden cut, morphing, fast motion, shaky camera, whip pan, fisheye distortion. End on a stable frame and hold briefly.",
+  "clips": [
+    {
+      "id": "S01",
+      "editorialShot": "S01",
+      "duration": 8,
+      "camera_fixed": false,
+      "seed": 1201,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S01.png" },
+      "motionPrompt": "Mina's eyes move calmly between the four waste objects. Her shoulders show mild uncertainty; she does not touch anything. Dolly in only five percent. End with all four objects separated and empty wall space preserved.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S01.mp4"
+    },
+    {
+      "id": "S02",
+      "editorialShot": "S02",
+      "duration": 8,
+      "camera_fixed": true,
+      "seed": 1202,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S02.png" },
+      "motionPrompt": "The single AA battery rolls slowly about twenty centimeters toward the left mixed group and stops before touching it. Every other object remains perfectly still. No fire, smoke, spark, or alarm.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S02.mp4"
+    },
+    {
+      "id": "S03",
+      "editorialShot": "S03",
+      "duration": 8,
+      "camera_fixed": false,
+      "seed": 1203,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S03.png" },
+      "motionPrompt": "Mina moves her one open hand once from the first zone to the fourth zone at a steady teaching pace. All objects remain fixed. The camera settles downward very slightly.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S03.mp4"
+    },
+    {
+      "id": "S04",
+      "editorialShot": "S04",
+      "duration": 7,
+      "camera_fixed": true,
+      "seed": 1204,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S04.png" },
+      "motionPrompt": "Mina tilts the one bottle over the sink. The small amount of clear liquid pours out completely. She returns the bottle upright and holds the empty bottle still.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S04.mp4"
+    },
+    {
+      "id": "S05",
+      "editorialShot": "S05",
+      "duration": 7,
+      "camera_fixed": true,
+      "seed": 1205,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S05.png" },
+      "motionPrompt": "A gentle narrow water stream begins. Mina rotates the bottle one half-turn under the stream, then holds it upside down to drain as the stream stops.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S05.mp4"
+    },
+    {
+      "id": "S06",
+      "editorialShot": "S06",
+      "duration": 7,
+      "camera_fixed": true,
+      "seed": 2206,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S06.png" },
+      "motionPrompt": "Mina peels the single blue label completely away from the bottle in one smooth continuous strip. The label leaves the bottle entirely and never duplicates. End with one fully bare clear bottle on the right with no blue material anywhere on it, and the one removed blue label held separately on the left.",
+      "allowSecondCandidate": true,
+      "outputFile": "public/media/generated/S06.mp4"
+    },
+    {
+      "id": "S07",
+      "editorialShot": "S07",
+      "duration": 7,
+      "camera_fixed": false,
+      "seed": 1207,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S07.png" },
+      "motionPrompt": "Mina lowers the one paper box into the empty fourth zone and releases it. The other three material groups never move. The camera slides slowly left to right.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S07.mp4"
+    },
+    {
+      "id": "S08a",
+      "editorialShot": "S08",
+      "duration": 6,
+      "camera_fixed": false,
+      "seed": 1208,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S08.png" },
+      "motionPrompt": "Mina compresses the one clear bottle once with both hands. The cap and removed blue label remain stationary on the counter. End holding the compressed bottle still. The camera moves forward only slightly.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S08a.mp4"
+    },
+    {
+      "id": "S08b",
+      "editorialShot": "S08",
+      "duration": 4,
+      "camera_fixed": true,
+      "seed": 1209,
+      "startImage": { "type": "derivedFinalFrame", "clipId": "S08a" },
+      "motionPrompt": "Mina picks up the one white cap, screws it onto the compressed bottle with one short turn, then releases it. The removed blue label remains separate and stationary.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S08b.mp4"
+    },
+    {
+      "id": "S09a",
+      "editorialShot": "S09",
+      "duration": 5,
+      "camera_fixed": true,
+      "seed": 1210,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S09.png" },
+      "motionPrompt": "A gentle narrow water stream begins. Mina performs one short controlled rinse of the stained corner of the square container. Keep the neutral tray dry and stationary.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S09a.mp4"
+    },
+    {
+      "id": "S09b",
+      "editorialShot": "S09",
+      "duration": 4,
+      "camera_fixed": true,
+      "seed": 1211,
+      "startImage": { "type": "derivedFinalFrame", "clipId": "S09a" },
+      "motionPrompt": "With the faucet off, Mina moves the one container to the neutral tray on the right and releases it away from the clean recycling group.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S09b.mp4"
+    },
+    {
+      "id": "S10",
+      "editorialShot": "S10",
+      "duration": 10,
+      "camera_fixed": false,
+      "seed": 1212,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S10.png" },
+      "motionPrompt": "A few droplets finish draining from the strainer into the empty bowl. Mina then tips the strainer once and transfers the rice and soft vegetables into the plain food-waste container. The camera moves forward very slightly.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S10.mp4"
+    },
+    {
+      "id": "S11",
+      "editorialShot": "S11",
+      "duration": 9,
+      "camera_fixed": true,
+      "seed": 1213,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S11.png" },
+      "motionPrompt": "Mina slides the one tray smoothly from the left food-waste side to the right general-waste zone. The two bones and two shells remain on the tray without changing count.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S11.mp4"
+    },
+    {
+      "id": "S12a",
+      "editorialShot": "S12",
+      "duration": 4,
+      "camera_fixed": true,
+      "seed": 2214,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S12.png" },
+      "motionPrompt": "Mina picks up exactly the three batteries together from the small tray, raises them to the narrow black battery slot at the very top, and inserts all three only through that top slot. The wide lower compartment stays empty. End with no batteries visible outside. The intact lamp and hair dryer remain stationary on the bench.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S12a.mp4"
+    },
+    {
+      "id": "S12b",
+      "editorialShot": "S12",
+      "duration": 4,
+      "camera_fixed": true,
+      "seed": 1215,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S12.png" },
+      "motionPrompt": "Mina safely lifts the single intact fluorescent tube with two hands, keeps it horizontal, and guides it gently into the long padded middle opening. Batteries and hair dryer remain stationary.",
+      "allowSecondCandidate": true,
+      "outputFile": "public/media/generated/S12b.mp4"
+    },
+    {
+      "id": "S12c",
+      "editorialShot": "S12",
+      "duration": 4,
+      "camera_fixed": true,
+      "seed": 1216,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S12.png" },
+      "motionPrompt": "Mina picks up the single small hair dryer with its cable still neatly coiled and places it into the broad lower compartment. Batteries and intact lamp remain stationary.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S12c.mp4"
+    },
+    {
+      "id": "S13",
+      "editorialShot": "S13",
+      "duration": 9,
+      "camera_fixed": true,
+      "seed": 1217,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S13.png" },
+      "motionPrompt": "Mina moves the one clean bottle forward and places it into the right-side blank bin opening. All left-side mixed objects and right-side separated materials remain fixed. Preserve the existing color contrast without animating it.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S13.mp4"
+    },
+    {
+      "id": "S14",
+      "editorialShot": "S14",
+      "duration": 9,
+      "camera_fixed": false,
+      "seed": 1218,
+      "startImage": { "type": "local", "path": "public/media/preproduction/keyframes/S14.png" },
+      "motionPrompt": "The four students take two calm steps together from left to right. Near the end, Mina makes one small open-hand gesture toward the blank station while walking. The phone stays below face level with a blank dark screen. The camera cranes back and up very slowly.",
+      "allowSecondCandidate": false,
+      "outputFile": "public/media/generated/S14.mp4"
+    }
+  ]
+}
