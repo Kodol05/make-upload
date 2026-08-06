@@ -104,7 +104,12 @@ function GameRoute() {
   );
 }
 
-/** 지금 어디쯤인지 알려 준다. 상단 메뉴를 강조하지 않기로 해서 이게 더 중요해졌다. */
+/**
+ * 지금 어디쯤인지 알려 준다.
+ *
+ * 화면 아래 "다음" 버튼 옆에 둔다. 헤더 밑에 있으면 늘 눈에 걸리기만 하고,
+ * 정작 필요한 순간은 다 보고 나서 넘어갈지 정할 때다.
+ */
 function JourneyProgress({ index }: { index: number }) {
   const { t } = useLocale();
   const current = index + 1;
@@ -197,7 +202,7 @@ function AppShell() {
        * 화면 전체 뒤에 까는 질감.
        *
        * 배경색만으로는 판이 밋밋해서 산과 숲 사진을 아주 흐리게 깐다. 투명도가
-       * 5%라 무엇인지 알아보기보다 색이 살짝 깊어지는 정도로만 작동한다.
+       * 7%라 무엇인지 알아보기보다 색이 살짝 깊어지는 정도로만 작동한다.
        * 경로는 여기서 넘긴다. Vite가 CSS의 `url()`에는 base를 붙이지 않는다.
        */}
       <div
@@ -210,10 +215,16 @@ function AppShell() {
         }
       />
       <AppHeader currentRoute={journey[index].route} />
-      <JourneyProgress index={index} />
       <main id="main" ref={mainRef} tabIndex={-1}>
         {page}
-        <JourneyNext index={index} />
+        {/**
+         * 진행 표시와 다음 버튼을 아래에 함께 둔다. 헤더 밑에 있으면 화면을
+         * 가로막기만 하고, 정작 필요한 순간은 "넘어갈까" 하고 정할 때다.
+         */}
+        <div className="journey-foot">
+          <JourneyProgress index={index} />
+          <JourneyNext index={index} />
+        </div>
       </main>
       <AppFooter />
       {/**

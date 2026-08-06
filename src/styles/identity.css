@@ -71,7 +71,6 @@
  */
 .app-header__bar,
 .app-header__nav,
-.journey-progress,
 main {
   max-width: var(--page);
   margin-inline: auto;
@@ -258,10 +257,9 @@ main {
 .journey-progress {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  max-width: 62rem;
+  gap: var(--space-4);
+  width: min(34rem, 100%);
   margin: 0 auto;
-  padding: var(--space-3) var(--space-4) 0;
 }
 
 .journey-progress__track {
@@ -282,14 +280,22 @@ main {
 
 /* ══ 여정: 다음으로 ══════════════════════════════════════ */
 
+/** 진행 표시와 다음 버튼을 한 덩어리로 묶는다. */
+.journey-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  margin-top: var(--space-7);
+  padding: var(--space-6) var(--space-4) 0;
+  border-top: var(--border-hair);
+}
+
 .journey-next {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-3);
-  margin-top: var(--space-7);
-  padding: var(--space-6) var(--space-4);
-  border-top: var(--border-hair);
   text-align: center;
 }
 
@@ -904,9 +910,7 @@ main {
 }
 
 /* 진행 표시 */
-.journey-progress {
-  padding-block: var(--space-4) 0;
-}
+
 
 .journey-progress__track {
   height: 6px;
