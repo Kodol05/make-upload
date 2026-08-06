@@ -30,6 +30,13 @@ async function playThrough(result: GameResult) {
   await userEvent.click(screen.getByRole('button', { name: 'finish' }));
 }
 
+/** 결과 화면에서 다시 볼 품목으로 이어지는 링크들. */
+function reviewLinks(): HTMLElement[] {
+  return screen
+    .getAllByRole('link')
+    .filter((link) => link.getAttribute('href')?.startsWith('#/catalog?item='));
+}
+
 describe('GamePage', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -97,7 +104,22 @@ describe('GamePage', () => {
   it('ignores an item ID the catalog does not know', async () => {
     await playThrough({ score: 9, learnedItemIds: ['clear-pet', 'ghost-item'] as never });
 
-    expect(screen.getAllByRole('link', { name: /./ }).length).toBeLessThanOrEqual(2);
+    // 아는 품목 하나만 남는다. 모르는 값이 빈 줄로 남으면 안 된다.
+    expect(reviewLinks()).toHaveLength(1);
+  });
+
+  /**
+   * 틀린 품목을 알려 주는 이유는 다시 안 틀리게 하려는 것이다. 다시 볼 곳으로
+   * 데려다주지 않으면 거기서 길이 끊긴다.
+   */
+  it('sends each missed item back to its catalog entry', async () => {
+    await playThrough({ score: 8, learnedItemIds: ['clear-pet', 'can'] });
+
+    const links = reviewLinks();
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      '#/catalog?item=clear-pet',
+      '#/catalog?item=can',
+    ]);
   });
 
   it('lets the player start over', async () => {

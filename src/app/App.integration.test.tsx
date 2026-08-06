@@ -169,6 +169,34 @@ describe('App integration', () => {
     expect(screen.getByLabelText(ui.chat.inputLabel.ko)).toHaveValue(petName);
   });
 
+  /**
+   * 게임에서 틀린 품목을 누르면 도감 상세가 열려야 한다. 주소에 품목을 담기
+   * 때문에 새로고침해도 그 자리다.
+   */
+  it('opens the catalog entry the address points at', () => {
+    render(<App />);
+    const pet = catalogItems[0];
+
+    act(() => goTo(`#/catalog?item=${pet.id}`));
+
+    // 물음표가 붙어도 도감 화면으로 읽혀야 한다.
+    expect(screen.getByRole('dialog', { name: pet.name.ko })).toBeInTheDocument();
+  });
+
+  it('forgets the item once the reader closes it, so it does not reopen', async () => {
+    render(<App />);
+    const pet = catalogItems[0];
+    act(() => goTo(`#/catalog?item=${pet.id}`));
+
+    // "닫기"는 챗봇에도 있다. 상세 안의 것으로 좁힌다.
+    const dialog = screen.getByRole('dialog', { name: pet.name.ko });
+    await userEvent.click(within(dialog).getByRole('button', { name: ui.common.close.ko }));
+    act(() => goTo(window.location.hash));
+
+    expect(screen.queryByRole('dialog', { name: pet.name.ko })).not.toBeInTheDocument();
+    expect(window.location.hash).toBe('#/catalog');
+  });
+
   it('closes that dialog again', async () => {
     render(<App />);
     act(() => goTo('#/catalog'));

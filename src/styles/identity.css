@@ -1369,14 +1369,36 @@ button,
   list-style: none;
 }
 
+/**
+ * 다시 볼 품목. 이제 도감으로 가는 링크라 눌리는 것으로 보여야 한다.
+ *
+ * 목록으로만 뒀을 때는 "틀렸습니다"에서 끝나고 배우러 갈 길이 없었다.
+ */
 .game-review__item {
   display: flex;
   align-items: center;
   gap: var(--space-4);
+  min-height: var(--touch-target);
   padding: var(--space-4) var(--space-5);
   background: var(--paper);
+  color: var(--ink);
+  text-decoration: none;
   border: var(--border-hair);
   border-radius: var(--radius-card);
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.game-review__item:hover,
+.game-review__item:focus-visible {
+  background: var(--wash);
+  border-color: var(--mark);
+}
+
+/** 화살표로 "여기서 끝이 아니다"를 알린다. 뜻은 이름과 분류가 이미 말한다. */
+.game-review__item::after {
+  content: '→';
+  color: var(--mark-deep);
+  font-weight: 700;
 }
 
 .game-review__name {
