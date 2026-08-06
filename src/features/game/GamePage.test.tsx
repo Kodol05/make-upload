@@ -25,6 +25,8 @@ async function playThrough(result: GameResult) {
       <GamePage experience={makeStubGame(result)} />
     </LocaleProvider>,
   );
+  // 안내를 먼저 보여 주므로 시작을 눌러야 게임에 들어간다.
+  await userEvent.click(screen.getByRole('button', { name: ui.game.start.ko }));
   await userEvent.click(screen.getByRole('button', { name: 'finish' }));
 }
 
@@ -32,6 +34,26 @@ describe('GamePage', () => {
   beforeEach(() => {
     localStorage.clear();
     localStorage.setItem('k-sort-locale', 'ko');
+  });
+
+  /**
+   * 시작 전에 무엇을 하는 게임인지 한 번 말해 준다. 시작하고 나면 그 안내는
+   * 사라진다. 계속 남아 있으면 품목과 수거함이 아래로 밀린다.
+   */
+  it('explains the game once, before it starts', async () => {
+    render(
+      <LocaleProvider>
+        <GamePage experience={makeStubGame({ score: 0, learnedItemIds: [] })} />
+      </LocaleProvider>,
+    );
+
+    expect(screen.getByText(ui.game.intro.ko)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'finish' })).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: ui.game.start.ko }));
+
+    expect(screen.queryByText(ui.game.intro.ko)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'finish' })).toBeInTheDocument();
   });
 
   it('shows how many questions were answered correctly', async () => {
@@ -83,6 +105,10 @@ describe('GamePage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: ui.game.playAgain.ko }));
 
+    // 안내 화면으로 돌아간다. 규칙을 잊었을 수 있으니 다시 한 번 보여 준다.
+    expect(screen.getByText(ui.game.intro.ko)).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: ui.game.start.ko }));
     expect(screen.getByRole('button', { name: 'finish' })).toBeInTheDocument();
   });
 });

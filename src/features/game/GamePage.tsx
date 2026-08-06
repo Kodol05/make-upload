@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useLocale } from '@/app/useLocale';
+import { assetUrl } from '@/lib/assetUrl';
 import { SortMark } from '@/components/SortMark';
 import { ui } from '@/i18n/strings';
 import { catalogItems } from '@shared/catalog';
@@ -21,18 +22,49 @@ export function GamePage({
 }) {
   const { locale, t } = useLocale();
   const [result, setResult] = useState<GameResult | null>(null);
+  const [started, setStarted] = useState(false);
   const [round, setRound] = useState(0);
 
   const restart = useCallback(() => {
     setResult(null);
+    setStarted(false);
     setRound((value) => value + 1);
   }, []);
+
+  /**
+   * 시작하기 전에 무엇을 하는 게임인지 한 번 말해 준다.
+   *
+   * 시작하고 나면 이 안내는 사라진다. 문제를 푸는 동안 위쪽에 계속 남아 있으면
+   * 화면만 차지하고, 정작 봐야 할 품목과 수거함이 아래로 밀린다.
+   */
+  if (!result && !started) {
+    return (
+      <section className="game game--brief" aria-labelledby="game-title">
+        <h2 id="game-title">{t(ui.game.title)}</h2>
+        <img
+          className="game__brief-image"
+          src={assetUrl('/images/game-brief.webp')}
+          alt=""
+          onError={(event) => {
+            // 그림이 아직 없어도 안내와 시작 단추는 그대로 남는다.
+            event.currentTarget.hidden = true;
+          }}
+        />
+        <p className="game__brief-text">{t(ui.game.intro)}</p>
+        <button type="button" className="game__start" onClick={() => setStarted(true)}>
+          {t(ui.game.start)}
+        </button>
+      </section>
+    );
+  }
 
   if (!result) {
     return (
       <section className="game" aria-labelledby="game-title">
-        <h2 id="game-title">{t(ui.game.title)}</h2>
-        <p className="game__intro">{t(ui.game.intro)}</p>
+        {/** 제목은 화면 구조를 위해 남기고 눈에서만 감춘다. */}
+        <h2 id="game-title" className="game__title--quiet">
+          {t(ui.game.title)}
+        </h2>
         <Experience
           key={round}
           locale={locale}
