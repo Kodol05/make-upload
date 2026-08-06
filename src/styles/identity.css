@@ -31,8 +31,8 @@
   height: clamp(32px, 2.6vw, 44px);
 }
 .sort-mark--lg svg {
-  width: clamp(46px, 4.2vw, 68px);
-  height: clamp(46px, 4.2vw, 68px);
+  width: clamp(54px, 5vw, 82px);
+  height: clamp(54px, 5vw, 82px);
 }
 
 /** 표시 아래 재질 라벨. 실제 포장재의 조판을 따른다. */
@@ -427,7 +427,8 @@ main {
   gap: var(--space-2);
   /* 그림과 이름이 함께 들어가야 해서 세로를 더 준다. */
   aspect-ratio: 5 / 6;
-  padding: var(--space-5) var(--space-3);
+  /* 아래를 넉넉히 비워 표시와 이름이 바닥에 붙지 않고 조금 위에 앉는다. */
+  padding: var(--space-5) var(--space-3) calc(var(--space-6) * 1.4);
   overflow: hidden;
   border: 1px solid var(--rule);
   border-radius: var(--radius-card);
@@ -459,8 +460,8 @@ main {
   z-index: -1;
   background: linear-gradient(
     to bottom,
-    transparent 46%,
-    rgb(255 255 255 / 92%) 70%,
+    transparent 38%,
+    rgb(255 255 255 / 92%) 60%,
     rgb(255 255 255 / 97%) 100%
   );
 }
@@ -477,8 +478,8 @@ main {
 }
 
 .category-card .sort-mark__label {
-  font-size: clamp(16px, 1.7vw, 22px);
-  letter-spacing: 0.06em;
+  font-size: clamp(18px, 2vw, 27px);
+  letter-spacing: 0.05em;
 }
 
 /* ══ 챗봇 위젯 ═══════════════════════════════════════════ */
@@ -1008,7 +1009,8 @@ button,
   gap: var(--space-2);
   /* 그림과 이름이 함께 들어가야 해서 세로를 더 준다. */
   aspect-ratio: 5 / 6;
-  padding: var(--space-5) var(--space-3);
+  /* 아래를 넉넉히 비워 표시와 이름이 바닥에 붙지 않고 조금 위에 앉는다. */
+  padding: var(--space-5) var(--space-3) calc(var(--space-6) * 1.4);
   overflow: hidden;
   border: 1px solid var(--rule);
   border-radius: var(--radius-card);
@@ -1040,8 +1042,8 @@ button,
   z-index: -1;
   background: linear-gradient(
     to bottom,
-    transparent 46%,
-    rgb(255 255 255 / 92%) 70%,
+    transparent 38%,
+    rgb(255 255 255 / 92%) 60%,
     rgb(255 255 255 / 97%) 100%
   );
 }
@@ -1058,8 +1060,8 @@ button,
 }
 
 .category-card .sort-mark__label {
-  font-size: clamp(16px, 1.7vw, 22px);
-  letter-spacing: 0.06em;
+  font-size: clamp(18px, 2vw, 27px);
+  letter-spacing: 0.05em;
 }
 
 /* ══ 챗봇 위젯 ═══════════════════════════════════════════ */
@@ -2704,12 +2706,12 @@ main {
 }
 
 .journey-next--quiet .journey-next__button {
-  min-height: var(--touch-target);
-  padding: 0 var(--space-6);
-  background: rgb(255 255 255 / 78%);
+  min-height: calc(var(--touch-target) + 12px);
+  padding: 0 calc(var(--space-7) * 1.1);
+  background: rgb(255 255 255 / 82%);
   color: var(--mark-deep);
-  font-size: var(--text-body);
-  border: 1px solid var(--rule);
+  font-size: clamp(17px, 1.5vw, 22px);
+  border: 2px solid var(--rule);
   box-shadow: none;
 }
 
@@ -2895,4 +2897,86 @@ main {
   .chat-widget__nudge {
     animation: none;
   }
+}
+
+/* ══ 게임: 수거함 ════════════════════════════════════════ */
+
+/**
+ * 네 수거함을 나란히 세운다. 그림 안에 이름이 적혀 있지만 글자를 함께 두는
+ * 이유는, 그림이 안 뜨거나 화면을 못 보는 사람에게는 이름이 유일한 단서이기
+ * 때문이다.
+ */
+.game-play__bin-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+}
+
+@media (max-width: 520px) {
+  .game-play__bin-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.game-play__bin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-2) var(--space-4);
+  background: var(--paper);
+  border: 2px solid var(--rule);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  transition: border-color 120ms ease, transform 120ms ease;
+}
+
+.game-play__bin-image {
+  display: block;
+  width: 100%;
+  max-width: 130px;
+  height: auto;
+}
+
+.game-play__bin-name {
+  font-size: var(--text-small);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/** 고를 수 있을 때만 반응한다. 잠겨 있을 때 움직이면 눌러도 되는 줄 안다. */
+.game-play__bin:not(:disabled):hover,
+.game-play__bin:not(:disabled):focus-visible {
+  transform: translateY(-3px);
+}
+
+.game-play__bin--recyclable:not(:disabled):hover,
+.game-play__bin--recyclable:not(:disabled):focus-visible {
+  border-color: var(--cat-recyclable);
+}
+.game-play__bin--food:not(:disabled):hover,
+.game-play__bin--food:not(:disabled):focus-visible {
+  border-color: var(--cat-food);
+}
+.game-play__bin--general:not(:disabled):hover,
+.game-play__bin--general:not(:disabled):focus-visible {
+  border-color: var(--cat-general);
+}
+.game-play__bin--special:not(:disabled):hover,
+.game-play__bin--special:not(:disabled):focus-visible {
+  border-color: var(--cat-special);
+}
+
+/** 잠긴 동안은 흐리게. 무엇이 있는지는 보이되 지금은 못 고른다는 것을 알린다. */
+.game-play__bin:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.game-play__locked {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-small);
+  font-weight: 700;
+  color: var(--ink-muted);
+  text-align: center;
 }

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ItemImage } from '@/components/ItemImage';
+import { assetUrl } from '@/lib/assetUrl';
 import { ui } from '@/i18n/strings';
 import { resolveText } from '@shared/placeholder';
 import { categories, type Category, type ItemId, type LocalizedText } from '@shared/types';
@@ -155,7 +156,17 @@ export function GameExperience({ locale, items, onComplete }: GameExperienceProp
               disabled={step !== 'sort'}
               onClick={() => answerSort(category)}
             >
-              {t(ui.category[category])}
+              {/**
+               * 그림 안에 분류 이름이 적혀 있지만 글자를 함께 둔다. 그림이 안 뜨거나
+               * 화면을 못 보는 사람에게는 이름이 유일한 단서다.
+               */}
+              <img
+                className="game-play__bin-image"
+                src={assetUrl(`/images/bins/${category}.webp`)}
+                alt=""
+                loading="lazy"
+              />
+              <span className="game-play__bin-name">{t(ui.category[category])}</span>
             </button>
           ))}
         </div>
