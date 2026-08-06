@@ -112,71 +112,55 @@
 3. 문제가 있는 문장만 수정 프롬프트로 다시 번역한다.
 4. 네 언어 값이 확정된 뒤 `shared/catalog.ts`와 `shared/faqs.ts`에 반영한다.
 
-## 6. GPT Image 과정 이미지 프롬프트
+## 6. 나노바나나 품목 이미지 프롬프트
 
-상태: **제작용 확정**
+상태: **제작용 확정 (v2)**
+
+### v1에서 바뀐 점
+
+v1은 GPT Image로 품목별 3~4단계, 총 50장을 만드는 계획이었다. 두 가지를 바꿨다.
+
+- **장수를 16장으로 줄였다.** 품목당 대표 이미지 한 장이다. 이미지가 없어도 처리 순서와
+  흔한 실수가 온전히 읽히도록 화면을 만들어 두었기 때문에, 남는 시간을 사실 검수와
+  번역에 쓰는 편이 낫다고 판단했다. 이 한 장은 도감과 스캔 화면의 선택 목록에 함께 쓴다.
+- **도구를 나노바나나로 바꿨다.** 편집 기반이라 16장의 톤을 맞추기 쉽고, Gemini와 같은
+  계정·API를 쓰므로 제작과 판별을 한 계열로 설명할 수 있다.
 
 ### 공통 스타일 잠금 프롬프트
 
+마지막 두 줄만 품목마다 바꾸고 나머지는 16장 모두 그대로 둔다.
+
 ```text
-Create one frame of a Korean public recycling instruction guide.
+Create one icon-style product image for a Korean public recycling guide.
 
-Visual style: clean contemporary public-information illustration, bright white and very pale mint background, realistic but simplified 3D objects, soft studio lighting, accurate material textures, calm green and blue accent colors, centered composition, generous empty space, consistent eye-level camera, 4:3 landscape frame.
+Visual style: clean contemporary public-information illustration, bright white
+background, realistic but simplified 3D object, soft studio lighting, accurate
+material texture, calm green and blue accent colors, single object centered with
+generous empty space, eye-level camera, 1:1 square frame.
 
-Show only the physical action described below. Make the waste item and the relevant hand action immediately understandable to an international college student. Do not include any letters, words, numbers, captions, logos, watermarks, recycling symbols with text, flags, or decorative UI. Do not show a bin label because all text will be added in the web app.
+Show one clean everyday object clearly enough that an international student can
+recognize it at a glance in a small thumbnail. Do not include any letters, words,
+numbers, captions, logos, watermarks, recycling symbols with text, flags, hands,
+people, or disposal bins.
 
-Waste item: [ITEM]
-Instruction step: [STEP_ACTION]
-Required visible state after the action: [VISIBLE_RESULT]
+Object: [ITEM]
 Avoid: [COMMON_VISUAL_ERROR]
 ```
 
-### 페트병 4단계 예시
+품목별 `[ITEM]`과 `[COMMON_VISUAL_ERROR]` 값은
+[콘텐츠 요청서](CONTENT_REQUEST.md)의 표에 16종 모두 정리했다.
 
-1. 내용물 비우기
-
-```text
-Waste item: a transparent PET water bottle with a small amount of water remaining
-Instruction step: a hand pours all remaining liquid into a sink
-Required visible state after the action: the bottle is visibly empty
-Avoid: showing a dirty bottle, colored bottle, text, or disposal bin
-```
-
-2. 라벨 분리
-
-```text
-Waste item: the same transparent PET water bottle
-Instruction step: two hands peel the plastic label completely away from the bottle
-Required visible state after the action: bottle and removed label are clearly separate objects
-Avoid: leaving part of the label attached or showing printed readable brand text
-```
-
-3. 헹구고 압착
-
-```text
-Waste item: the same label-free transparent PET bottle
-Instruction step: show the clean bottle being gently compressed by hand after rinsing
-Required visible state after the action: clean, empty, compact bottle
-Avoid: crushing it into an unrecognizable shape or showing a cap mixed inside
-```
-
-4. 분리배출
-
-```text
-Waste item: the same clean compressed transparent PET bottle
-Instruction step: a hand places the bottle into a clean recycling collection opening
-Required visible state after the action: bottle is separate from its label and other waste
-Avoid: readable bin labels, mixed garbage, food residue, or brand logos
-```
-
-나머지 15종은 `ITEM`, `STEP_ACTION`, `VISIBLE_RESULT`, `COMMON_VISUAL_ERROR`만 바꾸고 공통 스타일 문장을 유지한다. 같은 품목의 모든 단계는 동일한 물체 색·형태·카메라·조명을 유지하도록 첫 결과 이미지를 다음 단계의 참조 이미지로 사용한다.
+첫 장을 확정한 뒤 그 결과를 참조 이미지로 넣고 나머지 15장을 생성해 배경 밝기·조명·
+물체 크기를 맞춘다. 파일은 `public/images/items/<itemId>.webp`로, 정사각형 800px,
+200KB 이하로 최적화해 전달한다.
 
 실행 기록 표:
 
 | 품목 | 프롬프트 버전 | 생성 수 | 채택 파일 | 수정 이유 |
 | --- | --- | ---: | --- | --- |
-| 투명 페트병 | v1 | 실행 전 | 실행 전 | 실행 전 |
-| 나머지 15종 | v1 | 실행 전 | 실행 전 | 실행 전 |
+| 16종 전체 | v2 | 실행 전 | 실행 전 | 실행 전 |
+
+v1(GPT Image, 단계별 50장)은 실행 전에 v2로 대체했다. 변경 이유는 위에 적었다.
 
 ## 7. Seedance 메인 영상 프롬프트
 
