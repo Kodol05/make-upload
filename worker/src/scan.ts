@@ -3,7 +3,7 @@ import { scanRequestSchema, scanResponseSchema } from '../../shared/schemas';
 import { itemIds, type Locale, type ScanObject, type ScanResponse } from '../../shared/types';
 import type { Env } from './env';
 import { SCAN_MODEL, callGemini, type FetchLike } from './gemini';
-import { errorResponse, jsonResponse } from './security';
+import { errorResponse, jsonResponse, logFailure } from './security';
 
 const TIMEOUT_MS = 15_000;
 const MAX_OBJECTS = 5;
@@ -101,8 +101,9 @@ export async function handleScan(
 
     const cleaned: ScanResponse = { objects: sanitiseObjects(result.objects) };
     return jsonResponse(cleaned, origin);
-  } catch {
-    // 모델 오류에는 프롬프트가 섞일 수 있으므로 그대로 내보내지 않는다.
+  } catch (error) {
+    // 원인 코드만 남긴다. 프롬프트와 이미지는 로그에도 남기지 않는다.
+    logFailure('scan', error);
     return errorResponse('upstream_failed', 502, origin);
   }
 }

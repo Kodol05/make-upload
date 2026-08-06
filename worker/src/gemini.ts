@@ -35,6 +35,21 @@ export type GeminiPart =
  */
 export type FetchLike = (url: string, init: RequestInit) => Promise<Response>;
 
+/**
+ * Gemini가 준 실패 사유만 짧게 꺼낸다.
+ *
+ * 요청 구조에 대한 설명이라 로그에 남겨도 되고, 발표 중에 무엇이 잘못됐는지
+ * 바로 알 수 있다. 본문 전체는 남기지 않는다.
+ */
+async function readErrorReason(response: Response): Promise<string> {
+  try {
+    const body = (await response.json()) as { error?: { status?: string } };
+    return body.error?.status ?? 'unknown';
+  } catch {
+    return 'unreadable';
+  }
+}
+
 /** Gemini가 받는 OpenAPI 부분집합에 없는 키. 남겨 두면 400을 돌려준다. */
 const UNSUPPORTED_KEYS = new Set([
   '$schema',
@@ -128,7 +143,9 @@ export async function callGemini<T>(opts: {
     }),
   });
 
-  if (!response.ok) throw new Error(`gemini_http_${response.status}`);
+  if (!response.ok) {
+    throw new Error(`gemini_http_${response.status}:${await readErrorReason(response)}`);
+  }
 
   const body = (await response.json()) as {
     candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;

@@ -44,6 +44,20 @@ export function errorResponse(code: string, status: number, origin: string): Res
   return jsonResponse({ error: code }, origin, status);
 }
 
+/**
+ * 실패 원인만 로그에 남긴다.
+ *
+ * 발표 중에 무엇이 잘못됐는지 알 수 있어야 하지만, 프롬프트와 사용자가 보낸 내용은
+ * 남기지 않는다. 우리가 만든 코드가 아니면 자세한 내용 대신 한 단어로 줄인다.
+ */
+export function logFailure(where: string, error: unknown): void {
+  const message = error instanceof Error ? error.message : '';
+  const safe = /^gemini_(http_\d+|empty_response)$/.test(message)
+    ? message
+    : 'response_rejected';
+  console.error(`${where}:${safe}`);
+}
+
 /** 대화 이력을 최근 여섯 개로 자른다. */
 export function limitHistory<T>(history: T[]): T[] {
   return history.length <= MAX_HISTORY ? history : history.slice(-MAX_HISTORY);
