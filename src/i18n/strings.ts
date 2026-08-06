@@ -501,6 +501,16 @@ export const ui = {
       zh: '仅在经过核实的图鉴和常见问题范围内作答。',
       vi: 'Chỉ trả lời dựa trên cẩm nang và câu hỏi thường gặp đã được kiểm chứng.',
     }),
+    /**
+     * 대화를 열면 맨 위에 놓이는 인사. 정해진 문장이라 모델을 부르지 않는다.
+     * 무엇을 물어도 되는지, 무엇으로 답하는지를 먼저 알려 준다.
+     */
+    greeting: localized('ui', 'chat.greeting', {
+      ko: '안녕하세요. 분리배출에 대해 편하게 물어보세요. 도감에서 확인된 내용으로만 답합니다.',
+      en: 'Hello. Ask me anything about sorting waste. I answer only from what the guide has verified.',
+      zh: '你好。关于垃圾分类可以随意提问。我只根据图鉴中已核实的内容作答。',
+      vi: 'Xin chào. Cứ thoải mái hỏi về phân loại rác. Tôi chỉ trả lời dựa trên nội dung đã kiểm chứng trong cẩm nang.',
+    }),
     inputLabel: localized('ui', 'chat.inputLabel', {
       ko: '질문 입력',
       en: 'Enter your question',

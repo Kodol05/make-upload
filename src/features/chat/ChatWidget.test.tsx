@@ -41,6 +41,31 @@ describe('ChatWidget', () => {
     ).toBeInTheDocument();
   });
 
+  /**
+   * 빈 화면으로 시작하면 무엇을 물어야 할지 몰라 멈춘다. 정해진 인사 한 마디를
+   * 먼저 놓아 말을 걸기 쉽게 한다. 이 문장은 모델을 부르지 않는다.
+   */
+  it('greets first so the reader knows what to ask', async () => {
+    render(<App />);
+    await userEvent.click(launcher());
+
+    expect(within(panel()).getByText(ui.chat.greeting.ko)).toBeInTheDocument();
+  });
+
+  /** 대화는 위, 추천 질문과 입력은 아래. 실제 대화 앱의 순서다. */
+  it('puts the conversation above the place you type', async () => {
+    render(<App />);
+    await userEvent.click(launcher());
+
+    const greeting = within(panel()).getByText(ui.chat.greeting.ko);
+    const suggestions = within(panel()).getByText(ui.chat.suggestionsTitle.ko);
+    const input = within(panel()).getByLabelText(ui.chat.inputLabel.ko);
+
+    // compareDocumentPosition: 4 = 뒤에 온다
+    expect(greeting.compareDocumentPosition(suggestions) & 4).toBeTruthy();
+    expect(suggestions.compareDocumentPosition(input) & 4).toBeTruthy();
+  });
+
   it('can be reached from every step of the journey', () => {
     render(<App />);
 

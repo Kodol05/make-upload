@@ -79,46 +79,59 @@ export function ChatSection({
       <h2 id="chat-title">{t(ui.chat.title)}</h2>
       <p className="chat__intro">{t(ui.chat.intro)}</p>
 
-      <h3 className="chat__suggestions-title">{t(ui.chat.suggestionsTitle)}</h3>
-      <ul className="chat__suggestions">
-        {faqs.slice(0, SUGGESTION_COUNT).map((faq) => (
-          <li key={faq.id}>
-            <button type="button" onClick={() => submit(t(faq.question))}>
-              {t(faq.question)}
-            </button>
-          </li>
-        ))}
-      </ul>
+      {/**
+       * 대화는 위, 쓰는 자리는 아래. 실제 대화 앱의 순서를 그대로 따른다.
+       *
+       * 맨 위의 인사는 정해진 문장이라 모델을 부르지 않는다. 빈 화면으로 시작하면
+       * 무엇을 물어야 할지 몰라 멈추는데, 한 마디가 있으면 말을 걸기 쉬워진다.
+       */}
+      <div className="chat__stream">
+        <p className="chat__greeting">{t(ui.chat.greeting)}</p>
 
-      <ol className="chat__turns">
-        {turns.map((turn) => (
-          <li key={turn.id} className="chat__turn">
-            <p className="chat__question">{turn.question}</p>
-            <ChatAnswer turn={turn} />
-          </li>
-        ))}
-      </ol>
+        <ol className="chat__turns">
+          {turns.map((turn) => (
+            <li key={turn.id} className="chat__turn">
+              <p className="chat__question">{turn.question}</p>
+              <ChatAnswer turn={turn} />
+            </li>
+          ))}
+        </ol>
+      </div>
 
-      <form
-        className="chat__form"
-        onSubmit={(event) => {
-          event.preventDefault();
-          void submit(draft);
-        }}
-      >
-        <label className="chat__input">
-          <span>{t(ui.chat.inputLabel)}</span>
-          <input
-            value={draft}
-            maxLength={500}
-            placeholder={t(ui.chat.inputPlaceholder)}
-            onChange={(event) => setDraft(event.target.value)}
-          />
-        </label>
-        <button type="submit" disabled={pending}>
-          {pending ? t(ui.chat.thinking) : t(ui.chat.send)}
-        </button>
-      </form>
+      {/** 추천 질문과 입력 줄은 한 덩어리로 아래에 붙는다. */}
+      <div className="chat__composer">
+        <h3 className="chat__suggestions-title">{t(ui.chat.suggestionsTitle)}</h3>
+        <ul className="chat__suggestions">
+          {faqs.slice(0, SUGGESTION_COUNT).map((faq) => (
+            <li key={faq.id}>
+              <button type="button" onClick={() => submit(t(faq.question))}>
+                {t(faq.question)}
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <form
+          className="chat__form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void submit(draft);
+          }}
+        >
+          <label className="chat__input">
+            <span>{t(ui.chat.inputLabel)}</span>
+            <input
+              value={draft}
+              maxLength={500}
+              placeholder={t(ui.chat.inputPlaceholder)}
+              onChange={(event) => setDraft(event.target.value)}
+            />
+          </label>
+          <button type="submit" disabled={pending}>
+            {pending ? t(ui.chat.thinking) : t(ui.chat.send)}
+          </button>
+        </form>
+      </div>
     </section>
   );
 }

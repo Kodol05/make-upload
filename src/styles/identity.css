@@ -1575,29 +1575,45 @@ main {
 /* ── 추천 질문 ──────────────────────────────────────────── */
 
 .chat-widget__body .chat__suggestions-title {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-2);
   font-size: var(--text-label);
   font-weight: 700;
   letter-spacing: var(--tracking-label);
   color: var(--ink-muted);
 }
 
+/**
+ * 추천 질문은 가로로 늘어놓고 넘치면 옆으로 민다. 세로로 쌓으면 대화가 보일
+ * 자리를 잡아먹는다. 전화기에서 빠른 답장이 놓이는 자리와 같다.
+ */
 .chat-widget__body .chat__suggestions {
-  display: grid;
+  display: flex;
   gap: var(--space-2);
-  margin: 0;
-  padding: 0;
+  margin: 0 0 var(--space-4);
+  padding: 0 0 var(--space-2);
   list-style: none;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.chat-widget__body .chat__suggestions li {
+  flex: 0 0 auto;
+  max-width: 78%;
 }
 
 .chat-widget__body .chat__suggestions button {
   width: 100%;
-  padding: var(--space-3) var(--space-4);
+  min-height: 0;
+  padding: var(--space-2) var(--space-4);
   background: var(--paper);
-  border: var(--border-hair);
-  border-radius: 18px;
-  color: var(--ink);
+  border: 1px solid var(--mark);
+  border-radius: var(--radius-pill);
+  color: var(--mark-deep);
+  font-size: var(--text-small);
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   cursor: pointer;
 }
 
@@ -1613,15 +1629,10 @@ main {
  * 화면 아래에 붙여 둔다. 대화가 길어져도 쓰는 자리는 늘 같은 곳에 있다.
  */
 .chat-widget__body .chat__form {
-  position: sticky;
-  bottom: 0;
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  margin: var(--space-5) calc(var(--space-5) * -1) 0;
-  padding: var(--space-4) var(--space-5);
-  background: var(--film);
-  border-top: var(--border-hair);
+  margin: 0;
 }
 
 .chat-widget__body .chat__input {
@@ -1721,4 +1732,49 @@ main {
   .chat-widget__home {
     border-radius: 0 0 30px 30px;
   }
+}
+
+/* ══ 챗봇: 대화와 쓰는 자리 나누기 ═══════════════════════ */
+
+/**
+ * 위는 대화, 아래는 추천 질문과 입력. 실제 대화 앱의 순서다.
+ * 대화만 스크롤하고 쓰는 자리는 늘 같은 곳에 있다.
+ */
+.chat-widget__body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.chat-widget__body .chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.chat-widget__body .chat__stream {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-5);
+}
+
+/** 처음 놓이는 인사. 답변 말풍선과 같은 모양이라 AI가 건넨 말로 읽힌다. */
+.chat-widget__body .chat__greeting {
+  max-width: 88%;
+  margin: 0;
+  padding: var(--space-4);
+  background: var(--paper);
+  border: var(--border-hair);
+  border-radius: 18px 18px 18px 4px;
+  color: var(--ink);
+}
+
+.chat-widget__body .chat__composer {
+  flex: 0 0 auto;
+  padding: var(--space-4) var(--space-5);
+  background: var(--film);
+  border-top: var(--border-hair);
 }
