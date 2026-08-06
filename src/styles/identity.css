@@ -618,30 +618,48 @@ main > * + * {
 /**
  * 원칙은 넷이고 서로 대등하다. 격자로 두면 폭이 바뀌어도 네 칸의 무게가 같다.
  */
+/** 원칙 제목은 그림 넉 장 위에 가운데로 선다. */
+.lesson__principles-title {
+  margin: var(--space-7) 0 var(--space-5);
+  font-size: var(--text-title);
+  font-weight: 800;
+  text-align: center;
+}
+
 .lesson__principles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
+/**
+ * 그림 안에 이미 원칙 이름이 적혀 있어 글자를 덧붙이지 않는다. 카드는 그림을
+ * 담는 테두리 노릇만 한다.
+ */
 .lesson__principle {
-  padding: var(--space-5) var(--space-4);
-  background: var(--film);
+  overflow: hidden;
   border: var(--border-hair);
   border-radius: var(--radius-card);
+  background: var(--paper);
 }
 
-.lesson__principle strong {
+.lesson__principle-image {
   display: block;
-  margin-bottom: var(--space-2);
-  font-size: var(--text-body);
-  font-weight: 800;
-  color: var(--mark-deep);
+  width: 100%;
+  height: auto;
 }
 
-.lesson__principle span {
-  font-size: var(--text-small);
-  color: var(--ink-muted);
+/** 그림을 못 보는 사람에게는 이 설명이 전부다. 화면에서만 감춘다. */
+.lesson__principle-note {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* ══ 도감 격자 ═══════════════════════════════════════════ */
@@ -2118,4 +2136,100 @@ main {
 .journey-next--quiet .journey-next__button:focus-visible {
   background: var(--paper);
   border-color: var(--mark);
+}
+
+/* ══ 게임: 그림 키우기 ═══════════════════════════════════ */
+
+/**
+ * 게임은 그림을 보고 판단하는 화면이라 다른 곳보다 크게 둔다. 작으면 무엇인지
+ * 알아보느라 문제를 못 푼다.
+ */
+.game-play__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.game-play__image {
+  width: min(360px, 100%);
+  max-width: 100%;
+}
+
+.game-play__name {
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 30px);
+  font-weight: 800;
+}
+
+.game-play__condition {
+  max-width: var(--measure);
+  margin: 0 auto;
+  color: var(--ink-muted);
+}
+
+.game-play__question {
+  font-size: var(--text-title);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ══ 도감: 분류 거르기 단추에 분류색 ═════════════════════ */
+
+/**
+ * 단추마다 그 분류의 색을 입힌다. 지금까지는 넷 다 같은 초록이라 색이 아무것도
+ * 알려 주지 않았다. 도감 카드·게임 수거함이 이미 같은 네 색을 쓰고 있으므로
+ * 여기서도 맞추면 화면 전체가 같은 약속을 따른다.
+ *
+ * 고르지 않았을 때는 테두리와 글자에만, 고르면 바탕까지 그 색으로 채운다.
+ * 색만으로 상태를 알리지 않도록 `aria-pressed`도 함께 둔다.
+ */
+.catalog__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-width: 2px;
+  border-style: solid;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+/** 고르지 않은 상태 */
+.catalog__filter--all { border-color: var(--rule); color: var(--ink); }
+.catalog__filter--recyclable { border-color: var(--cat-recyclable); color: var(--cat-recyclable); }
+.catalog__filter--food { border-color: var(--cat-food); color: var(--cat-food); }
+.catalog__filter--general { border-color: var(--cat-general); color: var(--cat-general); }
+.catalog__filter--special { border-color: var(--cat-special); color: var(--cat-special); }
+
+/** 고른 상태. 네 색 모두 흰 글자와 AA를 넘긴다. */
+.catalog__filter--all[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.catalog__filter--recyclable[aria-pressed='true'] {
+  background: var(--cat-recyclable);
+  border-color: var(--cat-recyclable);
+  color: var(--paper);
+}
+.catalog__filter--food[aria-pressed='true'] {
+  background: var(--cat-food);
+  border-color: var(--cat-food);
+  color: var(--paper);
+}
+.catalog__filter--general[aria-pressed='true'] {
+  background: var(--cat-general);
+  border-color: var(--cat-general);
+  color: var(--paper);
+}
+.catalog__filter--special[aria-pressed='true'] {
+  background: var(--cat-special);
+  border-color: var(--cat-special);
+  color: var(--paper);
+}
+
+/** 고르지 않은 단추 위에 마우스를 올리면 그 분류색을 옅게 깐다. */
+.catalog__filter[aria-pressed='false']:hover,
+.catalog__filter[aria-pressed='false']:focus-visible {
+  background: color-mix(in srgb, currentcolor 10%, var(--paper));
 }

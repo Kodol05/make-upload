@@ -211,11 +211,14 @@ describe('LearnSection', () => {
   it('drops the poster image when that also fails', () => {
     renderLearn();
     fireEvent.error(video());
-    const poster = screen.getByRole('img');
+    // 4대 원칙 그림도 img라서 포스터만 골라낸다.
+    const poster = screen.getByRole('img', { name: ui.learn.title.ko });
 
     fireEvent.error(poster);
 
-    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('img', { name: ui.learn.title.ko }),
+    ).not.toBeInTheDocument();
     // 이미지가 하나도 없어도 안내 문구는 남는다.
     expect(screen.getByText(ui.learn.videoUnavailable.ko)).toBeInTheDocument();
   });

@@ -36,7 +36,13 @@ function VideoFallback() {
   );
 }
 
-/** 분리배출 4대 원칙 카드. 영상이 없어도 항상 보인다. */
+/**
+ * 분리배출 4대 원칙. 영상이 없어도 항상 보인다.
+ *
+ * 그림 안에 이미 원칙 이름이 적혀 있어 글자를 겹쳐 두지 않는다. 다만 이름과
+ * 설명은 화면에서만 감추고 낭독기에는 남긴다. 그림을 못 보는 사람에게는 그것이
+ * 전부이고, 번역해 둔 네 언어도 그대로 쓰인다.
+ */
 function PrincipleCards() {
   const { t } = useLocale();
 
@@ -46,8 +52,15 @@ function PrincipleCards() {
       <ul className="lesson__principles">
         {Object.entries(ui.learn.principles).map(([key, principle]) => (
           <li key={key} className="lesson__principle">
-            <strong>{t(principle.label)}</strong>
-            <span>{t(principle.description)}</span>
+            <img
+              className="lesson__principle-image"
+              src={assetUrl(`/images/principles/${key}.webp`)}
+              alt={t(principle.label)}
+              loading="lazy"
+            />
+            <span className="lesson__principle-note">
+              <strong>{t(principle.label)}</strong> {t(principle.description)}
+            </span>
           </li>
         ))}
       </ul>
