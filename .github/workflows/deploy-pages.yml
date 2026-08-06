@@ -10,9 +10,12 @@ permissions:
   pages: write
   id-token: write
 
+# 배포는 한 번에 하나만 돈다. 다만 이미 시작한 배포는 죽이지 않는다.
+# Pages 배포가 큐에서 몇 분씩 기다리는데, 그 사이 다음 커밋이 들어와 취소해 버리면
+# 어느 것도 끝나지 못한다. GitHub 공식 Pages workflow도 false를 쓴다.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -42,3 +45,7 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # 이 저장소의 Pages 배포는 큐에서 3~9분을 기다린다. 액션 기본값이 딱 10분이라
+          # 대기가 조금만 길어지면 액션이 배포를 취소해 버린다. 30분으로 늘린다.
+          timeout: 1800000
