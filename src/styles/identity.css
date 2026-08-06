@@ -31,8 +31,8 @@
   height: clamp(32px, 2.6vw, 44px);
 }
 .sort-mark--lg svg {
-  width: clamp(40px, 3.6vw, 56px);
-  height: clamp(40px, 3.6vw, 56px);
+  width: clamp(46px, 4.2vw, 68px);
+  height: clamp(46px, 4.2vw, 68px);
 }
 
 /** 표시 아래 재질 라벨. 실제 포장재의 조판을 따른다. */
@@ -413,8 +413,9 @@ main {
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-2);
-  aspect-ratio: 4 / 3;
-  padding: var(--space-4);
+  /* 그림과 이름이 함께 들어가야 해서 세로를 더 준다. */
+  aspect-ratio: 5 / 6;
+  padding: var(--space-5) var(--space-3);
   overflow: hidden;
   border: 1px solid var(--rule);
   border-radius: var(--radius-card);
@@ -426,16 +427,17 @@ main {
   inset: 0;
   z-index: -2;
   background-image: var(--category-cover, none);
-  background-size: contain;
-  background-position: center 38%;
+  /* 칸 너비를 거의 다 쓴다. 여백을 잘라 둔 그림이라 이만큼 키워도 넘치지 않는다. */
+  background-size: 92% auto;
+  background-position: center 30%;
   background-repeat: no-repeat;
-  opacity: 0.55;
+  opacity: 0.62;
 }
 
 /**
  * 아래쪽만 덮어 글자가 앉을 자리를 만든다. 그림은 위쪽에서 온전히 보인다.
  *
- * 68% 지점의 90%는 실측해서 정한 값이다. 그 아래로 내리면 음식물 분류의 글자가
+ * 70% 지점의 92%는 실측해서 정한 값이다. 그 아래로 내리면 음식물 분류의 글자가
  * 4.5:1을 못 넘긴다. 그림마다 가장 어두운 픽셀을 골라 합성해 확인했다.
  */
 .category-card::after {
@@ -445,8 +447,8 @@ main {
   z-index: -1;
   background: linear-gradient(
     to bottom,
-    transparent 38%,
-    rgb(255 255 255 / 90%) 68%,
+    transparent 46%,
+    rgb(255 255 255 / 92%) 70%,
     rgb(255 255 255 / 97%) 100%
   );
 }
@@ -463,7 +465,8 @@ main {
 }
 
 .category-card .sort-mark__label {
-  font-size: var(--text-body);
+  font-size: clamp(16px, 1.7vw, 22px);
+  letter-spacing: 0.06em;
 }
 
 /* ══ 챗봇 위젯 ═══════════════════════════════════════════ */
@@ -1862,4 +1865,129 @@ main {
   padding-bottom: var(--space-4);
   -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent 100%);
   mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent 100%);
+}
+
+/* ══ 도감: 숨통 틔우기 ═══════════════════════════════════ */
+
+/**
+ * 카드가 좁으면 이름이 접히고 글자가 서로 붙어 보인다. 칸을 넓히고 글자를 키우고
+ * 그 사이 간격을 벌린다. 판이 넓어졌으므로 칸을 키워도 한 줄에 여러 장이 들어간다.
+ */
+.catalog__grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: var(--space-5) var(--space-5);
+}
+
+.catalog-card {
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+}
+
+.catalog-card__name {
+  font-size: clamp(17px, 1.3vw, 21px);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.catalog-card__category {
+  gap: var(--space-3);
+  font-size: var(--text-small);
+  letter-spacing: 0.1em;
+}
+
+.catalog-card .item-image {
+  border-radius: var(--radius-card);
+}
+
+/* 검색과 거르기 줄 */
+.catalog__find {
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.catalog__search span {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--text-small);
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+.catalog__search input {
+  min-height: calc(var(--touch-target) + 4px);
+  padding: 0 var(--space-5);
+  font-size: clamp(16px, 1.2vw, 19px);
+}
+
+.catalog__photo-button {
+  min-height: calc(var(--touch-target) + 4px);
+  padding: 0 var(--space-6);
+  font-size: clamp(16px, 1.2vw, 19px);
+}
+
+.catalog__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.catalog__filter {
+  padding-inline: var(--space-6);
+  font-size: clamp(15px, 1.1vw, 18px);
+}
+
+/* ── 품목 상세 ──────────────────────────────────────────── */
+
+/**
+ * 상세는 읽는 화면이다. 폭을 넓히고 줄 간격을 벌려 눈이 쉬어 갈 곳을 만든다.
+ */
+.catalog-dialog {
+  max-width: min(56rem, calc(100vw - var(--space-5) * 2));
+}
+
+.catalog-dialog__bar h3 {
+  font-size: var(--text-title);
+  font-weight: 800;
+}
+
+.catalog-dialog__image {
+  max-width: 300px;
+}
+
+.catalog-dialog__summary {
+  font-size: clamp(16px, 1.2vw, 19px);
+  line-height: 1.7;
+}
+
+.catalog-dialog h4 {
+  margin: var(--space-6) 0 var(--space-3);
+  font-size: var(--text-small);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  color: var(--ink-muted);
+}
+
+.catalog-dialog__steps li {
+  line-height: 1.7;
+}
+
+.catalog-dialog__mistake {
+  padding: var(--space-4) var(--space-5);
+  background: var(--film);
+  border-left: 5px solid var(--cat-special);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  line-height: 1.7;
+}
+
+.catalog-dialog__local-check {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-card);
+}
+
+.catalog-dialog__sources {
+  display: grid;
+  gap: var(--space-2);
+  padding: 0;
+  list-style: none;
 }
