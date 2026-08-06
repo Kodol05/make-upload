@@ -146,6 +146,37 @@ describe('handleChat', () => {
     expect(await response.json()).toMatchObject({ status: 'answered' });
   });
 
+  /**
+   * 도감 밖의 물건도 답한다. 다만 근거의 등급을 나눈다는 것을 지시문이 담아야 한다.
+   * 처음에는 도감에 없으면 전부 거절해서, 16종에 없는 물건을 물으면 아무 도움이
+   * 되지 않았다.
+   */
+  it('tells the model to help beyond the guide, without borrowing its authority', async () => {
+    const fetchImpl = vi.fn(replyWith(goodAnswer));
+    await handleChat(chatRequest(validBody), makeEnv(), ORIGIN, fetchImpl);
+
+    const body = String((fetchImpl.mock.calls[0]?.[1] as RequestInit).body);
+    // 도감 밖도 답한다
+    expect(body).toContain('still answer with what you know');
+    // 다만 출처는 붙이지 않는다
+    expect(body).toContain('Leave sourceIds empty');
+    // 분리배출과 무관하면 여전히 답하지 않는다
+    expect(body).toContain('out_of_scope');
+  });
+
+  /** 모델이 등록되지 않은 출처를 붙여 와도 화면까지 가지 못한다. */
+  it('drops a source the model made up', async () => {
+    const response = await handleChat(
+      chatRequest(validBody),
+      makeEnv(),
+      ORIGIN,
+      replyWith({ ...goodAnswer, sourceIds: ['me-recyclable', 'made-up-source'] }),
+    );
+
+    const answer = (await response.json()) as { sourceIds: string[] };
+    expect(answer.sourceIds).toEqual(['me-recyclable']);
+  });
+
   it('sends the verified knowledge to the model', async () => {
     const fetchImpl = vi.fn(replyWith(goodAnswer));
     await handleChat(chatRequest(validBody), makeEnv(), ORIGIN, fetchImpl);

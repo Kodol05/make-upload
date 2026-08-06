@@ -2162,7 +2162,7 @@ main {
 }
 
 .game-play__image {
-  width: min(300px, 100%);
+  width: min(260px, 100%);
   max-width: 100%;
 }
 
@@ -2336,11 +2336,12 @@ main {
  */
 .game-play__arena {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: var(--space-4);
+  /* 양옆 수거함이 가운데 품목보다 넓게 자리를 잡는다. 고르는 것이 주된 일이다. */
+  grid-template-columns: auto minmax(0, 0.9fr) auto;
+  gap: var(--space-5);
   align-items: center;
   margin-top: var(--space-5);
-  padding: var(--space-4);
+  padding: var(--space-5);
   background: #eef0ef;
   border: var(--border-hair);
   border-radius: var(--radius-card);
@@ -2356,8 +2357,8 @@ main {
   flex-direction: column;
   align-items: center;
   gap: var(--space-2);
-  width: clamp(96px, 11vw, 148px);
-  padding: var(--space-3) var(--space-2);
+  width: clamp(120px, 16vw, 230px);
+  padding: var(--space-4) var(--space-3);
   background: var(--paper);
   border: 2px solid var(--rule);
   border-radius: var(--radius-card);
@@ -2374,7 +2375,7 @@ main {
 }
 
 .game-play__bin-name {
-  font-size: clamp(13px, 1vw, 16px);
+  font-size: clamp(14px, 1.2vw, 19px);
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -2493,4 +2494,129 @@ main {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* ══ 도감 상세: 읽히게 만들기 ════════════════════════════ */
+
+/**
+ * 글이 줄줄이 이어져 있으면 어디가 무엇인지 구분이 안 된다. 덩어리마다 바탕을
+ * 깔아 갈라 놓고, 순서가 있는 것은 순서로 보이게 한다.
+ */
+
+/** 요약. 첫 문단이라 살짝 띄워 둔다. */
+.catalog-dialog__summary {
+  padding: var(--space-4) var(--space-5);
+  background: var(--film);
+  border-radius: var(--radius-card);
+}
+
+/**
+ * 처리 순서.
+ *
+ * 번호를 동그라미로 세우고 그 사이를 선으로 잇는다. 목록이 아니라 지나가는
+ * 절차라는 것이 눈으로 읽혀야 한다.
+ */
+.catalog-dialog__steps {
+  position: relative;
+  counter-reset: step;
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.catalog-dialog__steps li {
+  position: relative;
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: var(--space-4);
+  align-items: start;
+  padding: var(--space-4) 0;
+}
+
+.catalog-dialog__steps li + li {
+  border-top: 1px dashed var(--rule);
+}
+
+.catalog-dialog__steps li::before {
+  content: counter(step);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: var(--mark);
+  color: var(--paper);
+  font-family: var(--font-label);
+  font-size: var(--text-small);
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+/** 동그라미끼리 잇는 세로선. 마지막 단계 뒤에는 그리지 않는다. */
+.catalog-dialog__steps li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 17px;
+  top: calc(var(--space-4) + 34px);
+  bottom: 0;
+  width: 2px;
+  background: var(--rule);
+}
+
+/** 흔한 실수. 주의를 끌어야 하는 덩어리라 색을 달리한다. */
+.catalog-dialog__mistake {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  background: #fdf5f0;
+  border-left: 5px solid var(--cat-special);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+}
+
+.catalog-dialog__local-check {
+  background: var(--wash);
+  border: none;
+}
+
+/* ── 공식 출처 ──────────────────────────────────────────── */
+
+/**
+ * 출처는 근거일 뿐 읽을거리가 아니다. 왼쪽에 붙여 작고 조용하게 둔다.
+ * 오른쪽에 있으면 시선이 그쪽으로 끌려 정작 처리 순서를 늦게 읽는다.
+ */
+.catalog-dialog__sources {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.catalog-dialog__sources li {
+  text-align: left;
+}
+
+.catalog-dialog__sources a,
+.catalog-dialog__source-pending {
+  font-size: var(--text-label);
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.catalog-dialog__sources a {
+  border-bottom: 1px solid var(--rule);
+}
+
+.catalog-dialog__sources a:hover,
+.catalog-dialog__sources a:focus-visible {
+  color: var(--mark-deep);
+  border-bottom-color: var(--mark);
+}
+
+.catalog-dialog h4 {
+  text-align: left;
 }
