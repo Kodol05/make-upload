@@ -92,49 +92,6 @@ export function GameExperience({ locale, items, onComplete }: GameExperienceProp
         {t(ui.game.progress)} {index + 1} / {questions.length}
       </p>
 
-      {step === 'prepare' && (
-        <div className="game-play__quiz">
-          <p className="game-play__question">{t(ui.game.prepQuestion)}</p>
-          <ul className="game-play__choices">
-            {question.choices.map((choice, choiceIndex) => (
-              <li key={choiceIndex}>
-                <button type="button" onClick={() => answerPrepare(choice.correct)}>
-                  {t(choice.text)}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {step === 'sort' && (
-        <p className="game-play__question">{t(ui.game.sortQuestion)}</p>
-      )}
-
-      {showHint && (
-        <div className="game-play__hint">
-          <strong>{t(ui.game.hintTitle)}</strong>
-          <p>{t(item.summary)}</p>
-          <p className="game-play__retry">{t(ui.game.wrongAgain)}</p>
-        </div>
-      )}
-
-      {step === 'reviewed' && (
-        <div className="game-play__verdict">
-          {attempt.revealed ? (
-            <>
-              <p className="game-play__revealed">{t(ui.game.revealed)}</p>
-              <p className="game-play__answer">{t(ui.category[item.category])}</p>
-            </>
-          ) : (
-            <p className="game-play__correct">{t(ui.game.correct)}</p>
-          )}
-          <button type="button" onClick={goNext}>
-            {t(ui.game.nextQuestion)}
-          </button>
-        </div>
-      )}
-
       {/**
        * 수거함을 좌우 둘씩 나누고 품목을 가운데 둔다. 넷을 아래에 한 줄로 늘어놓으면
        * 문제 설명이 길어질 때 화면 밖으로 밀려 스크롤해야 고를 수 있다.
@@ -179,6 +136,56 @@ export function GameExperience({ locale, items, onComplete }: GameExperienceProp
           ))}
         </div>
       </div>
+
+      {/**
+       * 묻는 말과 판정은 판 **아래**에 둔다.
+       *
+       * 위에 있으면 "이대로는 버릴 수 없어요"를 무엇이 그런지 보기도 전에 읽게
+       * 된다. 아래를 봤다가 다시 위로 올라와야 해서 눈이 두 번 움직인다. 물건을
+       * 먼저 보여 주고 그다음에 묻는 것이 읽는 순서와 맞는다.
+       */}
+      {step === 'prepare' && (
+        <div className="game-play__quiz">
+          <p className="game-play__question">{t(ui.game.prepQuestion)}</p>
+          <ul className="game-play__choices">
+            {question.choices.map((choice, choiceIndex) => (
+              <li key={choiceIndex}>
+                <button type="button" onClick={() => answerPrepare(choice.correct)}>
+                  {t(choice.text)}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {step === 'sort' && (
+        <p className="game-play__question">{t(ui.game.sortQuestion)}</p>
+      )}
+
+      {showHint && (
+        <div className="game-play__hint">
+          <strong>{t(ui.game.hintTitle)}</strong>
+          <p>{t(item.summary)}</p>
+          <p className="game-play__retry">{t(ui.game.wrongAgain)}</p>
+        </div>
+      )}
+
+      {step === 'reviewed' && (
+        <div className="game-play__verdict">
+          {attempt.revealed ? (
+            <>
+              <p className="game-play__revealed">{t(ui.game.revealed)}</p>
+              <p className="game-play__answer">{t(ui.category[item.category])}</p>
+            </>
+          ) : (
+            <p className="game-play__correct">{t(ui.game.correct)}</p>
+          )}
+          <button type="button" onClick={goNext}>
+            {t(ui.game.nextQuestion)}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
