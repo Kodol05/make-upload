@@ -7,6 +7,7 @@ import {
   buildAssemblyInputs,
   buildAssemblyCommands,
   buildTtsFfmpegArgs,
+  buildSubtitleFilter,
   buildVideoPrompt,
   clipOrder,
   loadManifests,
@@ -114,7 +115,8 @@ describe('K-SORT media tooling', () => {
       subtitleFile: 'public/subtitles/ko.vtt', fontFile: 'C:/Windows/Fonts/malgun.ttf',
     });
     expect(commands.clean.output).toBe('public/media/k-sort-guide-clean.mp4');
-    expect(commands.captioned.args).toContain('subtitles=public/subtitles/ko.vtt:fontsdir=C\\:/Windows/Fonts');
+    expect(buildSubtitleFilter('public/subtitles/ko.vtt', 'C:/Windows/Fonts/malgun.ttf')).toBe("subtitles='public/subtitles/ko.vtt':fontsdir='C\\:/Windows/Fonts'");
+    expect(commands.captioned.args).toContain("subtitles='public/subtitles/ko.vtt':fontsdir='C\\:/Windows/Fonts'");
     expect(commands.captioned.output).toBe('public/media/k-sort-guide.mp4');
   });
 });

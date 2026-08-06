@@ -281,12 +281,15 @@ export function buildAssemblyInputs(concatFile, narrationPaths, bgmPath) {
   return ['-f', 'concat', '-safe', '0', '-i', concatFile, ...narrationPaths.flatMap((path) => ['-i', path]), ...(bgmPath ? ['-stream_loop', '-1', '-i', bgmPath] : [])];
 }
 
+export function buildSubtitleFilter(subtitleFile, fontFile) {
+  const quote = (value) => `'${value.replaceAll('\\', '/').replaceAll(':', '\\:').replaceAll("'", "\\'")}'`;
+  return `subtitles=${quote(subtitleFile)}:fontsdir=${quote(dirname(fontFile))}`;
+}
+
 export function buildAssemblyCommands({ inputs, narrationFilter: filter, subtitleFile, fontFile }) {
   const videoFilter = '[0:v]fps=24,tpad=stop_mode=clone:stop_duration=120,trim=duration=120,setpts=PTS-STARTPTS[vout]';
   const clean = { args: ['-y', ...inputs, '-filter_complex', `${videoFilter};${filter}`, '-map', '[vout]', '-map', '[aout]', '-t', '120', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ar', '48000', '-movflags', '+faststart'], output: 'public/media/k-sort-guide-clean.mp4' };
-  const fontDir = dirname(fontFile).replaceAll('\\', '/').replace(':', '\\:');
-  const subtitle = subtitleFile.replaceAll('\\', '/').replace(':', '\\:');
-  const captioned = { args: ['-y', '-i', CLEAN_MASTER, '-vf', `subtitles=${subtitle}:fontsdir=${fontDir}`, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-movflags', '+faststart'], output: 'public/media/k-sort-guide.mp4' };
+  const captioned = { args: ['-y', '-i', CLEAN_MASTER, '-vf', buildSubtitleFilter(subtitleFile, fontFile), '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-movflags', '+faststart'], output: 'public/media/k-sort-guide.mp4' };
   return { clean, captioned };
 }
 
