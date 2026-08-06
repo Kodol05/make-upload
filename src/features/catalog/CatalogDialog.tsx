@@ -20,6 +20,7 @@ export function CatalogDialog({
 }) {
   const { t } = useLocale();
   const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     closeRef.current?.focus();
@@ -27,8 +28,29 @@ export function CatalogDialog({
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      // 상세가 열려 있는 동안에는 포커스가 뒤 화면으로 새지 않게 가둔다.
+      const focusable = panelRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button, select, input, [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable?.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
+
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [onClose]);
@@ -36,6 +58,7 @@ export function CatalogDialog({
   return (
     <div className="catalog-dialog__backdrop" onClick={onClose}>
       <div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="catalog-dialog-title"
