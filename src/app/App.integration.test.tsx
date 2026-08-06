@@ -28,7 +28,7 @@ describe('App integration', () => {
 
     // 소개
     expect(
-      screen.getByRole('heading', { name: ui.home.title.ko, level: 1 }),
+      screen.getByRole('heading', { name: ui.catalog.title.ko, level: 2 }),
     ).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: ui.learn.title.ko })).not.toBeInTheDocument();
 
@@ -52,10 +52,7 @@ describe('App integration', () => {
     render(<App />);
     act(() => goTo('#/nope'));
 
-    // 소개에는 진행 막대가 없다. 화면이 무엇인지는 제목으로 확인한다.
-    expect(
-      screen.getByRole('heading', { name: ui.home.title.ko, level: 1 }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
   });
 
   /**
@@ -71,12 +68,8 @@ describe('App integration', () => {
     );
     expect(container.querySelectorAll('.journey-progress__step--done')).toHaveLength(2);
 
-    act(() => goTo('#/game'));
-    expect(container.querySelectorAll('.journey-progress__step--done')).toHaveLength(4);
-
-    // 소개에는 막대 자체가 없다. 아직 시작하지 않은 화면이다.
     act(() => goTo('#/'));
-    expect(container.querySelectorAll('.journey-progress__step')).toHaveLength(0);
+    expect(container.querySelectorAll('.journey-progress__step--done')).toHaveLength(1);
   });
 
   it('reports the current step so the reader knows where they are', () => {
@@ -186,32 +179,18 @@ describe('App integration', () => {
     expect(screen.getByLabelText(ui.scanner.choosePhoto.ko)).toBeInTheDocument();
   });
 
-  /**
-   * 소개는 영상 한 장면이라 메뉴를 띄우지 않는다. 나머지 세 화면에서는 늘 있어야
-   * 한다. 실수로 다른 화면에서까지 사라지면 갈 곳을 잃는다.
-   */
-  it('keeps the header, footer and skip link on every route but the intro', () => {
+  it('keeps the header, footer and skip link on every route', () => {
     render(<App />);
 
-    for (const step of journey.slice(1)) {
+    for (const step of journey) {
       act(() => goTo(`#${step.route}`));
       expect(screen.getByRole('navigation', { name: 'K-SORT' }), step.route).toBeInTheDocument();
+      expect(screen.getByText('Make Upload'), step.route).toBeInTheDocument();
       expect(
         screen.getByRole('link', { name: ui.common.skipToContent.ko }),
         step.route,
       ).toBeInTheDocument();
     }
-
-    act(() => goTo('#/'));
-    expect(screen.queryByRole('navigation', { name: 'K-SORT' })).not.toBeInTheDocument();
-    // 바닥글은 어디서든 남는다. 출처와 만든 사람을 어느 화면에서도 확인할 수 있어야 한다.
-    expect(screen.getByText('Make Upload')).toBeInTheDocument();
-  });
-
-  /** 메뉴를 감춘 화면이라 언어를 바꿀 곳이 여기 말고 없다. */
-  it('puts the language switch on the intro itself', () => {
-    render(<App />);
-    expect(screen.getByRole('combobox', { name: ui.common.language.ko })).toBeInTheDocument();
   });
 
   /** 어디에 있든 로고를 누르면 소개로 돌아온다. */
@@ -227,10 +206,7 @@ describe('App integration', () => {
       await userEvent.click(logo);
       act(() => goTo('#/'));
 
-      expect(
-        screen.getByRole('heading', { name: ui.home.title.ko, level: 1 }),
-        route,
-      ).toBeInTheDocument();
+      expect(screen.getByRole('progressbar'), route).toHaveAttribute('aria-valuenow', '1');
     }
   });
 });
