@@ -272,13 +272,6 @@ main {
   overflow: hidden;
 }
 
-.journey-progress__track span {
-  display: block;
-  height: 100%;
-  background: var(--mark);
-  transition: width 240ms ease;
-}
-
 .journey-progress__count {
   font-family: var(--font-label);
   font-size: var(--text-label);
@@ -467,6 +460,7 @@ main {
 
 .chat-widget__body {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: var(--space-4);
 }
@@ -1341,7 +1335,7 @@ main {
   background-image: var(--page-texture, none);
   background-size: cover;
   background-position: center;
-  opacity: 0.05;
+  opacity: 0.07;
   pointer-events: none;
 }
 
@@ -1620,11 +1614,11 @@ main {
  */
 .chat-widget__body .chat__form {
   position: sticky;
-  bottom: calc(var(--space-5) * -1);
+  bottom: 0;
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  margin: var(--space-5) calc(var(--space-5) * -1) calc(var(--space-5) * -1);
+  margin: var(--space-5) calc(var(--space-5) * -1) 0;
   padding: var(--space-4) var(--space-5);
   background: var(--film);
   border-top: var(--border-hair);
@@ -1674,4 +1668,57 @@ main {
 /* 챗봇 버튼이 커진 만큼 본문 바닥도 함께 내린다 */
 main {
   padding-bottom: calc(76px + var(--space-7));
+}
+
+/* ══ 챗봇: 홈 표시줄 ═════════════════════════════════════ */
+
+/**
+ * 전화기 아래쪽의 홈 표시줄. 기기의 기능을 흉내 내지는 않고 누르면 대화가
+ * 닫힌다. "뒤로 나간다"는 감각만 가져오는 것이라 표시도 짧은 막대 하나뿐이다.
+ *
+ * 입력 줄이 화면 맨 아래에 붙지 않고 이 위에 앉으면서, 실제 전화기처럼
+ * 아래쪽에 여백이 생긴다.
+ */
+.chat-widget__home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 100%;
+  /* 눈에 띌 필요는 없지만 누를 수는 있어야 한다. 24px은 넘긴다. */
+  min-height: 32px;
+  padding: 0;
+  background: var(--film);
+  border: none;
+  border-top: var(--border-hair);
+  cursor: pointer;
+}
+
+.chat-widget__home span {
+  display: block;
+  width: 40px;
+  height: 5px;
+  background: var(--ink);
+  border-radius: 999px;
+  opacity: 0.55;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.chat-widget__home:hover span,
+.chat-widget__home:focus-visible span {
+  opacity: 1;
+}
+
+.chat-widget__home:active span {
+  transform: scaleX(0.88);
+}
+
+@media (min-width: 640px) {
+  .chat-widget__body {
+    border-radius: 0;
+  }
+
+  .chat-widget__home {
+    border-radius: 0 0 30px 30px;
+  }
 }

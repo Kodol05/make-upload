@@ -70,6 +70,20 @@ describe('ChatWidget', () => {
     );
   });
 
+  /**
+   * 전화기 아래쪽 홈 표시줄. 기기의 기능을 흉내 내지는 않고 대화를 닫기만 한다.
+   * 닫기 버튼과 같은 이름을 쓰므로 패널 안에서 찾는다.
+   */
+  it('closes from the home bar at the bottom', async () => {
+    render(<App />);
+    await userEvent.click(launcher());
+
+    const closers = within(panel()).getAllByRole('button', { name: ui.common.close.ko });
+    await userEvent.click(closers[closers.length - 1]);
+
+    expect(panelIsClosed()).toBe(true);
+  });
+
   it('closes with Escape and hands focus back to the launcher', async () => {
     render(<App />);
     await userEvent.click(launcher());

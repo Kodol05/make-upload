@@ -65,6 +65,19 @@ export function ChatWidget() {
             <ChatSection />
           </FeatureErrorBoundary>
         </div>
+
+        {/**
+         * 전화기 아래쪽의 홈 표시줄. 실제 기기의 기능을 흉내 내지는 않고,
+         * 누르면 대화가 닫힌다. "뒤로 나간다"는 감각만 가져온다.
+         */}
+        <button
+          type="button"
+          className="chat-widget__home"
+          aria-label={t(ui.common.close)}
+          onClick={() => setOpen(false)}
+        >
+          <span aria-hidden="true" />
+        </button>
       </div>
 
       <button

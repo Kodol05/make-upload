@@ -55,6 +55,23 @@ describe('App integration', () => {
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
   });
 
+  /**
+   * 막대는 지나온 칸만 칠한다. 한때 CSS 특이도 때문에 네 칸이 늘 칠해져 있었다.
+   * 여기서는 표시가 붙는 규칙만 검사한다.
+   */
+  it('fills only the steps already passed', () => {
+    const { container } = render(<App />);
+
+    act(() => goTo('#/learn'));
+    expect(container.querySelectorAll('.journey-progress__step')).toHaveLength(
+      journey.length,
+    );
+    expect(container.querySelectorAll('.journey-progress__step--done')).toHaveLength(2);
+
+    act(() => goTo('#/'));
+    expect(container.querySelectorAll('.journey-progress__step--done')).toHaveLength(1);
+  });
+
   it('reports the current step so the reader knows where they are', () => {
     render(<App />);
 
