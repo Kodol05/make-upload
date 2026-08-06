@@ -24,7 +24,9 @@
 ## 기술 스택
 
 React 19 · Vite 8 · TypeScript 6 · Zod 4 · Vitest 4 · ESLint 10 · Wrangler 4
-Cloudflare Worker + Gemini `gemini-3.6-flash` (`:generateContent`)
+Cloudflare Worker + Gemini `:generateContent`
+챗봇은 `gemini-3.5-flash-lite`, 스캔은 `gemini-3.6-flash`를 쓴다. 무료 한도가 모델마다
+따로 잡혀 나눠 써야 총량이 는다. 모델은 `worker/src/gemini.ts`에서 정한다.
 GitHub Pages 배포, Vite base `/make-upload/`, 해시 라우팅(직접 구현)
 스타일은 일반 CSS + `src/styles/tokens.css`
 

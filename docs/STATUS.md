@@ -43,9 +43,24 @@ npm run worker:dev
 - 로컬 `.dev.vars`에 `GEMINI_API_KEY` 저장 (커밋하지 않는다)
 - Cloudflare 계정 로그인
 
-무료 등급으로 진행한다. 한도는 Gemini 15 RPM · 1,500 RPD, Workers 100,000 req/day로
-데모에 충분하다. 다만 **무료 등급은 Google이 제출 이미지를 서비스 개선에 쓸 수 있어**
-스캔 화면에 그 사실을 고지한다(`ui.scanner.privacyNotice`).
+### 🔴 무료 한도는 모델마다 다르고 생각보다 훨씬 빡빡하다
+
+AI Studio에서 실제로 확인한 값이다. 조사 단계에서 적었던 1,500 RPD는 틀렸다.
+
+| 모델 | 한도 | 용도 |
+|------|------|------|
+| `gemini-3.5-flash-lite` | 15 RPM · **500 RPD** | 챗봇 |
+| `gemini-3.6-flash` | 5 RPM · **20 RPD** | 스캔 |
+
+**한도는 모델마다 따로 잡히므로 나눠 쓰면 총량이 늘어난다.** 한 모델에 몰면
+리허설만으로 바닥난다. `worker/src/gemini.ts`의 `CHAT_MODEL`과 `SCAN_MODEL`이
+이 배정이다.
+
+**스캔 20회는 리허설 세 번이면 소진된다.** 키를 받으면 Lite가 이미지 입력을 받는지
+먼저 확인하고, 받으면 스캔도 Lite로 옮겨 500회를 확보한다.
+
+Workers는 100,000 req/day라 문제되지 않는다. 다만 **무료 등급은 Google이 제출 이미지를
+서비스 개선에 쓸 수 있어** 스캔 화면에 그 사실을 고지한다(`ui.scanner.privacyNotice`).
 
 Workers 무료는 요청당 CPU 10ms다. 1.5MB 이미지를 base64로 바꾸는 데 이 시간을 넘을 수
 있으므로 Task 8에서 실측하고, 넘으면 브라우저에서 인코딩해 보내는 방식으로 바꾼다.

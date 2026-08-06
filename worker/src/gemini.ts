@@ -1,7 +1,22 @@
 import { z } from 'zod';
 
-const ENDPOINT =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent';
+const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
+
+/**
+ * 무료 한도는 모델마다 따로 잡힌다. 챗봇과 스캔을 다른 모델에 두면 버킷이 갈라져
+ * 쓸 수 있는 총량이 늘어난다. 한 모델에 몰면 리허설 도중 바닥난다.
+ *
+ * - `gemini-3.5-flash-lite`: 15 RPM · 500 RPD
+ * - `gemini-3.6-flash`: 5 RPM · 20 RPD
+ *
+ * 스캔이 훨씬 빡빡하므로, Lite가 이미지 입력을 받는지 확인되면 스캔도 Lite로 옮긴다.
+ */
+export const CHAT_MODEL = 'gemini-3.5-flash-lite';
+export const SCAN_MODEL = 'gemini-3.6-flash';
+
+function endpointFor(model: string): string {
+  return `${BASE_URL}/${model}:generateContent`;
+}
 
 export type GeminiPart =
   | { text: string }
@@ -73,6 +88,7 @@ function adapt(node: unknown): unknown {
  */
 export async function callGemini<T>(opts: {
   apiKey: string;
+  model: string;
   systemInstruction: string;
   parts: GeminiPart[];
   schema: z.ZodType<T>;
@@ -82,7 +98,7 @@ export async function callGemini<T>(opts: {
 }): Promise<T> {
   const doFetch: FetchLike = opts.fetchImpl ?? fetch;
 
-  const response = await doFetch(ENDPOINT, {
+  const response = await doFetch(endpointFor(opts.model), {
     method: 'POST',
     headers: {
       // 키를 URL에 넣으면 로그와 referrer에 남는다. 헤더로만 보낸다.

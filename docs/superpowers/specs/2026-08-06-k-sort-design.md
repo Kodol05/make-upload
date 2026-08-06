@@ -114,7 +114,7 @@ AI Sort Scan은 사용자가 이름을 모르는 쓰레기를 도감으로 손�
 
 프런트는 React + Vite + TypeScript로 구현한다. 라우트가 홈 `#/`와 게임 `#/game` 둘뿐이므로 라우팅 라이브러리 대신 `src/app/useHashRoute.ts`를 직접 구현해 쓴다. Vite의 배포 base는 `/make-upload/`로 설정하고 GitHub Actions로 GitHub Pages에 배포한다. 공개 Worker 주소는 빌드 변수 `VITE_API_BASE_URL`로 주입한다.
 
-Gemini 호출은 `POST /v1beta/models/gemini-3.6-flash:generateContent`를 사용한다. Zod 스키마 하나에서 `responseSchema`를 파생해 모델이 형식을 지키게 하고, 같은 스키마로 응답을 다시 검증한다. 스택 선택의 근거는 [기술 스택 확정과 구현 설계](2026-08-06-k-sort-stack-decisions.md)에 있다.
+Gemini 호출은 `POST /v1beta/models/<model>:generateContent`를 사용한다. 무료 한도가 모델마다 따로 잡히므로 챗봇은 `gemini-3.5-flash-lite`(15 RPM · 500 RPD), 스캔은 `gemini-3.6-flash`(5 RPM · 20 RPD)로 나눈다. 한 모델에 몰면 리허설만으로 바닥난다. Zod 스키마 하나에서 `responseSchema`를 파생해 모델이 형식을 지키게 하고, 같은 스키마로 응답을 다시 검증한다. 스택 선택의 근거는 [기술 스택 확정과 구현 설계](2026-08-06-k-sort-stack-decisions.md)에 있다.
 
 ### 공유 데이터 타입
 
