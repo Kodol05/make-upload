@@ -69,9 +69,9 @@ K-SORT는 명지전문대 유학생이 한국의 분리배출 원칙을 빠르�
 15. 형광등
 16. 스티로폼
 
-각 품목은 분류, 다국어 이름과 별칭, 3~4개 처리 단계, 과정별 GPT Image 에셋, 흔한 실수, 지역 확인 필요 여부, 공식 출처를 갖는다. 이미지에는 글자를 생성하지 않고 단계 번호와 설명을 웹 UI로 겹쳐 표시한다. 이미지는 WebP로 최적화하고 지연 로딩한다.
+각 품목은 분류, 다국어 이름과 별칭, 3~4개 처리 단계, 대표 이미지 한 장, 흔한 실수, 지역 확인 필요 여부, 공식 출처를 갖는다. 이미지는 처음에 단계마다 두려 했으나 제작 부담이 커서 **품목당 한 장**으로 줄였고, 도감과 스캔 선택 목록이 함께 쓴다. 이미지에는 글자를 생성하지 않고 단계 번호와 설명을 웹 UI로 겹쳐 표시한다. 이미지는 WebP로 최적화하고 지연 로딩한다.
 
-도감은 텍스트 검색과 `재활용 / 음식물 / 일반 / 특수` 필터를 제공한다. 상세 화면에는 단계 이미지, 처리 순서, 흔한 실수, 지역별 예외 안내, 공식 출처 링크를 표시한다.
+도감은 텍스트 검색과 `재활용 / 음식물 / 일반 / 특수` 필터를 제공한다. 상세 화면에는 대표 이미지, 처리 순서, 흔한 실수, 지역별 예외 안내, 공식 출처 링크를 표시한다.
 
 ### AI Sort Scan
 
@@ -105,16 +105,19 @@ AI Sort Scan은 사용자가 이름을 모르는 쓰레기를 도감으로 손�
 
 - `src/`: React 화면, 상태, 컴포넌트, 스타일
 - `src/i18n/`: 도감 데이터 바깥의 UI 문자열 4언어 단일 사전
-- `shared/`: 프런트와 Worker가 함께 사용하는 타입, 도감, FAQ, 출처 데이터
+- `shared/`: 프런트와 API가 함께 사용하는 타입, 도감, FAQ, 출처 데이터
 - `shared/placeholder.ts`: 검수 전 문안의 자리 표시 헬퍼
-- `worker/`: Cloudflare Worker와 Gemini 호출, 요청 검증, CORS, 제한 처리
+- `worker/`: API 본체 — Gemini 호출, 요청 검증, CORS, 제한 처리
+- `api/[...path].ts`: Vercel Functions 진입점. `worker/`를 그대로 불러 쓴다
 - `public/media/`: 영상, 포스터, 자막
 - `public/images/items/`: 품목별 과정 이미지
 - `public/images/samples/`: 스캐너 발표용 샘플
 
-프런트는 React + Vite + TypeScript로 구현한다. 라우트가 홈 `#/`와 게임 `#/game` 둘뿐이므로 라우팅 라이브러리 대신 `src/app/useHashRoute.ts`를 직접 구현해 쓴다. Vite의 배포 base는 `/make-upload/`로 설정하고 GitHub Actions로 GitHub Pages에 배포한다. 공개 Worker 주소는 빌드 변수 `VITE_API_BASE_URL`로 주입한다.
+프런트는 React + Vite + TypeScript로 구현한다. 라우트가 홈 `#/`와 게임 `#/game` 둘뿐이므로 라우팅 라이브러리 대신 `src/app/useHashRoute.ts`를 직접 구현해 쓴다. Vite의 배포 base는 `/make-upload/`로 설정하고 GitHub Actions로 GitHub Pages에 배포한다. 공개 API 주소는 빌드 변수 `VITE_API_BASE_URL`로 주입한다.
 
-Gemini 호출은 `POST /v1beta/models/<model>:generateContent`를 사용한다. 무료 한도가 모델마다 따로 잡히므로 챗봇은 `gemini-3.5-flash-lite`(15 RPM · 500 RPD), 스캔은 `gemini-3.6-flash`(5 RPM · 20 RPD)로 나눈다. 한 모델에 몰면 리허설만으로 바닥난다. Zod 스키마 하나에서 `responseSchema`를 파생해 모델이 형식을 지키게 하고, 같은 스키마로 응답을 다시 검증한다. 스택 선택의 근거는 [기술 스택 확정과 구현 설계](2026-08-06-k-sort-stack-decisions.md)에 있다.
+**API는 Vercel Functions에 올린다(`https://make-upload.vercel.app`).** 처음에는 Cloudflare Worker로 배포했으나 Gemini가 `User location is not supported for the API use.`로 거부했다. Google이 보는 것은 사용자 위치가 아니라 서버의 출구 IP이고 Cloudflare 대역이 미지원 지역으로 판정되기 때문이다. smart placement와 AI Gateway 경유 모두 통하지 않아 호스팅을 옮겼다. `worker/`가 표준 `Request`/`Response`만 쓰고 있어서 코드는 거의 그대로 옮겨갔고, Cloudflare 전용 바인딩이던 사용량 제한만 `worker/src/rateLimit.ts`의 메모리 구현으로 대체했다. Vercel은 TypeScript를 번들하지 않고 트랜스파일만 하므로 상대 임포트에 `.js` 확장자를 붙인다.
+
+Gemini 호출은 `POST /v1beta/models/<model>:generateContent`를 사용한다. 무료 한도가 모델마다 따로 잡히지만, `gemini-3.6-flash`는 하루 20회(5 RPM)뿐이라 리허설 세 번이면 바닥난다. 실제로 호출해 보니 `gemini-3.5-flash-lite`(15 RPM · 500 RPD)가 이미지 입력도 받으므로 **챗봇과 스캔 모두 Lite에 두고 500회를 함께 쓴다.** 나누는 것보다 총량은 적지만 한쪽이 먼저 죽는 것보다 안전하다. Zod 스키마 하나에서 `responseSchema`를 파생해 모델이 형식을 지키게 하고, 같은 스키마로 응답을 다시 검증한다. 스택 선택의 근거는 [기술 스택 확정과 구현 설계](2026-08-06-k-sort-stack-decisions.md)에 있다.
 
 ### 공유 데이터 타입
 
@@ -125,9 +128,7 @@ type Category = 'recyclable' | 'food' | 'general' | 'special';
 
 interface CatalogStep {
   id: string;
-  image: string;
   text: LocalizedText;
-  alt: LocalizedText;
 }
 
 interface CatalogItem {
@@ -136,6 +137,8 @@ interface CatalogItem {
   name: LocalizedText;
   aliases: Record<Locale, string[]>;
   summary: LocalizedText;
+  image: string; // '/images/items/<itemId>.webp'. 품목당 한 장. 단계마다 두지 않는다
+  imageAlt: LocalizedText;
   steps: CatalogStep[];
   commonMistake: LocalizedText;
   needsLocalCheck: boolean;
@@ -175,13 +178,13 @@ interface ChatResponse {
 }
 ```
 
-Worker는 검수 지식을 시스템 지시로 제공하고 Gemini의 구조화 JSON 출력을 서버에서 다시 검증한다. 채팅은 세션별 분당 10회로 제한하고 10초 후 중단한다.
+서버는 검수 지식을 시스템 지시로 제공하고 Gemini의 구조화 JSON 출력을 서버에서 다시 검증한다. 채팅은 세션별 분당 10회로 제한하고 10초 후 중단한다.
 
 ### `POST /api/scan`
 
 요청은 JSON이며 `locale`, `sessionId`, `image`를 포함한다. `image`는 `{ mimeType, data }` 형태이고 `data`는 `data:` 접두사가 없는 base64다. 허용 형식은 JPEG, PNG, WebP이고 최대 크기는 1.5MB다.
 
-`multipart/form-data` 대신 base64를 쓰는 이유는 무료 Cloudflare Workers의 요청당 CPU가 10ms이기 때문이다. 1.5MB를 Worker에서 자바스크립트로 인코딩하면 이 시간을 넘길 수 있다. 브라우저는 네이티브 API로 처리하므로 부담이 없고, Worker는 받은 문자열을 그대로 Gemini의 `inlineData`에 넘기기만 한다. 크기 검사도 디코딩 없이 base64 길이로 어림해 모델을 부르기 전에 막는다.
+`multipart/form-data` 대신 base64를 쓰는 이유는 서버가 인코딩 비용을 지지 않게 하기 위해서다. 원래는 무료 Cloudflare Workers의 요청당 CPU 10ms 제약을 피하려던 결정이었고, Vercel로 옮긴 뒤에는 그 제약이 없지만 서버가 할 일이 적은 쪽이 나으므로 그대로 둔다. 브라우저는 네이티브 API로 처리하므로 부담이 없고, 서버는 받은 문자열을 그대로 Gemini의 `inlineData`에 넘기기만 한다. 크기 검사도 디코딩 없이 base64 길이로 어림해 모델을 부르기 전에 막는다.
 
 스캔 화면은 두 가지로 쓴다. 무엇인지 모르면 사진을 찍어 AI에게 묻고, 이미 아는 품목이면 등록된 16종에서 골라 도감으로 바로 들어간다. 두 번째 길은 AI를 부르지 않으며, 목록에 쓰는 이미지는 도감 대표 이미지를 그대로 재사용한다.
 
@@ -199,14 +202,14 @@ interface ScanResponse {
 }
 ```
 
-Worker는 결과를 최대 5개로 자르고 좌표, enum, 품목 ID를 검증한다. 스캔은 세션별 분당 5회로 제한하고 15초 후 중단한다.
+서버는 결과를 최대 5개로 자르고 좌표, enum, 품목 ID를 검증한다. 스캔은 세션별 분당 5회로 제한하고 15초 후 중단한다.
 
-### Worker 보안과 개인정보
+### API 보안과 개인정보
 
-- `GEMINI_API_KEY`는 Cloudflare secret으로만 저장한다.
-- 로컬 `.dev.vars*`, `.env*`는 Git에서 제외한다.
+- `GEMINI_API_KEY`는 Vercel 환경 변수로만 저장한다.
+- 로컬 `.dev.vars*`, `.env*`, `.vercel`은 Git에서 제외한다.
 - 운영 CORS origin은 `https://kodol05.github.io`, 개발 origin은 `http://localhost:5173`으로 제한한다.
-- Cloudflare rate-limit binding을 채팅과 스캔에 따로 적용한다.
+- 사용량 제한을 채팅과 스캔에 따로 적용한다. 메모리 기반이라 함수 인스턴스별로 세므로 전역 상한이 아니라 남용 완화 장치로 본다.
 - 프롬프트, 대화, 이미지 본문을 로그에 남기지 않는다.
 - 사람의 얼굴이나 개인정보를 설명하지 말고 쓰레기 품목만 탐지하도록 지시한다.
 - API 오류, 타임아웃, 잘못된 구조의 모델 응답은 표준 오류 응답으로 변환한다.
@@ -228,7 +231,7 @@ Worker는 결과를 최대 5개로 자르고 좌표, enum, 품목 ID를 검증�
 - 16개 품목과 FAQ 20개에 네 언어 값이 모두 존재하는지 검사
 - 모든 과정 이미지 경로와 `sourceIds`의 유효성 검사
 - 언어 상태와 번역 선택 로직 테스트
-- Worker 요청 검증, CORS, 오류 매핑, 구조화 응답 파서 테스트
+- API 요청 검증, CORS, 오류 매핑, 구조화 응답 파서 테스트
 - 클라이언트 이미지 압축과 스캔 좌표 변환 테스트
 
 ### 수동 및 통합 검증
@@ -238,7 +241,7 @@ Worker는 결과를 최대 5개로 자르고 좌표, enum, 품목 ID를 검증�
 - 단일 품목 고정 사진 5장, 다중 품목 사진 2장, 모호한 사진 1장으로 스캐너를 검증한다.
 - FAQ 20개를 4개 언어로 확인하고 범위 밖·지역별 차이·API 실패 시나리오를 검증한다.
 - 데스크톱 Chrome과 360px 모바일 뷰에서 전체 사용자 여정을 완료한다.
-- GitHub Pages 배포본과 Cloudflare Worker 운영 주소에서 실제 채팅과 스캔을 각 1회 이상 확인한다.
+- GitHub Pages 배포본과 Vercel 운영 주소(`https://make-upload.vercel.app`)에서 실제 채팅과 스캔을 각 1회 이상 확인한다.
 - 저장소와 브라우저 번들에 API 키가 없는지 검색한다.
 
 ## 6. 역할과 24시간 일정
@@ -246,13 +249,13 @@ Worker는 결과를 최대 5개로 자르고 좌표, enum, 품목 ID를 검증�
 ### 역할
 
 - **박재웅:** 기획, 공식 정보와 번역 검수, Seedance 영상, Typecast 내레이션, Suno BGM, 자막, 발표 자료와 발표
-- **김현민:** React 웹앱, 과정별 GPT Image 에셋, Cloudflare Worker, Gemini 챗봇과 AI Sort Scan, 게임
+- **김현민:** React 웹앱, 품목 이미지 에셋, Vercel API, Gemini 챗봇과 AI Sort Scan, 게임
 - **공동:** 통합 QA, 모바일 확인, 배포 확인, 발표 리허설
 
 ### 일정
 
 1. 0~2시간: 콘텐츠 스키마, 16종 원문, 화면 골격, 영상 콘티, 게임 연결 규격
-2. 2~10시간: 영상·음성·음악·번역과 앱·도감·Worker·과정 이미지 병렬 제작
+2. 2~10시간: 영상·음성·음악·번역과 앱·도감·API·과정 이미지 병렬 제작
 3. 10~17시간: 미디어 통합, 챗봇·스캐너 연결, 게임 통합
 4. 17~21시간: 다국어·모바일·오류 처리 검증 및 배포
 5. 21~24시간: 기능 동결, 발표 자료 완성, 전체 시연 3회
@@ -271,7 +274,7 @@ Worker는 결과를 최대 5개로 자르고 좌표, enum, 품목 ID를 검증�
 
 ## 8. 전제 조건
 
-- 팀은 Gemini API 키와 Cloudflare 계정, Seedance, Typecast, Suno, GPT Image 사용 권한을 보유한다.
+- 팀은 Gemini API 키와 Vercel 계정, Seedance, Typecast, Suno, GPT Image 사용 권한을 보유한다.
 - 실제 분리배출 내용은 환경부와 공공기관 자료를 기준으로 검수한다.
 - 지역마다 배출 방식이 달라질 수 있는 품목에는 지자체 확인 안내를 표시한다.
 - 게임 상세 규칙은 김현민 팀원의 별도 기획으로 구현하되 이 문서의 연결 규격을 지킨다.

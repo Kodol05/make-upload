@@ -45,10 +45,20 @@ describe('AppHeader', () => {
 
     await userEvent.selectOptions(screen.getByLabelText(ui.common.language.ko), 'vi');
 
-    // 베트남어 문안이 아직 없으므로 한국어와 (임시값) 표시가 함께 보인다.
+    expect(screen.getByRole('link', { name: ui.nav.catalog.vi })).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: `${ui.nav.catalog.ko} ${PLACEHOLDER_LABEL}` }),
-    ).toBeInTheDocument();
+      screen.queryByRole('link', { name: ui.nav.catalog.ko }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the Korean text with a marker while a translation is missing', async () => {
+    renderHeader();
+
+    await userEvent.selectOptions(screen.getByLabelText(ui.common.language.ko), 'vi');
+
+    // 번역이 빠진 항목은 한국어를 보여 주되 (임시값)을 붙여 눈에 띄게 한다.
+    // 지금은 모든 문안이 번역돼 있어 이 표시가 화면에 남아 있으면 안 된다.
+    expect(screen.queryByText(new RegExp(PLACEHOLDER_LABEL))).not.toBeInTheDocument();
   });
 
   it('never shows the machine readable marker', async () => {

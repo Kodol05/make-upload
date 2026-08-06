@@ -23,12 +23,20 @@
 
 ## 기술 스택
 
-React 19 · Vite 8 · TypeScript 6 · Zod 4 · Vitest 4 · ESLint 10 · Wrangler 4
-Cloudflare Worker + Gemini `:generateContent`
-챗봇은 `gemini-3.5-flash-lite`, 스캔은 `gemini-3.6-flash`를 쓴다. 무료 한도가 모델마다
-따로 잡혀 나눠 써야 총량이 는다. 모델은 `worker/src/gemini.ts`에서 정한다.
+React 19 · Vite 8 · TypeScript 6 · Zod 4 · Vitest 4 · ESLint 10
+**Vercel Functions** + Gemini `:generateContent`
+챗봇과 스캔 모두 `gemini-3.5-flash-lite`를 쓴다. `gemini-3.6-flash`는 무료 한도가 하루
+20회뿐이라 쓰지 않는다. 모델은 `worker/src/gemini.ts`에서 정한다.
 GitHub Pages 배포, Vite base `/make-upload/`, 해시 라우팅(직접 구현)
 스타일은 일반 CSS + `src/styles/tokens.css`
+
+⚠️ **API는 Vercel에 있다.** Gemini가 Cloudflare 출구 IP를 지역 차단해서 옮겼다.
+`wrangler.jsonc`와 `worker/` 폴더 이름은 남아 있지만 실행은 `api/[...path].ts`가 한다.
+자세한 건 [STATUS](docs/STATUS.md) 참조.
+
+⚠️ **`api/`와 `worker/`의 상대 임포트에는 `.js`를 붙인다.** Vercel은 TypeScript를 번들하지
+않고 트랜스파일만 해서 출력이 순수 ESM이 된다. 확장자가 없으면 배포 후 `ERR_MODULE_NOT_FOUND`가
+난다. 소스는 `.ts`인데 임포트는 `.js`로 쓰는 것이 맞다.
 
 ⚠️ **TypeScript는 6.0.x를 쓴다.** 7.x는 typescript-eslint가 아직 지원하지 않아 lint가 깨진다.
 
@@ -40,7 +48,8 @@ GitHub Pages 배포, Vite base `/make-upload/`, 해시 라우팅(직접 구현)
 npm run dev          개발 서버
 npm run check        lint + test + build  ← 커밋 전에 실행
 npm run test:run     테스트 1회
-npm run worker:dev   Worker 로컬 실행
+npm run worker:dev   API 로컬 실행
+npx vercel deploy --prod   API 배포
 ```
 
 ## 데이터 구조
@@ -84,7 +93,7 @@ Task마다 **실패하는 테스트 → 최소 구현 → 통과 → 커밋** �
 
 ## 🔴 보안
 
-- API 키는 로컬 `.dev.vars`와 Cloudflare secret에만 둔다
+- API 키는 로컬 `.dev.vars`와 Vercel 환경 변수에만 둔다
 - 커밋 전에 `git status`로 무엇이 올라가는지 눈으로 확인한다
 - 사용자 사진과 대화 원문은 메모리에서만 다루고 로그·서버에 남기지 않는다
 

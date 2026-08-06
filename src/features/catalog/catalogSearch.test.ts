@@ -48,10 +48,27 @@ describe('findCatalogItems', () => {
     expect(findCatalogItems('존재하지않는물건', 'all', 'ko')).toEqual([]);
   });
 
-  it('falls back to the Korean name while a translation is missing', () => {
-    // 베트남어 이름이 아직 없으면 화면에도 한국어가 보인다. 보이는 대로 검색돼야 한다.
-    const ids = findCatalogItems('캔', 'all', 'vi').map((i) => i.id);
-    expect(ids).toContain('can');
+  it('finds an item by its name in the chosen language', () => {
+    expect(findCatalogItems('lon', 'all', 'vi').map((i) => i.id)).toContain('can');
+    expect(findCatalogItems('can', 'all', 'en').map((i) => i.id)).toContain('can');
+    expect(findCatalogItems('罐', 'all', 'zh').map((i) => i.id)).toContain('can');
+  });
+
+  it('still finds an item by its Korean name in any language', () => {
+    // 화면에 한국어가 보이는 상황(번역 누락)이나 한국어로 외운 사용자를 위해 남긴다.
+    expect(findCatalogItems('캔', 'all', 'vi').map((i) => i.id)).toContain('can');
+  });
+
+  it('finds an item by an alias in the chosen language', () => {
+    expect(findCatalogItems('water bottle', 'all', 'en').map((i) => i.id)).toContain(
+      'clear-pet',
+    );
+    expect(findCatalogItems('矿泉水瓶', 'all', 'zh').map((i) => i.id)).toContain(
+      'clear-pet',
+    );
+    expect(findCatalogItems('chai nước', 'all', 'vi').map((i) => i.id)).toContain(
+      'clear-pet',
+    );
   });
 
   it('never matches the placeholder marker itself', () => {

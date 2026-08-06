@@ -25,21 +25,21 @@ describe('content progress', () => {
     expect(Number.isInteger(remaining)).toBe(true);
   });
 
-  // 아래 세 가지는 검수가 끝나면 .skip을 떼고 Task 12에서 통과시킨다.
+  // 콘텐츠 검수가 끝나 게이트를 켰다. 여기서 실패하면 배포하지 않는다.
 
-  it.skip('has no placeholder left before release', () => {
+  it('has no placeholder left before release', () => {
     expect(findTodos(catalogItems)).toEqual([]);
     expect(findTodos(faqs)).toEqual([]);
     expect(findTodos(sources)).toEqual([]);
   });
 
-  it.skip('has a verified URL for every source', () => {
+  it('has a verified URL for every source', () => {
     for (const [id, source] of Object.entries(sources)) {
       expect(source.url, `source ${id}`).toMatch(/^https:\/\//);
     }
   });
 
-  it.skip('backs every FAQ answer with at least one source', () => {
+  it('backs every FAQ answer with at least one source', () => {
     for (const faq of faqs) {
       expect(faq.sourceIds.length, faq.id).toBeGreaterThan(0);
     }
