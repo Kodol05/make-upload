@@ -3,16 +3,21 @@ import { z } from 'zod';
 const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 /**
- * 무료 한도는 모델마다 따로 잡힌다. 챗봇과 스캔을 다른 모델에 두면 버킷이 갈라져
- * 쓸 수 있는 총량이 늘어난다. 한 모델에 몰면 리허설 도중 바닥난다.
+ * 무료 한도는 모델마다 따로 잡히므로 나눠 쓰면 총량이 늘어난다.
  *
+ * AI Studio에서 확인한 값은 두 가지뿐이다.
  * - `gemini-3.5-flash-lite`: 15 RPM · 500 RPD
  * - `gemini-3.6-flash`: 5 RPM · 20 RPD
  *
- * 스캔이 훨씬 빡빡하므로, Lite가 이미지 입력을 받는지 확인되면 스캔도 Lite로 옮긴다.
+ * 3.6-flash의 하루 20회는 리허설 세 번이면 바닥나고, 실제로 호출해 보니 Lite도
+ * 이미지 입력을 받는다. 그래서 둘 다 Lite에 두고 500회를 함께 쓴다. 나누는 것보다
+ * 총량이 적지만, 한쪽이 20회에서 먼저 죽는 것보다 안전하다.
+ *
+ * 한도가 넉넉한 다른 모델을 확인하면 챗봇을 그쪽으로 옮겨 버킷을 다시 나눈다.
+ * 그때는 이 상수 한 줄만 바꾸면 된다.
  */
 export const CHAT_MODEL = 'gemini-3.5-flash-lite';
-export const SCAN_MODEL = 'gemini-3.6-flash';
+export const SCAN_MODEL = 'gemini-3.5-flash-lite';
 
 function endpointFor(model: string): string {
   return `${BASE_URL}/${model}:generateContent`;

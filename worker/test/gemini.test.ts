@@ -92,9 +92,10 @@ describe('callGemini', () => {
     expect(fetchMock.mock.calls[0][0]).toContain(`${SCAN_MODEL}:generateContent`);
   });
 
-  it('keeps chat and scan on different models', () => {
-    // 무료 한도는 모델마다 따로 잡힌다. 같은 모델을 쓰면 버킷을 나눠 쓰지 못한다.
-    expect(CHAT_MODEL).not.toBe(SCAN_MODEL);
+  it('keeps scan off the model with the tiny daily quota', () => {
+    // gemini-3.6-flash는 하루 20회라 리허설 세 번이면 바닥난다.
+    expect(SCAN_MODEL).not.toBe('gemini-3.6-flash');
+    expect(CHAT_MODEL).not.toBe('gemini-3.6-flash');
   });
 
   it('returns the parsed and validated answer', async () => {
