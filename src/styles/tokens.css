@@ -1,0 +1,28 @@
+:root {
+  --color-primary: #0b6b4f;
+  --color-primary-strong: #07523e;
+  --color-accent: #1769aa;
+  --color-bg: #f7faf8;
+  --color-surface: #ffffff;
+  --color-text: #14231d;
+  --color-muted: #5d6d65;
+  --color-border: #d7e2dc;
+  --radius-card: 18px;
+  --shadow-card: 0 12px 30px rgb(20 35 29 / 8%);
+
+  /* 분류별 기능 색. 색만으로 구분하지 않고 항상 텍스트를 함께 쓴다. */
+  --color-recyclable: #1769aa;
+  --color-food: #0b6b4f;
+  --color-general: #5d6d65;
+  --color-special: #a4531b;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* 손가락으로 누를 수 있는 최소 크기 */
+  --touch-target: 44px;
+}
