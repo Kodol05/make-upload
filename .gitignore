@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+
+# Cloudflare Worker 로컬 개발용 실제 키. 절대 커밋하지 않는다.
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+.wrangler/
+
+*.local
+*.log
+.DS_Store
+.vscode/
+.idea/
