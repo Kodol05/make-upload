@@ -400,20 +400,21 @@ main {
   text-wrap: pretty;
 }
 
+/**
+ * 판을 두르지 않는다. 흰 판이 뒤의 그림을 통째로 가리고 있었다.
+ * 그림 넉 장도 배경을 빼 두어 소개 그림이 그대로 비친다.
+ */
 .masthead__legend {
-  /* 소개의 가운데 자리라 여백을 1.2배 키웠다. */
   padding: calc(var(--space-6) * 1.2) calc(var(--space-5) * 1.2);
-  background: var(--paper);
-  border: var(--border-hair);
-  border-radius: var(--radius-card);
 }
 
+/* 뒤에 그림이 비쳐서 보조색은 2.66:1까지 떨어진다. 본문색이면 같은 자리에서 5.3:1이다. */
 .masthead__legend-caption {
   margin: 0 0 var(--space-6);
   font-size: var(--text-label);
   font-weight: 700;
   letter-spacing: var(--tracking-label);
-  color: var(--ink-muted);
+  color: var(--ink);
 }
 
 /**
@@ -780,15 +781,16 @@ button,
   background-image: var(--intro-cover, none);
   background-size: cover;
   background-position: center;
-  opacity: 0.55;
+  opacity: 0.7;
 }
 
 /**
  * 글자 뒤만 덮개를 씌운다.
  *
  * 그림을 진하게 하면 대비가 떨어지므로, 위쪽(이름과 제목이 있는 자리)은 배경색을
- * 두껍게 얹고 가운데는 얇게 둬서 그림이 드러나게 한다. 아래는 완전히 걷어 내
- * 분류 카드가 깨끗한 바탕 위에 놓이게 한다.
+ * 두껍게 얹고 아래로 갈수록 얇게 둔다. 전에는 아래를 아예 불투명하게 덮어
+ * 분류 상자를 깨끗한 바탕에 올렸는데, 그 판을 걷어 냈으니 덮개도 함께 걷었다.
+ * 가장 어두운 픽셀이 그대로 비쳐도 본문 대비 5.3:1이다.
  */
 .masthead::after {
   content: '';
@@ -799,8 +801,8 @@ button,
     to bottom,
     rgb(244 250 246 / 82%) 0%,
     rgb(244 250 246 / 52%) 34%,
-    rgb(244 250 246 / 70%) 62%,
-    var(--film) 88%
+    rgb(244 250 246 / 50%) 62%,
+    rgb(244 250 246 / 46%) 100%
   );
 }
 
