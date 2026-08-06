@@ -779,6 +779,195 @@ main {
   cursor: default;
 }
 
+/* ── 게임 ─────────────────────────────────────────── */
+
+.game h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.4rem;
+}
+
+.game__intro,
+.game__score,
+.game__all-correct {
+  margin: 0 0 var(--space-4);
+  color: var(--color-muted);
+}
+
+.game__score {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.game__review {
+  margin: 0 0 var(--space-5);
+  padding-left: var(--space-5);
+}
+
+.game__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.game__actions button {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-5);
+  border: none;
+  border-radius: var(--radius-card);
+  background: var(--color-primary);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.game-play__progress {
+  margin: 0 0 var(--space-3);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+/* 위에 쓰레기, 아래에 통. 사이에 물어보는 것이 들어간다. */
+.game-play__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.game-play__image {
+  max-width: 160px;
+}
+
+.game-play__name {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.game-play__condition {
+  margin: 0;
+  color: var(--color-special);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.game-play__question {
+  margin: var(--space-4) 0 var(--space-2);
+  font-weight: 600;
+}
+
+.game-play__choices {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.game-play__choices button {
+  width: 100%;
+  min-height: var(--touch-target);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.game-play__choices button:hover {
+  border-color: var(--color-primary);
+}
+
+.game-play__hint {
+  margin-bottom: var(--space-4);
+  padding: var(--space-3);
+  border-left: 4px solid var(--color-accent);
+  border-radius: calc(var(--radius-card) - 10px);
+  background: var(--color-bg);
+}
+
+.game-play__hint p {
+  margin: var(--space-1) 0 0;
+}
+
+.game-play__retry {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.game-play__verdict {
+  margin-bottom: var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.game-play__verdict p {
+  margin: 0 0 var(--space-2);
+}
+
+.game-play__correct { color: var(--color-food); font-weight: 700; }
+.game-play__revealed { color: var(--color-special); font-weight: 700; }
+.game-play__answer { font-size: 1.1rem; font-weight: 700; }
+
+.game-play__verdict button {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-5);
+  border: none;
+  border-radius: var(--radius-card);
+  background: var(--color-primary);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.game-play__locked {
+  margin: 0 0 var(--space-2);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.game-play__bin-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+}
+
+.game-play__bin {
+  min-height: 72px;
+  padding: var(--space-2);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.game-play__bin:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.game-play__bin--recyclable:not(:disabled) { border-color: var(--color-recyclable); color: var(--color-recyclable); }
+.game-play__bin--food:not(:disabled) { border-color: var(--color-food); color: var(--color-food); }
+.game-play__bin--general:not(:disabled) { border-color: var(--color-general); color: var(--color-general); }
+.game-play__bin--special:not(:disabled) { border-color: var(--color-special); color: var(--color-special); }
+
 .app-footer {
   padding: var(--space-5) var(--space-4);
   border-top: 1px solid var(--color-border);
