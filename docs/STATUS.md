@@ -11,10 +11,7 @@
 - **웹앱**: <https://kodol05.github.io/make-upload/>
 - **API**: <https://make-upload.vercel.app> — `POST /api/chat`, `POST /api/scan`
 - **진행 중 Task**: Task 11 (배포와 운영 연결) 마무리 단계
-- **Blocker**: **GitHub Pages 배포가 실패 중.** 빌드는 통과하는데 `actions/deploy-pages`가
-  `deployment_queued`에서 10분을 기다리다 타임아웃한다. 그래서 배포된 번들에 아직
-  `VITE_API_BASE_URL`이 들어가지 않아 브라우저에서 AI 기능이 동작하지 않는다.
-  재실행으로 풀리는지 확인 중이다.
+- **Blocker**: 없음. Pages 배포가 6번 연속 실패했으나 원인을 찾아 고쳤다(PR #27, 아래 참조).
 
 ## 지금 · 다음
 
@@ -193,9 +190,30 @@ Task 5의 도감 검색은 `aliases`를 쓴다. 현재 한국어 별칭만 채�
 `HomeRoute`와 `GameRoute`는 `src/app/App.tsx` 안의 최소 구현이다.
 Task 4가 영상 섹션을, Task 9가 실제 게임을 각각 여기에 붙인다.
 
+## ⚠️ Pages 배포가 느리다 — 타임아웃을 건드리지 말 것
+
+이 저장소의 Pages 배포는 큐에서 **3~9분**을 기다린다. `actions/deploy-pages`의 기본
+타임아웃이 정확히 10분이라 계속 아슬아슬했고, 2026-08-06 11:29부터 그 선을 넘어
+6번 연속 실패했다. 액션은 시간이 지나면 포기하는 게 아니라 **배포를 직접 취소한다.**
+
+```
+##[error]Timeout reached, aborting!
+Canceling Pages deployment...
+```
+
+그래서 workflow에 두 가지를 박아 두었다(PR #27). 되돌리지 않는다.
+
+- `timeout: 1800000` — 30분. 큐가 느려도 기다린다
+- `cancel-in-progress: false` — 배포가 몇 분씩 걸리는데 그 사이 다음 커밋이 들어와
+  취소해 버리면 어느 것도 끝나지 못한다. 그날 취소된 실행이 6건이었다
+
+**교훈**: 배포가 실패하면 코드부터 의심하지 말고 **어느 job에서 죽었는지, 첫 실패
+커밋이 무엇을 바꿨는지** 먼저 본다. 여기서는 첫 실패가 문서만 바꾼 커밋이었고
+빌드는 6번 모두 성공했다. 코드가 아니라는 증거가 로그에 이미 있었다.
+
 ## 다음 액션 (우선순위)
 
-1. Pages 배포 성공시키기 (지금 막힌 곳). 배포본에서 챗봇·스캔이 실제로 도는지 확인
+1. 배포본에서 챗봇·스캔이 실제로 도는지 확인 (번들에 `make-upload.vercel.app`이 있는지)
 2. Task 12: 릴리스 게이트 `.skip` 해제, 스크린샷, 리허설 3회, secret 검색, 태그
 
 ## 최근 결정 · 변경

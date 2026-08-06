@@ -23,4 +23,5 @@
 - 2026-08-06 (현민) [feat] Task 10: 기능별 오류 경계와 모달 포커스 가둠 → PR #24
 - 2026-08-06 (현민) [fix] 챗봇·스캔 모두 gemini-3.5-flash-lite로. 3.6-flash 무료 한도가 하루 20회뿐이었음
 - 2026-08-06 (현민) [feat] Task 11: API를 Cloudflare에서 Vercel로 이전. Gemini가 Cloudflare 출구 IP를 지역 차단 → PR #25
+- 2026-08-06 (현민) [ci] Pages 배포 6연속 실패. 코드가 아니라 deploy-pages 기본 타임아웃 10분 < 실제 큐 대기 3~9분이 원인 → PR #27
 - 2026-08-06 (현민) [docs] Vercel 이전을 STATUS·CLAUDE·설계 문서에 반영
