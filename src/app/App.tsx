@@ -3,6 +3,7 @@ import { AppHeader } from '@/components/AppHeader';
 import { FeatureErrorBoundary } from '@/components/FeatureErrorBoundary';
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { CatalogSection } from '@/features/catalog/CatalogSection';
+import { AskChatProvider } from '@/features/chat/askChat';
 import { ChatWidget } from '@/features/chat/ChatWidget';
 import { GamePage } from '@/features/game/GamePage';
 import { IntroPage } from '@/features/intro/IntroPage';
@@ -197,7 +198,10 @@ function AppShell() {
 export function App() {
   return (
     <LocaleProvider>
-      <AppShell />
+      {/* 도감·검색에서 챗봇을 부르는 통로. 챗봇은 라우트 바깥에 있고 부르는 쪽은 안쪽이다. */}
+      <AskChatProvider>
+        <AppShell />
+      </AskChatProvider>
     </LocaleProvider>
   );
 }

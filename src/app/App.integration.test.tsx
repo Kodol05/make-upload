@@ -149,6 +149,26 @@ describe('App integration', () => {
     expect(within(dialog).getByRole('heading', { name: petName })).toBeInTheDocument();
   });
 
+  /**
+   * 도감은 정해진 16종의 정해진 답이고 챗봇은 그 밖도 답한다. 둘 사이를
+   * 사용자가 직접 건너가게 두면 "이건 알겠는데 내 경우는?"에서 길이 끊긴다.
+   */
+  it('hands the reader from a catalog entry to the chat', async () => {
+    render(<App />);
+    act(() => goTo('#/catalog'));
+    const petName = catalogItems[0].name.ko;
+    await userEvent.click(screen.getByRole('button', { name: new RegExp(petName) }));
+
+    await userEvent.click(
+      screen.getByRole('button', { name: ui.catalog.askAboutThis.ko }),
+    );
+
+    // 상세는 닫힌다. 포커스를 가둔 채로 두면 키보드가 챗봇에 닿지 못한다.
+    expect(screen.queryByRole('dialog', { name: petName })).not.toBeInTheDocument();
+    // 챗봇이 열리고 품목 이름이 입력란에 들어와 있다.
+    expect(screen.getByLabelText(ui.chat.inputLabel.ko)).toHaveValue(petName);
+  });
+
   it('closes that dialog again', async () => {
     render(<App />);
     act(() => goTo('#/catalog'));

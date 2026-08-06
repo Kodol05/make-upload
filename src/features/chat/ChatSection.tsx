@@ -6,6 +6,7 @@ import { catalogItems } from '@shared/catalog';
 import { faqs } from '@shared/faqs';
 import { sources } from '@shared/sources';
 import type { ChatRequest, ChatResponse, ItemId, LocalizedText } from '@shared/types';
+import type { ChatAsk } from './askChat';
 import { createSessionId, sendChat as defaultSendChat } from './chatApi';
 
 /** 화면에 남기는 한 줄. 대화는 이 배열에만 있고 어디에도 저장하지 않는다. */
@@ -29,15 +30,36 @@ function errorText(code: string): LocalizedText {
 
 export function ChatSection({
   sendChat = defaultSendChat,
+  ask,
 }: {
   sendChat?: (request: ChatRequest) => Promise<ChatResponse>;
+  /** 도감이나 검색에서 넘어온 거리. 없으면 그냥 빈 대화로 시작한다. */
+  ask?: ChatAsk | null;
 }) {
   const { locale, t } = useLocale();
   const [draft, setDraft] = useState('');
+  /** 어느 품목을 보다가 왔는지. 서버가 그 품목을 아는 채로 답한다. */
+  const [contextItemId, setContextItemId] = useState<ItemId | undefined>();
   const [turns, setTurns] = useState<Turn[]>([]);
   const [pending, setPending] = useState(false);
   const sessionId = useRef(createSessionId());
   const nextId = useRef(0);
+
+  /**
+   * 밖에서 부른 것을 받는다. 부를 때마다 새 객체가 오므로 한 번씩만 반응한다.
+   *
+   * 보내지는 않고 입력란에 넣어만 둔다. 무엇이 물어질지 보고 나서 고칠 수 있어야
+   * 한다. 품목 이름만 덩그러니 보내고 싶지 않은 사람이 대부분일 것이다.
+   *
+   * 효과가 아니라 렌더 중에 맞춘다. 효과로 넣으면 빈 입력란이 한 번 그려진 뒤에
+   * 글자가 들어와 깜빡인다.
+   */
+  const [answered, setAnswered] = useState<ChatAsk | null | undefined>(null);
+  if (ask && ask !== answered) {
+    setAnswered(ask);
+    setContextItemId(ask.itemId);
+    if (ask.question) setDraft(ask.question);
+  }
 
   async function submit(question: string) {
     const trimmed = question.trim();
@@ -62,6 +84,7 @@ export function ChatSection({
         message: trimmed,
         history,
         sessionId: sessionId.current,
+        contextItemId,
       });
       setTurns((prev) => prev.map((turn) => (turn.id === id ? { ...turn, answer } : turn)));
     } catch (error) {

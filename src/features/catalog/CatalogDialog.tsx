@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useLocale } from '@/app/useLocale';
 import { ItemImage } from '@/components/ItemImage';
+import { useAskChat } from '@/features/chat/askChat';
 import { ui } from '@/i18n/strings';
 import { sources } from '@shared/sources';
 import type { CatalogItem } from '@shared/types';
@@ -19,6 +20,7 @@ export function CatalogDialog({
   onClose: () => void;
 }) {
   const { t } = useLocale();
+  const { ask } = useAskChat();
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -90,6 +92,24 @@ export function CatalogDialog({
 
         <h4>{t(ui.catalog.mistakeTitle)}</h4>
         <p className="catalog-dialog__mistake">{t(item.commonMistake)}</p>
+
+        {/**
+         * 도감은 정해진 16종의 정해진 답이고, 챗봇은 그 밖도 답한다. 여기서
+         * 이어 주지 않으면 "이건 알겠는데 내 경우는?"에서 길이 끊긴다.
+         *
+         * 상세를 먼저 닫는다. 상세가 포커스를 가두고 있어서 열어 둔 채로 챗봇을
+         * 띄우면 키보드가 챗봇에 닿지 못한다.
+         */}
+        <button
+          type="button"
+          className="catalog-dialog__ask"
+          onClick={() => {
+            onClose();
+            ask({ itemId: item.id, question: t(item.name) });
+          }}
+        >
+          {t(ui.catalog.askAboutThis)}
+        </button>
 
         {item.needsLocalCheck && (
           <div className="catalog-dialog__local-check">

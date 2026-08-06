@@ -2655,6 +2655,34 @@ main {
   border: none;
 }
 
+/**
+ * 챗봇으로 넘기는 단추.
+ *
+ * 도감이 답할 수 있는 것을 다 말한 다음에 온다. 처리 순서와 흔한 실수보다
+ * 먼저 눈에 띄면 안 되므로 채우지 않고 테두리만 두른다.
+ */
+.catalog-dialog__ask {
+  display: block;
+  width: 100%;
+  min-height: var(--touch-target);
+  margin-top: var(--space-5);
+  padding: var(--space-3) var(--space-5);
+  background: none;
+  color: var(--mark-deep);
+  font-size: var(--text-body);
+  font-weight: 700;
+  border: 2px solid var(--rule);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.catalog-dialog__ask:hover,
+.catalog-dialog__ask:focus-visible {
+  background: var(--wash);
+  border-color: var(--mark);
+}
+
 /* ── 공식 출처 ──────────────────────────────────────────── */
 
 /**

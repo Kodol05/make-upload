@@ -4,12 +4,16 @@ import { LocaleProvider } from '@/app/LocaleProvider';
 import { ui } from '@/i18n/strings';
 import { ApiError } from '@/lib/api';
 import type { ChatRequest, ChatResponse } from '@shared/types';
+import type { ChatAsk } from './askChat';
 import { ChatSection } from './ChatSection';
 
-function renderChat(send: (request: ChatRequest) => Promise<ChatResponse>) {
+function renderChat(
+  send: (request: ChatRequest) => Promise<ChatResponse>,
+  ask?: ChatAsk,
+) {
   return render(
     <LocaleProvider>
-      <ChatSection sendChat={send} />
+      <ChatSection sendChat={send} ask={ask} />
     </LocaleProvider>,
   );
 }
@@ -30,6 +34,36 @@ describe('ChatSection', () => {
   beforeEach(() => {
     localStorage.clear();
     localStorage.setItem('k-sort-locale', 'ko');
+  });
+
+  /**
+   * 도감 상세에서 넘어온 품목은 서버까지 가야 한다. `contextItemId`는 스키마와
+   * 시스템 프롬프트에 오래 전부터 있었는데 정작 보내는 화면이 없었다.
+   */
+  it('carries the item the reader came from all the way to the request', async () => {
+    const send = vi.fn(async () => answer);
+    renderChat(send, { itemId: 'clear-pet', question: '투명 페트병' });
+
+    // 넘어온 말이 입력란에 들어와 있고, 보내지지는 않았다.
+    const input = screen.getByLabelText(ui.chat.inputLabel.ko);
+    expect(input).toHaveValue('투명 페트병');
+    expect(send).not.toHaveBeenCalled();
+
+    await userEvent.click(screen.getByRole('button', { name: ui.chat.send.ko }));
+
+    expect(send).toHaveBeenCalledWith(
+      expect.objectContaining({ contextItemId: 'clear-pet' }),
+    );
+  });
+
+  it('leaves the item out when the reader opened the chat on their own', async () => {
+    const send = vi.fn(async (_request: ChatRequest) => answer);
+    renderChat(send);
+    await ask();
+
+    expect(send).toHaveBeenCalledWith(
+      expect.objectContaining({ contextItemId: undefined }),
+    );
   });
 
   it('offers suggested questions', () => {
