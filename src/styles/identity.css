@@ -23,16 +23,16 @@
 }
 
 .sort-mark--sm svg {
-  width: 20px;
-  height: 20px;
+  width: clamp(22px, 1.8vw, 30px);
+  height: clamp(22px, 1.8vw, 30px);
 }
 .sort-mark--md svg {
-  width: 30px;
-  height: 30px;
+  width: clamp(32px, 2.6vw, 44px);
+  height: clamp(32px, 2.6vw, 44px);
 }
 .sort-mark--lg svg {
-  width: 56px;
-  height: 56px;
+  width: clamp(56px, 5.5vw, 84px);
+  height: clamp(56px, 5.5vw, 84px);
 }
 
 /** 표시 아래 재질 라벨. 실제 포장재의 조판을 따른다. */
@@ -568,17 +568,21 @@ main > * + * {
  */
 .catalog__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
+  gap: var(--space-5);
 }
 
 .catalog-card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4);
+  gap: var(--space-4);
+  padding: var(--space-5);
   text-align: left;
   cursor: pointer;
+}
+
+.catalog-card__name {
+  font-size: var(--text-body);
 }
 
 .catalog__search input {
@@ -724,4 +728,110 @@ button,
 .wordmark--lg .wordmark__text {
   font-size: clamp(28px, 6vw, 40px);
   letter-spacing: 0.06em;
+}
+
+/* ══ 전체 확대 ═══════════════════════════════════════════ */
+
+/**
+ * 시연은 노트북 화면에서 이뤄지고 심사위원은 조금 떨어져서 본다. 그래서
+ * 관행적인 크기보다 한 단계 크게 잡는다. 아래 값은 전부 `clamp`의 위쪽을
+ * 키운 것이라, 360px에서는 지금 크기가 그대로 유지된다.
+ */
+
+/* 누를 수 있는 것 전부 */
+button,
+.journey-next__button,
+.catalog__filter,
+.language-select,
+.chat-widget__launcher {
+  font-size: var(--text-body);
+}
+
+.journey-next__button {
+  min-height: calc(var(--touch-target) + 8px);
+  padding: var(--space-4) var(--space-7);
+  font-size: clamp(17px, 1.4vw, 21px);
+}
+
+.catalog__filter {
+  padding-inline: var(--space-5);
+}
+
+/* 상단 메뉴 */
+.app-header__nav a {
+  font-size: var(--text-body);
+  padding: var(--space-3) var(--space-4);
+}
+
+/* 검색 상자 */
+.catalog__search input {
+  font-size: var(--text-body);
+  padding: var(--space-3) var(--space-4);
+}
+
+.catalog__search span,
+.catalog__filters legend {
+  font-size: var(--text-small);
+}
+
+/* 처리 순서와 흔한 실수 */
+.catalog-dialog__steps li,
+.catalog-dialog__mistake,
+.catalog-dialog__summary {
+  font-size: var(--text-body);
+}
+
+.catalog-dialog__steps {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.catalog-dialog__steps li::before {
+  font-size: var(--text-small);
+}
+
+/* 챗봇 */
+.chat-widget__launcher {
+  min-height: 64px;
+  padding-inline: var(--space-6);
+}
+
+.chat-widget__bar strong {
+  font-size: var(--text-title);
+}
+
+@media (min-width: 640px) {
+  .chat-widget__panel {
+    inset: auto var(--space-5) calc(64px + var(--space-5)) auto;
+    width: min(440px, calc(100vw - var(--space-5) * 2));
+    height: 620px;
+  }
+}
+
+/* 챗봇 버튼이 커진 만큼 본문 바닥도 함께 내린다 */
+main {
+  padding-bottom: calc(64px + var(--space-7));
+}
+
+/* 진행 표시 */
+.journey-progress {
+  padding-block: var(--space-4) 0;
+}
+
+.journey-progress__track {
+  height: 6px;
+}
+
+.journey-progress__count {
+  font-size: var(--text-small);
+}
+
+/* 섹션 제목 앞의 선도 함께 굵게 */
+.lesson h2::before,
+.catalog h2::before,
+.scanner h2::before,
+.chat h2::before,
+.game h2::before {
+  width: 44px;
+  height: 5px;
 }
