@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocale } from '@/app/useLocale';
 import { ui } from '@/i18n/strings';
 import { ApiError } from '@/lib/api';
@@ -48,6 +48,22 @@ export function ChatSection({
   const [pending, setPending] = useState(false);
   const sessionId = useRef(createSessionId());
   const nextId = useRef(0);
+  const streamRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * 새 질문과 답이 들어오면 대화를 아래로 내린다.
+   *
+   * 새 줄은 맨 아래에 붙는데 창은 그대로 있어서, 물어 놓고 스스로 내려야 답이
+   * 보였다. 답이 도착할 때도 한 번 더 내린다. 질문만 보이고 답은 화면 밖에
+   * 남는 것이 가장 헷갈린다.
+   *
+   * 미끄러뜨리지 않고 바로 옮긴다. 움직임을 줄여 달라는 설정을 따로 볼 필요가
+   * 없고, 대화가 길어져도 기다릴 일이 없다.
+   */
+  useEffect(() => {
+    const stream = streamRef.current;
+    if (stream) stream.scrollTop = stream.scrollHeight;
+  }, [turns]);
 
   /**
    * 밖에서 부른 것을 받는다. 부를 때마다 새 객체가 오므로 한 번씩만 반응한다.
@@ -132,7 +148,7 @@ export function ChatSection({
        * 맨 위의 인사는 정해진 문장이라 모델을 부르지 않는다. 빈 화면으로 시작하면
        * 무엇을 물어야 할지 몰라 멈추는데, 한 마디가 있으면 말을 걸기 쉬워진다.
        */}
-      <div className="chat__stream">
+      <div className="chat__stream" ref={streamRef}>
         <p className="chat__greeting">{t(ui.chat.greeting)}</p>
 
         <ol className="chat__turns">
