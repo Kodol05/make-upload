@@ -123,6 +123,22 @@ main {
   background: var(--wash);
 }
 
+/**
+ * 지금 보고 있는 페이지.
+ *
+ * 네 페이지가 한 줄로 이어져 있어서 어디쯤인지가 늘 보여야 한다. 초록 네모로
+ * 채운다. 가리키는 중일 뿐인 옅은 초록(hover)과 헷갈리지 않게 진하게 채우고
+ * 모서리도 알약이 아닌 네모로 둔다. 흰 글자 대비 5.42:1.
+ */
+.app-header__nav a[aria-current='page'],
+.app-header__nav a[aria-current='page']:hover,
+.app-header__nav a[aria-current='page']:focus-visible {
+  background: var(--mark);
+  color: var(--paper);
+  border-radius: var(--radius-card);
+  font-weight: 700;
+}
+
 /* ══ 공통: 카드와 면 ══════════════════════════════════════ */
 
 .lesson,
@@ -316,7 +332,8 @@ main {
 
 .journey-next__hint {
   margin: 0;
-  font-size: var(--text-small);
+  /* 단추와 함께 키운다. 단추만 커지면 안내가 더 작아 보인다. */
+  font-size: clamp(16px, 1.25vw, 21px);
   color: var(--ink-muted);
 }
 
@@ -412,12 +429,7 @@ main {
   list-style: none;
 }
 
-/**
- * 표시와 이름을 두 배로 키우면서 네 칸으로 펴는 폭도 함께 올렸다. 620px에서
- * 네 칸으로 펴면 칸 하나가 130px 남짓인데, 커진 표시만으로도 그 폭을 다 쓴다.
- * 그 아래에서는 두 칸으로 크게 보여 주는 편이 낫다.
- */
-@media (min-width: 1100px) {
+@media (min-width: 620px) {
   .masthead__marks {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -426,92 +438,45 @@ main {
 /* ── 분류 상자 ──────────────────────────────────────────── */
 
 /**
- * 그림을 배경으로 깔고 표시와 이름을 그 위에 얹는다. 원본 네 장의 크기와 비율이
- * 제각각이라 같은 규격(480×300)으로 맞춰 두었고, 여기서는 비율만 잡아 준다.
+ * 그림만 남긴다.
  *
- * 그림은 옅게 깐다. 그대로 두면 위에 얹은 글자의 대비가 무너진다.
+ * 표시와 이름을 두 배로 키웠더니 칸이 세로로 너무 길어졌다. 글자와 흰 판을
+ * 걷어 내고 그림 넉 장만 늘어놓는다. 판도 테두리도 없어 배경 위에 그림만
+ * 떠 있다.
+ *
+ * 이름은 지우지 않고 화면에서만 감춘다. 그림 안의 낱말은 한국어라, 읽지 못하는
+ * 사람과 화면을 못 보는 사람에게는 이 이름이 네 갈래를 알 유일한 단서다.
  */
 .category-card {
   position: relative;
-  isolation: isolate;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-2);
-  /* 그림과 이름이 함께 들어가야 해서 세로를 더 준다. */
-  aspect-ratio: 5 / 6;
-  /* 아래를 넉넉히 비워 표시와 이름이 바닥에 붙지 않고 조금 위에 앉는다. */
-  padding: var(--space-5) var(--space-3) calc(var(--space-6) * 1.4);
-  overflow: hidden;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-card);
+  justify-content: center;
+  /* 넉 장의 원본이 1.57~1.96이라 그 사이로 잡는다. `contain`이라 남는 자리는 비친다. */
+  aspect-ratio: 5 / 3;
+  padding: 0;
+  background: none;
+  border: none;
 }
 
 .category-card::before {
   content: '';
   position: absolute;
   inset: 0;
-  z-index: -2;
   background-image: var(--category-cover, none);
-  /* 칸 너비를 거의 다 쓴다. 여백을 잘라 둔 그림이라 이만큼 키워도 넘치지 않는다. */
-  background-size: 92% auto;
-  background-position: center 30%;
+  background-size: contain;
+  background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.9;
 }
 
-/**
- * 아래쪽을 옅게 눌러 칸 바닥을 앉힌다.
- *
- * 전에는 여기서 92%까지 덮어 글자의 대비를 만들었다. 표시가 두 배로 커지면서
- * 덮개가 닿지 않는 위쪽까지 올라와, 자리에 기대는 방식으로는 더 이상 대비를
- * 보장할 수 없다(실측 1.00:1). 대비는 표시 자체가 깔고 앉는 바탕판이 맡고,
- * 이 층은 그림을 가리지 않을 만큼만 남긴다.
- */
-.category-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(to bottom, transparent 62%, rgb(255 255 255 / 30%) 100%);
-}
-
-/** 상자마다 분류색을 아주 옅게 깔아 네 갈래임을 색으로도 알린다. */
-.category-card--recyclable { background: #f2f7fd; }
-.category-card--food { background: #f2f8f3; }
-.category-card--general { background: #f5f6f5; }
-.category-card--special { background: #fdf5f0; }
-
-/**
- * 표시와 이름이 깔고 앉는 바탕판.
- *
- * 그림 어디에 걸리든 대비가 같도록 글자 쪽이 바탕을 들고 다닌다. 그림의 가장
- * 어두운 픽셀이 그대로 밑에 와도 최악 4.18:1이다(네 분류 중 음식물). 굵은
- * 큰 글자라 기준은 3:1이므로 여유가 있다.
- */
+/** 그림을 못 보는 사람에게는 이 이름이 전부다. 화면에서만 감춘다. */
 .category-card .sort-mark {
-  position: relative;
-  z-index: 1;
-  padding: var(--space-3) var(--space-4);
-  background: rgb(255 255 255 / 90%);
-  border-radius: var(--radius-card);
-  backdrop-filter: blur(3px);
-}
-
-/* 지금의 두 배. 82px → 164px. */
-.category-card .sort-mark svg {
-  width: clamp(84px, 10vw, 164px);
-  height: clamp(84px, 10vw, 164px);
-}
-
-.category-card .sort-mark__label {
-  /* 지금의 두 배. 27px → 54px. */
-  font-size: clamp(22px, 3vw, 54px);
-  letter-spacing: 0.05em;
-  /* 영어와 베트남어 이름이 길어 한 줄로 묶어 두면 칸을 넘는다. */
-  white-space: normal;
-  overflow-wrap: anywhere;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* ══ 챗봇 위젯 ═══════════════════════════════════════════ */
@@ -900,10 +865,11 @@ button,
   font-size: var(--text-body);
 }
 
+/* 한 화면을 마치고 다음으로 넘어가는 유일한 길이라 크게 둔다. */
 .journey-next__button {
-  min-height: calc(var(--touch-target) + 8px);
-  padding: var(--space-4) var(--space-7);
-  font-size: clamp(17px, 1.4vw, 21px);
+  min-height: calc(var(--touch-target) + 24px);
+  padding: var(--space-5) calc(var(--space-7) * 1.4);
+  font-size: clamp(21px, 1.9vw, 28px);
 }
 
 .catalog__filter {
