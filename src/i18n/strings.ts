@@ -481,6 +481,19 @@ export const ui = {
       zh: '无法判断',
       vi: 'Không nhận dạng được',
     }),
+    /**
+     * 도감에 없는 것으로 판정됐을 때 챗봇으로 넘기는 단추.
+     *
+     * 모델은 사진에서 무엇인지 알아보고도 16종에 없으면 `unknown`이 된다.
+     * 거기서 길이 끊기면 "AI가 못 알아봤다"로 읽히지만 실제로는 알아봤다.
+     * 챗봇은 도감 밖도 답하므로 그쪽으로 이어 준다.
+     */
+    askAi: localized('ui', 'scanner.askAi', {
+      ko: 'AI에게 물어보기',
+      en: 'Ask the AI',
+      zh: '问问AI',
+      vi: 'Hỏi AI',
+    }),
     confirmPrompt: localized('ui', 'scanner.confirmPrompt', {
       ko: '이 중에 맞는 것이 있나요?',
       en: 'Is any of these correct?',
