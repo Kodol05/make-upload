@@ -654,6 +654,18 @@ export const ui = {
       zh: '再玩一次',
       vi: 'Chơi lại',
     }),
+    reviewHint: localized('ui', 'game.reviewHint', {
+      ko: '틀린 문제의 품목입니다. 도감에서 처리 순서를 한 번 더 보세요.',
+      en: 'These are the items you missed. Check their steps in the guide once more.',
+      zh: '这些是答错的物品。请在图鉴中再确认一次处理步骤。',
+      vi: 'Đây là những vật bạn trả lời sai. Hãy xem lại các bước trong cẩm nang.',
+    }),
+    openInCatalog: localized('ui', 'game.openInCatalog', {
+      ko: '도감에서 확인하기',
+      en: 'Check them in the guide',
+      zh: '在图鉴中确认',
+      vi: 'Xem trong cẩm nang',
+    }),
     reviewTitle: localized('ui', 'game.reviewTitle', {
       ko: '다시 볼 품목',
       en: 'Items to review',

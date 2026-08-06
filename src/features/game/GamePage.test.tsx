@@ -5,6 +5,7 @@ import { ui } from '@/i18n/strings';
 import { catalogItems } from '@shared/catalog';
 import type { GameResult } from '@shared/types';
 import { GamePage } from './GamePage';
+import { QUESTION_COUNT } from './gameQuestions';
 import type { GameExperienceProps } from './GameContract';
 
 /** 게임 내부는 몰라도 되도록 결과만 돌려주는 대역을 쓴다. */
@@ -40,11 +41,29 @@ describe('GamePage', () => {
     expect(screen.getByText(/8/)).toBeInTheDocument();
   });
 
-  it('links the items worth reviewing back to the catalog', async () => {
+  it('names what was missed and where it belongs', async () => {
     await playThrough({ score: 9, learnedItemIds: ['clear-pet'] });
 
-    const link = screen.getByRole('link', { name: new RegExp(catalogItems[0].name.ko) });
-    expect(link).toHaveAttribute('href', '#catalog');
+    const missed = catalogItems[0];
+    expect(screen.getByText(missed.name.ko)).toBeInTheDocument();
+    // 분류까지 함께 보여야 "왜 틀렸는지"의 실마리가 된다.
+    expect(screen.getByText(ui.category[missed.category].ko)).toBeInTheDocument();
+  });
+
+  it('sends the reader to the guide page that actually exists', async () => {
+    await playThrough({ score: 9, learnedItemIds: ['clear-pet'] });
+
+    // 라우트가 넷으로 나뉘어 도감은 `#/catalog`다. `#catalog`는 없는 주소라 소개로 튕긴다.
+    expect(
+      screen.getByRole('link', { name: ui.game.openInCatalog.ko }),
+    ).toHaveAttribute('href', '#/catalog');
+  });
+
+  it('shows the score against the total', async () => {
+    await playThrough({ score: 7, learnedItemIds: ['clear-pet'] });
+
+    expect(screen.getByText('7')).toBeInTheDocument();
+    expect(screen.getByText(`/ ${QUESTION_COUNT}`)).toBeInTheDocument();
   });
 
   it('says so when nothing needs reviewing', async () => {
