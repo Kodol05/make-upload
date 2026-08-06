@@ -7,18 +7,33 @@
 
 ## 현재 단계
 
-- **큰 마일스톤**: Task 5 완료. 영상·도감까지 배포되어 실제로 쓸 수 있다.
-- **배포 URL**: <https://kodol05.github.io/make-upload/>
-- **진행 중 Task**: 없음 (Task 6 대기)
-- **Blocker**: 없음. 콘텐츠 미검수 상태에서도 개발이 진행된다.
+- **큰 마일스톤**: Task 6 완료. Worker 기반과 Gemini 공통 호출이 준비되었다.
+- **배포 URL**: <https://kodol05.github.io/make-upload/> (프런트만. Worker는 아직 미배포)
+- **진행 중 Task**: 없음 (Task 7 대기)
+- **Blocker**: 없음. 다만 **Gemini API 키가 있어야 실제 호출을 확인할 수 있다.**
 
 ## 지금 · 다음
 
 | 지금 | 다음 |
 |------|------|
-| Task 5 완료 (도감 검색·필터·상세) | Task 6: Worker 보안과 Gemini 공통 호출 |
+| Task 6 완료 (Worker 보안·Gemini 호출) | Task 7: 근거 기반 챗봇 API와 UI |
 
-Task 6부터는 Cloudflare 계정과 Gemini API 키가 필요하다. 준비할 것은 아래와 같다.
+## 키를 받으면 바로 할 일
+
+Task 6의 마지막 단계를 미뤄 두었다. 키가 생기면 이것부터 확인한다.
+
+```powershell
+npm run worker:dev
+```
+
+`toGeminiSchema`가 만든 스키마를 Gemini가 받는지 실제 호출로 본다.
+`400 INVALID_ARGUMENT`가 나오면 오류 메시지에 적힌 키 이름을 `worker/src/gemini.ts`의
+`UNSUPPORTED_KEYS`에 추가한다. 지금까지 확인한 문제는 세 가지다.
+
+- `$schema`와 `additionalProperties`가 들어간다
+- 튜플이 `prefixItems`로 나온다. 스캔 응답의 `box`가 여기 해당한다
+
+## 준비할 것
 
 - Google AI Studio에서 Gemini API 키 발급
 - 로컬 `.dev.vars`에 `GEMINI_API_KEY` 저장 (커밋하지 않는다)
