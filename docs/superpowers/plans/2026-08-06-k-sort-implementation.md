@@ -20,7 +20,9 @@
 - 앱 라우팅은 `src/app/useHashRoute.ts`를 직접 구현해 쓰고 Vite base는 `/make-upload/`로 고정한다.
   라우트는 홈 `#/`와 게임 `#/game` 둘뿐이므로 라우팅 라이브러리를 설치하지 않는다.
 - 도감 품목은 설계 문서의 16종으로 고정하며 임의 품목을 추가하지 않는다.
-- Gemini 모델은 `gemini-3.6-flash`, 호출은 `:generateContent`, 채팅 제한은 세션당 분당 10회,
+- Gemini 호출은 `:generateContent`다. 무료 한도가 모델마다 따로 잡히므로 챗봇은
+  `gemini-3.5-flash-lite`(15 RPM · 500 RPD), 스캔은 `gemini-3.6-flash`(5 RPM · 20 RPD)로
+  나눈다. 채팅 제한은 세션당 분당 10회,
   스캔은 분당 5회다.
 - 채팅 입력은 500자, 대화 이력은 최근 6개, 스캔 이미지는 1.5MB, 탐지 물체는 최대 5개다.
 - Zod는 Worker에서만 쓴다. 프런트는 `shared/schemas.ts`를 가져오지 않는다.

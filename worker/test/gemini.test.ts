@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { z } from 'zod';
 import { chatResponseSchema, scanResponseSchema } from '@shared/schemas';
-import { callGemini, toGeminiSchema } from '../src/gemini';
+import { CHAT_MODEL, SCAN_MODEL, callGemini, toGeminiSchema } from '../src/gemini';
 
 /** 응답 스키마를 훑어 특정 키가 남아 있는지 본다. */
 function hasKey(node: unknown, key: string): boolean {
@@ -79,11 +79,23 @@ const validAnswer = {
 describe('callGemini', () => {
   const options = {
     apiKey: 'test-key',
+    model: CHAT_MODEL,
     systemInstruction: 'you are a test',
     parts: [{ text: 'hello' }],
     schema: chatResponseSchema,
     timeoutMs: 1000,
   };
+
+  it('calls the model it was given', async () => {
+    const fetchMock = stubFetch(modelReply(validAnswer));
+    await callGemini({ ...options, model: SCAN_MODEL, fetchImpl: fetchMock });
+    expect(fetchMock.mock.calls[0][0]).toContain(`${SCAN_MODEL}:generateContent`);
+  });
+
+  it('keeps chat and scan on different models', () => {
+    // 무료 한도는 모델마다 따로 잡힌다. 같은 모델을 쓰면 버킷을 나눠 쓰지 못한다.
+    expect(CHAT_MODEL).not.toBe(SCAN_MODEL);
+  });
 
   it('returns the parsed and validated answer', async () => {
     const fetchMock = stubFetch(modelReply(validAnswer));

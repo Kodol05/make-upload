@@ -2,7 +2,7 @@ import { isValidBox, type Box } from '@shared/geometry';
 import { scanRequestSchema, scanResponseSchema } from '@shared/schemas';
 import { itemIds, type Locale, type ScanObject, type ScanResponse } from '@shared/types';
 import type { Env } from './env';
-import { callGemini, type FetchLike } from './gemini';
+import { SCAN_MODEL, callGemini, type FetchLike } from './gemini';
 import { errorResponse, jsonResponse } from './security';
 
 const TIMEOUT_MS = 15_000;
@@ -88,6 +88,7 @@ export async function handleScan(
   try {
     const result = await callGemini({
       apiKey: env.GEMINI_API_KEY as string,
+      model: SCAN_MODEL,
       systemInstruction: SYSTEM_PROMPT,
       parts: [
         { text: buildInput(locale) },

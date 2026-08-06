@@ -5,7 +5,7 @@ import { chatRequestSchema, chatResponseSchema } from '@shared/schemas';
 import { sources } from '@shared/sources';
 import type { ChatResponse, Locale } from '@shared/types';
 import type { Env } from './env';
-import { callGemini, type FetchLike } from './gemini';
+import { CHAT_MODEL, callGemini, type FetchLike } from './gemini';
 import { errorResponse, jsonResponse, limitHistory } from './security';
 
 const TIMEOUT_MS = 10_000;
@@ -159,6 +159,7 @@ export async function handleChat(
   try {
     const answer = await callGemini({
       apiKey: env.GEMINI_API_KEY as string,
+      model: CHAT_MODEL,
       systemInstruction: SYSTEM_PROMPT,
       parts: [
         {
