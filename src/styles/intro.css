@@ -122,7 +122,8 @@ body:has(.intro) {
 .intro__title {
   max-width: min(90vw, 20ch);
   margin: 0;
-  font-size: clamp(34px, 7vw, 118px);
+  /* 34/7vw/118에서 0.8배. 큰 글이 화면을 눌러 단추까지 한눈에 안 들어왔다. */
+  font-size: clamp(27px, 5.6vw, 94px);
   font-weight: 800;
   line-height: 1.14;
   letter-spacing: -0.02em;
@@ -145,7 +146,8 @@ body:has(.intro) {
   padding: clamp(14px, 1.4vw, 30px) clamp(28px, 3vw, 64px);
   background: var(--paper);
   color: var(--mark-deep);
-  font-size: clamp(27px, 4.6vw, 80px);
+  /* 제목과 같은 0.8배. 둘을 같은 비율로 줄여야 크기 관계가 유지된다. */
+  font-size: clamp(22px, 3.7vw, 64px);
   font-weight: 800;
   letter-spacing: -0.01em;
   text-decoration: none;
