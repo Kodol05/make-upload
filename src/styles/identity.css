@@ -625,7 +625,8 @@ main > * + * {
 .chat,
 .game {
   margin-bottom: 0;
-  padding: var(--space-6) var(--space-5);
+  /* 판을 위로 끌어올린다. 게임은 한 화면 안에 다 들어와야 한다. */
+  padding: var(--space-4) var(--space-5) var(--space-5);
 }
 
 /** 설명 문단은 판이 아무리 넓어도 읽는 폭을 넘기지 않는다. */
@@ -2200,14 +2201,39 @@ main {
  * 무엇을 버려야 하는지 알아보는 자리라 그림을 크게 두고 위아래로 넉넉히 띄운다.
  * 좁으면 이름과 설명이 붙어 보이고, 그림도 작아 무엇인지 알아보기 어렵다.
  */
+/**
+ * 몇 번째 문제인지는 오른쪽 아래로 내린다.
+ *
+ * 맨 위에 있으면 화면을 열자마자 진행도부터 읽게 되고, 정작 봐야 할 품목과
+ * 수거함이 그만큼 아래로 밀린다. 진행도는 풀고 나서 확인하는 것이지 풀기
+ * 전에 볼 것이 아니다.
+ *
+ * DOM 순서는 그대로 두고 `order`로만 옮긴다. 화면 낭독기는 지금처럼 진행도를
+ * 먼저 읽어 주는 편이 맥락을 잡기 좋다.
+ */
+.game-play {
+  display: flex;
+  flex-direction: column;
+}
+
+.game-play__progress {
+  order: 99;
+  align-self: flex-end;
+  margin: var(--space-3) 0 0;
+}
+
 .game-play__item {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
-  min-height: clamp(320px, 34vw, 460px);
-  padding: var(--space-6) var(--space-4);
+  gap: var(--space-3);
+  /**
+   * 수거함과 같은 이유로 화면 높이도 함께 본다. 가운데 칸은 고르는 자리가
+   * 아니라 무엇인지 알아보는 자리라 수거함보다 작아도 된다.
+   */
+  min-height: clamp(200px, min(17vw, 21vh), 250px);
+  padding: var(--space-4);
   background: var(--paper);
   border: var(--border-hair);
   border-radius: var(--radius-card);
@@ -2215,13 +2241,14 @@ main {
 }
 
 .game-play__image {
-  width: min(300px, 100%);
+  /* 칸 높이를 정하는 것은 결국 이 그림이다. 화면이 낮으면 함께 줄어든다. */
+  width: min(170px, min(20vw, 24vh), 100%);
   max-width: 100%;
 }
 
 .game-play__name {
   margin: 0;
-  font-size: clamp(20px, 2.2vw, 30px);
+  font-size: clamp(19px, 1.6vw, 24px);
   font-weight: 800;
 }
 
@@ -2466,10 +2493,10 @@ main {
   display: grid;
   /* 양옆 수거함이 가운데 품목보다 넓게 자리를 잡는다. 고르는 것이 주된 일이다. */
   grid-template-columns: auto minmax(0, 1.1fr) auto;
-  gap: var(--space-5);
+  gap: var(--space-4);
   align-items: center;
-  margin-top: var(--space-5);
-  padding: var(--space-5);
+  margin-top: var(--space-3);
+  padding: var(--space-4);
   /* 고르는 자리 전체를 회색으로 깔아 본문과 가른다. */
   background: #eef0ef;
   border: var(--border-hair);
@@ -2486,8 +2513,14 @@ main {
   flex-direction: column;
   align-items: center;
   gap: var(--space-2);
-  width: clamp(120px, 16vw, 230px);
-  padding: var(--space-4) var(--space-3);
+  /**
+   * 폭만 보면 안 된다. 그림이 360×414 비율이라 폭이 커지면 높이가 1.15배로
+   * 따라 커지고, 수거함은 세로로 둘씩 쌓인다. 16vw로 두었더니 1920×1080
+   * 노트북에서 판 높이가 720px이 되어 아래쪽이 화면 밖으로 밀렸다.
+   * 화면이 낮으면 vh 쪽이, 좁으면 vw 쪽이 먼저 걸리게 둘 다 본다.
+   */
+  width: clamp(120px, min(12vw, 15vh), 180px);
+  padding: var(--space-3);
   background: var(--paper);
   border: 2px solid var(--rule);
   border-radius: var(--radius-card);
@@ -2504,7 +2537,7 @@ main {
 }
 
 .game-play__bin-name {
-  font-size: clamp(17px, 1.5vw, 24px);
+  font-size: clamp(16px, 1.1vw, 19px);
   font-weight: 700;
   letter-spacing: 0.04em;
 }

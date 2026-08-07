@@ -53,13 +53,16 @@
 
   /**
    * 아래 한계값은 360px 화면에서 지금 크기를 지키고, 넓어질수록 커진다.
-   * 노트북 시연이 기준이라 위쪽을 넉넉히 잡았다.
+   *
+   * 위쪽 한계는 노트북에서 실물을 보고 낮췄다. 넉넉히 잡았더니 1920px 화면에서
+   * 제목과 본문이 과해 한 화면에 들어오는 양이 줄고 세로로 계속 길어졌다.
+   * 왼쪽(모바일) 값은 건드리지 않았으므로 좁은 화면의 크기는 그대로다.
    */
-  --text-hero: clamp(32px, 6vw, 58px);
-  --text-title: clamp(21px, 3vw, 34px);
-  --text-body: clamp(16px, 1.1vw, 19px);
-  --text-small: clamp(14px, 0.95vw, 17px);
-  --text-label: clamp(12px, 0.8vw, 14px);
+  --text-hero: clamp(32px, 6vw, 48px);
+  --text-title: clamp(21px, 3vw, 29px);
+  --text-body: clamp(16px, 1.1vw, 17px);
+  --text-small: clamp(14px, 0.95vw, 15px);
+  --text-label: clamp(12px, 0.8vw, 13px);
 
   --leading-tight: 1.15; /* 큰 제목 */
   --leading-body: 1.65;
@@ -76,8 +79,12 @@
   /**
    * 넓은 화면에서는 화면을 거의 채운다. 고정 폭으로 두면 노트북에서 양옆이
    * 크게 남아 화면이 좁아 보인다.
+   *
+   * 다만 상한 96rem(1536px)은 1920px 화면에서 글줄이 지나치게 길어졌다.
+   * 80rem(1280px)으로 낮춘다. 노트북(1280px 안팎)에서는 94vw 쪽이 먼저
+   * 걸리므로 지금과 달라지지 않고, 그보다 넓은 화면에서만 폭이 멈춘다.
    */
-  --page: min(94vw, 96rem);
+  --page: min(94vw, 80rem);
   --measure: 48rem;
   --gutter: var(--space-5);
 
@@ -117,4 +124,18 @@
   --color-food: var(--cat-food);
   --color-general: var(--cat-general);
   --color-special: var(--cat-special);
+}
+
+/**
+ * 마우스로 쓰는 화면에서는 누르는 칸을 줄인다.
+ *
+ * 56px은 손가락 기준이라 마우스에서는 단추가 커 보이고, 세로로 쌓이면서
+ * 한 화면에 들어오는 양이 줄었다. 폭이 아니라 입력 장치로 나누는 이유는
+ * 1024px 태블릿과 1024px 노트북이 서로 다르기 때문이다. 폰과 태블릿은
+ * `pointer: coarse`라 위의 56px을 그대로 쓴다.
+ */
+@media (pointer: fine) {
+  :root {
+    --touch-target: 44px;
+  }
 }
