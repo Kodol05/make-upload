@@ -93,6 +93,7 @@ npx vercel deploy --prod   # API 배포
 | [worklog](docs/worklog.md) | 한 줄 이력 |
 | [AI_PROCESS_AND_PROMPTS](docs/AI_PROCESS_AND_PROMPTS.md) | 콘텐츠를 만들 때 쓴 프롬프트 |
 | [REPORT_AND_PPT_HANDOFF](docs/REPORT_AND_PPT_HANDOFF.md) | 보고서·PPT 인수인계 |
+| [RETROSPECTIVE](docs/RETROSPECTIVE.md) | 팀원 소감 |
 | [설계](docs/superpowers/specs/2026-08-06-k-sort-design.md) | 제품 설계 |
 | [CLAUDE.md](CLAUDE.md) | AI 코딩 도구가 지킬 규칙 |
 
