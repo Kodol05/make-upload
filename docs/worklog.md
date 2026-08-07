@@ -31,3 +31,4 @@
 - 2026-08-07 (현민) [docs] 개발 중간 점검. AI가 잡아낸 것과 사람이 되돌린 것을 사례로 정리 → docs/AI_DEV_EVIDENCE.md
 - 2026-08-07 (현민) [docs] 추가 기능 다섯 개 계획. 앞의 넷은 이미 있는 것들이 안 이어져 생긴 막다른 길 → docs/FEATURE_PLAN.md
 - 2026-08-07 (현민) [docs] 핵심 강점 정리. 사진과 대화가 서로의 출구로 이어진다 → docs/CORE_STRENGTH.md
+- 2026-08-07 (현민) [docs] 소감 작성 → docs/RETROSPECTIVE.md
