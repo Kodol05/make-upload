@@ -1,8 +1,10 @@
+import { ApiError } from '@/lib/api';
 import {
   MAX_IMAGE_BYTES,
   MAX_LONG_EDGE,
   MIN_QUALITY,
   START_QUALITY,
+  compressImage,
   estimateBytesFromBase64,
   fitDimensions,
   nextQuality,
@@ -85,5 +87,31 @@ describe('estimateBytesFromBase64', () => {
   it('knows when an image is over the limit', () => {
     const tooBig = 'a'.repeat(Math.ceil((MAX_IMAGE_BYTES + 1000) / 3) * 4);
     expect(estimateBytesFromBase64(tooBig)).toBeGreaterThan(MAX_IMAGE_BYTES);
+  });
+});
+
+/**
+ * 아이폰 카메라는 기본이 HEIC다. 브라우저가 그 형식을 못 읽으면
+ * createImageBitmap이 예외를 던지는데, 이것을 그냥 흘려보내면 화면에는
+ * "일시적으로 사용할 수 없습니다"가 뜬다. 사용자는 형식 문제인 줄 모르고
+ * 같은 사진으로 계속 다시 시도하게 된다.
+ */
+describe('compressImage', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('reports an unreadable format instead of a generic failure', async () => {
+    vi.stubGlobal(
+      'createImageBitmap',
+      vi.fn().mockRejectedValue(new Error('decode failed')),
+    );
+
+    const heic = new File(['x'], 'photo.heic', { type: 'image/heic' });
+
+    await expect(compressImage(heic)).rejects.toBeInstanceOf(ApiError);
+    await expect(compressImage(heic)).rejects.toMatchObject({
+      code: 'unsupported_type',
+    });
   });
 });

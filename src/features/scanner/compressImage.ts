@@ -1,3 +1,5 @@
+import { ApiError } from '@/lib/api';
+
 /** 긴 변의 최대 길이. 이보다 크면 판별 정확도는 그대로인데 전송만 무거워진다. */
 export const MAX_LONG_EDGE = 1280;
 
@@ -48,10 +50,21 @@ export interface CompressedImage {
   data: string;
 }
 
-/** 브라우저에서 이미지를 읽어 canvas에 그릴 수 있는 형태로 만든다. */
+/**
+ * 브라우저에서 이미지를 읽어 canvas에 그릴 수 있는 형태로 만든다.
+ *
+ * 읽지 못하는 형식이면 코드를 붙여 던진다. 그냥 두면 화면이 이 예외를
+ * ApiError로 알아보지 못해 "일시적으로 사용할 수 없습니다"로 뭉뚱그리고,
+ * 사용자는 형식 문제인 줄 모른 채 같은 사진으로 다시 시도하게 된다.
+ * 아이폰 카메라의 기본 형식인 HEIC가 여기에 걸린다.
+ */
 async function loadImage(file: File): Promise<ImageBitmap> {
-  // createImageBitmap은 EXIF 방향을 알아서 적용한다.
-  return createImageBitmap(file, { imageOrientation: 'from-image' });
+  try {
+    // createImageBitmap은 EXIF 방향을 알아서 적용한다.
+    return await createImageBitmap(file, { imageOrientation: 'from-image' });
+  } catch {
+    throw new ApiError('unsupported_type');
+  }
 }
 
 function toBase64(dataUrl: string): string {

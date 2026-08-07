@@ -123,10 +123,23 @@ export function PhotoFinder({
       >
         <span className="finder__drop-hint">{t(ui.scanner.dropHint)}</span>
         <span className="finder__drop-action">{t(ui.scanner.choosePhoto)}</span>
+        {/**
+         * `accept`는 넓게 두고 `capture`는 쓰지 않는다.
+         *
+         * MIME을 셋으로 좁혔더니 아이폰 카메라의 기본 형식인 HEIC가 걸러졌다.
+         * 보관함에서 고를 때는 iOS가 JPEG로 바꿔 주지만 직접 찍은 사진은
+         * 그 변환이 걸리지 않는 경우가 있다.
+         *
+         * `capture`를 지정하면 안드로이드에서는 보관함 선택지가 사라지고
+         * 카메라만 열린다. 이름을 모르는 물건을 찍어 둔 사진으로 찾아보는
+         * 것도 쓰임새라 둘 다 고를 수 있어야 한다.
+         *
+         * 서버로는 어차피 compressImage가 JPEG로 다시 인코딩해 보내므로
+         * 넓혀도 `scanRequestSchema`의 형식 검증에는 걸리지 않는다.
+         */}
         <input
           type="file"
-          accept="image/jpeg,image/png,image/webp"
-          capture="environment"
+          accept="image/*"
           // 감싸는 label에 안내 문장이 두 줄이라, 이름은 여기서 직접 준다.
           aria-label={t(ui.scanner.choosePhoto)}
           onChange={(event) => void handleFile(event.target.files?.[0])}
