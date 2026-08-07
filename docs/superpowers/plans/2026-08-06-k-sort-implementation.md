@@ -1,5 +1,14 @@
 # K-SORT Implementation Plan
 
+> **당시 기록이다.** 이 문서는 만들기 전에 정한 것을 적어 둔 것이고, 그 뒤로 바뀐 것이
+> 있다. 대표적으로 API가 Cloudflare Worker에서 **Vercel Functions**로, 모델이
+> `gemini-3.6-flash`에서 **`gemini-3.5-flash-lite`**로 바뀌었고, 품목 이미지는 품목당
+> 3~4장에서 **1장**으로 줄었다. 지금 상태는 [STATUS](../../STATUS.md)와
+> [README](../../../README.md)를 보라.
+>
+> 본문은 고치지 않는다. 무엇을 정하고 시작했는지가 남아 있어야 무엇이 왜 바뀌었는지도
+> 설명할 수 있다.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 명지전문대 유학생이 네 언어로 한국 분리배출을 학습하고 사진 인식·도감·챗봇·게임으로 복습하는 모바일 우선 웹앱을 완성한다.
